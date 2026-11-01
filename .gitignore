@@ -1,0 +1,27 @@
+# LaTeX build output
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.lof
+*.lot
+*.xdv
+build/
+
+# The compiled PDF is produced by GitHub Actions (see README)
+/main.pdf
+
+# Editor / OS clutter
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+*~

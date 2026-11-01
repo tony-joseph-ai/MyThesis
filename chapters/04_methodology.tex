@@ -1,0 +1,225 @@
+% !TEX root = ../main.tex
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Dataset Preparation and Crop Extraction}
+\label{sec:methodology-crops}
+
+The original dataset provides one bounding box per image, marking the workpiece's
+location and size. To study how classification behaviour changes as the object occupies
+more or less of the frame, this thesis defines the \emph{object-to-image (O2I) ratio} as
+the fraction of a cropped image's \emph{area} occupied by the object's bounding box, and
+generates, for every image, a square crop centred on the bounding box centre such that the
+object occupies a chosen target ratio of the crop's area. For a bounding box of pixel
+width $w$ and height $h$, the side length of the crop achieving a target ratio $r$ is
+
+\begin{equation}
+\text{crop\_side} = \sqrt{\frac{w \times h}{r}}.
+\label{eq:crop-side}
+\end{equation}
+
+Five target ratios were used: $90\%$, $70\%$, $50\%$, $30\%$, and $10\%$, evenly spaced
+from almost-pure-object to object-dominated-by-background. This range and spacing was
+chosen to give a readable ratio-vs-performance curve with enough points to distinguish a
+gradual decline from a sudden cliff, while keeping the number of required training runs
+manageable; a $10\%$ floor was used to avoid the object shrinking to only a handful of
+pixels after resizing to the network's input resolution. Applying this procedure to all 15
+materials at all 5 ratios yields $15 \times 5 = 75$ distinct sub-datasets, each internally
+consistent (same camera, same background, same object, only the crop tightness differs).
+
+\subsection{Experimental Design: One-vs-Rest Binary Classification}
+\label{sec:methodology-ovr}
+
+An initial design trained a single 15-class classifier per ratio (5 models total, one per
+ratio, each choosing among all 15 materials). This thesis instead adopts a
+\emph{one-vs-rest} design: for every (material, ratio) combination, a separate binary
+classifier is trained to answer the narrower question ``is this crop material $X$, or not''
+(target $=1$ for the material in question, target $=0$ for crops of any of the other 14
+materials at that ratio). This produces $15 \times 5 = 75$ independent binary models in
+total.
+
+This reformulation was adopted because it lets each material's sensitivity to the O2I
+ratio be read off directly and independently: with one detector per material, the
+detectability of e.g.\ aluminium as the object shrinks can be tracked in isolation, rather
+than being entangled with how the other 14 materials' decision boundaries happen to shift
+in a shared 15-way classifier. Every one-vs-rest model uses the same fixed random seed
+($42$) on every run, so that seed variation is never a confound when comparing across
+materials or ratios -- the ratio (and, for a given run, the material) is the only thing
+that changes between models.
+
+\subsection{Training Configuration}
+\label{sec:methodology-training}
+
+All 75 models share an identical training configuration, summarised in
+Table~\ref{tab:training-config}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lp{9cm}}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+Input resolution & $256 \times 256$ \\
+Epochs & 100 (primary); 200 for a supplementary check, Section~\ref{sec:results-200epoch} \\
+Batch size & 16--32 \\
+Optimiser & Adam \\
+Random seed & 42 (fixed across every run) \\
+Loss & Weighted binary cross-entropy (see below) \\
+\hline
+\end{tabular}
+\caption{Training configuration used for every one-vs-rest model.}
+\label{tab:training-config}
+\end{table}
+
+An earlier, smaller-scale comparison on the original 15-class design had found
+$128\times128$ input crops to perform marginally better than $256\times256$ ($80.5\%$ vs.\
+$79.5\%$ validation accuracy at 25 epochs) while training $2.4\times$ faster, and $128px$
+was initially adopted on that basis. For the one-vs-rest redesign, the input resolution
+was changed to $256\times256$; this required no architecture change, since the adaptive
+average pooling layer described in Section~\ref{sec:background-cnn} makes
+\texttt{MaterialCNN} input-size independent by construction.
+
+\subsubsection{Why Accuracy Is Not a Meaningful Metric Here}
+\label{sec:methodology-metrics}
+
+Reformulating the problem as 75 binary one-vs-rest tasks has an important side effect:
+every task now has a severe class imbalance, since each binary classifier sees roughly one
+positive example (the target material) for every 14 negative examples (all other
+materials), an imbalance of approximately $1{:}14$. Under this imbalance, plain accuracy
+is not a meaningful metric: a trivial classifier that always predicts ``not the target
+material,'' without having learned anything about the visual difference between materials,
+already achieves roughly $93\%$ accuracy by construction. This was verified directly on
+synthetic data reproducing the class balance: the always-negative baseline scored $93.3\%$
+accuracy while its F1 score -- which specifically measures how well the positive
+(target-material) class is identified -- was $0.000$.
+
+To avoid this failure mode, three changes were made to the training and evaluation
+procedure, all three of which are applied together on every run:
+\begin{enumerate}
+\item \textbf{Weighted loss.} The loss function upweights the minority (positive) class by
+approximately $14\times$, roughly matching the class imbalance ratio, so that misclassifying
+a true positive is penalised proportionally more than misclassifying a true negative.
+\item \textbf{F1 and ROC-AUC as the reported metrics.} Accuracy is never reported for any
+one-vs-rest result in this thesis; F1 score and ROC-AUC on the positive (target-material)
+class are used throughout instead, since both remain informative under class imbalance.
+\item \textbf{Best-epoch checkpointing by F1, not accuracy.} The model checkpoint saved for
+each run is the epoch with the highest validation F1 score, rather than the epoch with the
+highest validation accuracy, so that the saved model is the one that is actually best at
+the task that matters.
+\end{enumerate}
+
+\subsubsection{Validation and Test Split Protocol}
+\label{sec:methodology-split}
+
+All model development, hyperparameter decisions, and epoch selection were performed using
+a held-out validation split. The test split was set aside at the start of the project and
+was not inspected or used for any decision-making during development; it is reserved
+exclusively for the final, once-only reported evaluation, so that no reported number is
+the product of repeated tuning against the same data it is evaluated on.
+
+\subsection{Explainability Pipeline}
+\label{sec:methodology-explainability}
+
+Both occlusion sensitivity (Section~\ref{sec:background-occlusion}) and Grad-CAM
+(Section~\ref{sec:background-gradcam}) were implemented against the trained one-vs-rest
+models and applied consistently across all 75 (material, ratio) combinations.
+
+\subsubsection{Occlusion Sensitivity: Implementation and a Methodological Correction}
+\label{sec:methodology-occlusion-impl}
+
+The implementation slides a $32\times32$ grey patch across each $256\times256$ input
+image with a stride of 16 pixels, re-running the trained model at every patch position and
+recording the change in the network's output for the target class relative to the
+unoccluded image. This produces a coarse $15\times15$ grid of importance values, which is
+then upsampled by interpolation to the full $256\times256$ resolution to form the final
+heatmap.
+
+This specific patch size and stride were not tuned empirically against alternatives, so it
+is worth stating explicitly why they are a reasonable choice rather than an arbitrary one.
+Four considerations motivate the $32\times32$/stride-16 configuration. First,
+\emph{computational cost}: a stride of 16 over a $256\times256$ image yields
+$\left(\frac{256-32}{16}+1\right)^2 = 15^2 = 225$ patch positions, and therefore 225
+forward passes per image. A stride of 1 would require $225^2 \approx 50{,}625$ forward
+passes per image -- more than two hundred times as many -- which is infeasible at the
+scale used in this thesis (75 models $\times$ 10 sampled images per method,
+Section~\ref{sec:methodology-centerfrac}). A stride of half the patch size (16 is half of
+32) is a standard compromise: adjacent patches overlap by 50\%, which smooths the
+resulting heatmap after upsampling, without the cost of a finer stride. Second,
+\emph{scale relative to the network's own receptive field}: the CNN backbone
+(Table~\ref{tab:cnn-architecture}) halves spatial resolution at each of its four
+pooling stages ($256\to128\to64\to32\to16$), so a single unit in the final feature map
+used by Grad-CAM already aggregates information from a neighbourhood on the order of
+tens of input pixels. A $32\times32$ occlusion patch is comparable to this scale, meaning
+a single occluded patch is capable of meaningfully perturbing the activations the network
+itself treats as one local unit of evidence, rather than being small enough to disappear
+into the receptive field of a single feature or large enough to blur together several
+unrelated ones. Third, \emph{scale relative to the object across the studied O2I ratios}:
+at the smallest ratio studied (10\%), the object occupies a square of side
+$\sqrt{0.10}\times256\approx81$ pixels (Equation~\ref{eq:crop-side}), so a $32\times32$
+patch covers under half of the object's width -- large enough to register a meaningful
+occlusion, small enough that several patches are needed to cover the object fully, which
+is what gives the heatmap genuine spatial resolution \emph{within} the object rather than
+one patch swallowing it whole. At the largest ratio (90\%), the same patch is a small
+fraction of the object, allowing the heatmap to resolve structure across both object and
+background. Fourth, \emph{consistency with Grad-CAM}: the Grad-CAM heatmap
+(Section~\ref{sec:methodology-gradcam-impl}) is itself produced at $32\times32$ resolution
+before upsampling, so the two methods are compared at a matched spatial resolution rather
+than one being systematically coarser than the other. Together these considerations were
+judged sufficient to justify the configuration used throughout this thesis; they are not a
+substitute for an empirical sweep over patch sizes, which remains a possible direction for
+future work (Section~\ref{sec:discussion-future}) but was not carried out here.
+
+An important implementation decision, discovered during initial testing rather than
+assumed in advance, concerns exactly which network output is measured. The first
+implementation measured the change in the model's \emph{softmax probability} for the
+target class. On a confidently and correctly classified test image, this produced a
+heatmap that was completely flat -- minimum, maximum, and mean all exactly $0.0$ -- even
+though Grad-CAM, run on the same model and image, produced a clear and sensible heatmap.
+The cause was diagnosed rather than assumed: softmax probability is bounded to the
+interval $[0, 1]$, and for a sufficiently confident model, the probability for the correct
+class rounds to exactly $1.0$ in 32-bit floating-point representation both before and
+after occluding any single patch, so the measured difference is always $1.0 - 1.0 = 0.0$
+regardless of how much the model's underlying evidence actually changes. The fix was to
+measure the change in the raw \emph{logit} (the network's output before the softmax
+nonlinearity is applied) instead of the probability. Because logits are unbounded, they do
+not saturate this way; on the same model and image, the logit-based heatmap ranged from
+$-2.405$ to $3.145$ with clear, interpretable structure (strongest on a reflective rim and
+a highlight on the object itself). \textbf{Every occlusion sensitivity result reported in
+this thesis (Section~\ref{sec:results}) is therefore computed on the raw logit, not the
+softmax probability}, specifically to avoid this saturation failure mode on confidently
+trained classifiers.
+
+\subsubsection{Grad-CAM: Implementation}
+\label{sec:methodology-gradcam-impl}
+
+The Grad-CAM implementation attaches to the final $256$-channel convolutional feature map
+identified in Table~\ref{tab:cnn-architecture}. For a given input image and target class,
+one forward pass computes this feature map and the class score; one backward pass computes
+the gradient of that score with respect to every unit of the feature map. The gradients
+are globally average-pooled within each of the 256 channels to obtain one importance
+weight per channel; the channels are combined into a single $32\times32$ map using these
+weights, passed through a ReLU (retaining only positive contributions to the target
+class), min-max normalised, and upsampled to $256\times256$ to match the input resolution.
+
+\subsubsection{The \texorpdfstring{$\text{center\_frac}$}{center\_frac} Metric}
+\label{sec:methodology-centerfrac}
+
+To compare occlusion sensitivity and Grad-CAM quantitatively, rather than only visually,
+each heatmap is reduced to a single number, $\text{center\_frac}$: the fraction of the
+heatmap's total (min-max normalised) importance that falls inside a square box centred on
+the image, sized so that the box's \emph{area} equals that image's O2I ratio,
+
+\begin{equation}
+\text{box\_side} = \sqrt{\frac{\text{ratio}}{100}} \times 256,
+\label{eq:box-side}
+\end{equation}
+
+matching the same area-based ratio definition used for crop generation
+(Equation~\ref{eq:crop-side}). A $\text{center\_frac}$ of $1.0$ means the heatmap's
+importance is entirely concentrated inside the (ratio-sized) central box, i.e.\ fully
+object-focused; a value of $0.0$ means it falls entirely outside, i.e.\ fully
+background-focused. For the rare case of a completely flat heatmap (denominator
+approximately zero, see Section~\ref{sec:results-robustness}), a neutral fallback value of
+$0.5$ is used rather than an undefined ratio. For each of the 75 models, $\text{center\_frac}$
+is computed for both methods on 10 sampled validation images per model (fixed seed 42, so
+sampling is reproducible), giving $75 \times 10 = 750$ image analyses per method.

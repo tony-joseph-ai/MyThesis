@@ -1,0 +1,401 @@
+%NachnameJahrAbkürzung - Beispiel: Mustermann2022RNN
+%Titel - Beispiel: Recurrent Neural Networks in NLP
+%Journal oder Konferenz - Beispiel: Neural Computing and Aplications
+%Jahrgang.Ausgabe - Beispiel 34.2
+    %Hinweis: Jahrgang (engl. volume) ist die Zahl, wie viele Jahre dieses Journal schon veröffentlicht wurde - Beispiel: Erstes Erscheinen im Jahr 1990, dann ist im Jahr 2023 Jahrgang/volume 33
+    %Hinweis: Ausgabe (engl. issue) ist die Zahl, wie oft das Journal in diesem Jahr schon veröffentlicht wurde - Beispiel: Fünf verschiedene Ausgaben, dann ist Ausgabe/issue 5
+    %Hinweis: Zusammengefasst: Jahrgang.Ausgabe im obigen Beispiel - 33.5 (nicht jede Arbeit hat diese Angaben!)
+%pp.~VonSeite--BisSeite: In Journalen sind viele Paper zusammengefasst, ein einzelnes Paper braucht daher die konkrete Seitenangabe.
+%Erscheinungsjahr: Das Jahr, in welchem das Paper wirklich veröffentlich wurde - Beispiel (2022)
+%doi: Steht für digital object identifier und ist ein eindeutige und einzigartige Bezeichnung für eine Arbeit (nicht jede Arbeit hat eine doi!) - Beispiel: doi:10.2567/b00522-021-03451-6
+
+@article{schneidereit2022computational,
+  title={Computational characteristics of feedforward neural networks for solving a stiff differential equation},
+  author={Schneidereit, Toni and Breu{\ss}, Michael},
+  journal={Neural Computing and Applications},
+  volume={34},
+  number={10},
+  pages={7975--7989},
+  year={2022},
+  publisher={Springer},
+  doi={https://doi.org/10.1007/s00521-022-06901-6}
+}
+
+%--------------------------------------------------------------------%
+% Added by Claude, [Sept 2026] -- checked against arXiv / Springer /  %
+% dblp entries directly (see chat sources), not taken from a Google   %
+% Scholar "Cite" button. Verify once more against the printed/final   %
+% Springer page before submission, per your own Sources.bib note above.%
+%--------------------------------------------------------------------%
+
+% Created the 15-workpiece dataset used in this thesis; the direct
+% predecessor study (YOLOv8 detection, background influence, LRP heatmaps).
+@inproceedings{schneidereitYOLOv8,
+  author    = {Schneidereit, Toni and Gohrenz, Stefan and Breu{\ss}, Michael},
+  title     = {Object Detection Characteristics in a Learning Factory Environment using {YOLOv8}},
+  booktitle = {Intelligent Systems and Applications (IntelliSys 2025)},
+  editor    = {Arai, Kohei},
+  series    = {Lecture Notes in Networks and Systems},
+  publisher = {Springer},
+  address   = {Cham},
+  pages     = {288--308},
+  year      = {2025},
+  doi       = {10.1007/978-3-032-00071-2_18}
+}
+
+% Earlier work on the same Fischertechnik learning factory, with its own
+% 700-image, three-colour dataset. NOT the source of the thesis dataset.
+@inproceedings{schneidereitFischertechnik2023,
+  author    = {Schneidereit, Slavomira and Yarahmadi, Ashkan Mansouri and Schneidereit, Toni and Breu{\ss}, Michael and Gebauer, Marc},
+  title     = {{YOLO}-Based Object Detection in Industry 4.0 Fischertechnik Model Environment},
+  booktitle = {Intelligent Systems and Applications (IntelliSys 2023)},
+  editor    = {Arai, Kohei},
+  series    = {Lecture Notes in Networks and Systems},
+  volume    = {823},
+  publisher = {Springer},
+  address   = {Cham},
+  pages     = {1--20},
+  year      = {2024},
+  doi       = {10.1007/978-3-031-47724-9_1}
+}
+
+% Origin of occlusion sensitivity -- your Phase 3 explainability method.
+@inproceedings{zeilerFergus2014,
+  author    = {Zeiler, Matthew D. and Fergus, Rob},
+  title     = {Visualizing and Understanding Convolutional Networks},
+  booktitle = {Computer Vision -- ECCV 2014},
+  editor    = {Fleet, David and Pajdla, Tomas and Schiele, Bernt and Tuytelaars, Tinne},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {8689},
+  publisher = {Springer},
+  address   = {Cham},
+  pages     = {818--833},
+  year      = {2014},
+  doi       = {10.1007/978-3-319-10590-1_53}
+}
+
+%--------------------------------------------------------------------%
+% Added by Claude, [Sept 2026] -- 8 further Related Work papers, read   %
+% (via arXiv/publisher fetches) before this entry was added, per the   %
+% checklist rule above. Bibliographic data checked directly against    %
+% arXiv, dblp, MDPI, Springer and the CVF open-access repository.      %
+%--------------------------------------------------------------------%
+
+% Training-time fix (not just detection) for background bias, using the
+% same relevance/gradient-based explainability family as Grad-CAM --
+% your strongest Future Work citation.
+@article{bassi2024isnet,
+  author    = {Bassi, Pedro R. A. S. and Dertkigil, Sergio S. J. and Cavalli, Andrea},
+  title     = {Improving Deep Neural Network Generalization and Robustness to Background Bias via Layer-Wise Relevance Propagation Optimization},
+  journal   = {Nature Communications},
+  volume    = {15},
+  pages     = {291},
+  year      = {2024},
+  publisher = {Springer Nature},
+  doi       = {10.1038/s41467-023-44371-z}
+}
+
+% Neuron spurious score (binarised Grad-CAM per neuron, overlap with a mask
+% of the spurious feature); DFR changes how neurons are combined rather than
+% removing spurious features. Corrected 16 Oct 2026: the earlier entry
+% pointed to arXiv 2502.09150, which is a different paper (Suhail et al.).
+,
+  title         = {An {XAI}-based Analysis of Shortcut Learning in Neural Networks},
+  year          = {2025},
+  eprint        = {2504.15664},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note          = {Accepted at the World Conference on eXplainable Artificial Intelligence (XAI-2025)},
+  doi           = {10.48550/arXiv.2504.15664}
+}
+
+% How context/background affects feature-attribution methods, not just
+% accuracy (object-versus-context attribution measure).
+@inproceedings{adhikari2024lostincontext,
+  author    = {Adhikari, Sayanta and Kumar, Rishav and Mopuri, Konda Reddy and Pachamuthu, Rajalakshmi},
+  title     = {Lost in Context: The Influence of Context on Feature Attribution Methods for Object Recognition},
+  booktitle = {Proceedings of the Fifteenth Indian Conference on Computer Vision, Graphics and Image Processing (ICVGIP)},
+  year      = {2024},
+  publisher = {ACM},
+  doi       = {10.1145/3702250.3702254}
+}
+
+% Classic, well-cited contextual-bias mitigation paper.
+@inproceedings{singh2020dontjudge,
+  author    = {Singh, Krishna Kumar and Mahajan, Dhruv and Grauman, Kristen and Lee, Yong Jae and Feiszli, Matt and Ghadiyaram, Deepti},
+  title     = {Don't Judge an Object by Its Context: Learning to Overcome Contextual Bias},
+  booktitle = {2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2020},
+  publisher = {IEEE},
+  url       = {https://openaccess.thecvf.com/content_CVPR_2020/papers/Singh_Dont_Judge_an_Object_by_Its_Context_Learning_to_Overcome_CVPR_2020_paper.pdf}
+}
+
+% L-CRP (CRP for localisation models): background-vs-object context score
+% via concept-based explanations; a concept-level relative of c.
+@inproceedings{dreyer2023revealing,
+  author    = {Dreyer, Maximilian and Achtibat, Reduan and Wiegand, Thomas and Samek, Wojciech and Lapuschkin, Sebastian},
+  title     = {Revealing Hidden Context Bias in Segmentation and Object Detection through Concept-specific Explanations},
+  booktitle = {2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},
+  year      = {2023},
+  publisher = {IEEE}
+}
+
+% Industry 4.0 material classification via classical ML on colour
+% features -- the application-domain contrast point for this thesis.
+@article{penumuru2020material,
+  author    = {Penumuru, Durga Prasad and Muthuswamy, Sreekumar and Karumbu, Premkumar},
+  title     = {Identification and Classification of Materials Using Machine Vision and Machine Learning in the Context of Industry 4.0},
+  journal   = {Journal of Intelligent Manufacturing},
+  volume    = {31},
+  number    = {5},
+  pages     = {1229--1241},
+  year      = {2020},
+  publisher = {Springer},
+  doi       = {10.1007/s10845-019-01508-6}
+}
+
+% Pixel-level interpretability vs Grad-CAM for COVID-19 chest images: one
+% more case of two attribution methods disagreeing, in another domain.
+% (The paper describes its data both as radiographs and as CT scans.)
+@article{ennab2025interpretability,
+  author    = {Ennab, Mohammad and Mcheick, Hamid},
+  title     = {Advancing {AI} Interpretability in Medical Imaging: A Comparative Analysis of Pixel-Level Interpretability and {Grad-CAM} Models},
+  journal   = {Machine Learning and Knowledge Extraction},
+  volume    = {7},
+  number    = {1},
+  pages     = {12},
+  year      = {2025},
+  publisher = {MDPI},
+  doi       = {10.3390/make7010012}
+}
+
+% Small-object-detection survey: low resolution, occlusion, background
+% interference and class imbalance as core challenges; <1% relative-size
+% criterion. Its class imbalance (small objects underrepresented) differs
+% from the one-vs-rest imbalance in this thesis.
+@article{nikouei2025smallobject,
+  author        = {Nikouei, Mahya and Baroutian, Bita and Nabavi, Shahabedin and Taraghi, Fateme and Aghaei, Atefe and Sajedi, Ayoob and Moghaddam, Mohsen Ebrahimi},
+  title         = {Small Object Detection: A Comprehensive Survey on Challenges, Techniques and Real-World Applications},
+  journal       = {Intelligent Systems with Applications},
+  volume        = {27},
+  year          = {2025},
+  publisher     = {Elsevier},
+  eprint        = {2503.20516},
+  archiveprefix = {arXiv},
+  doi           = {10.48550/arXiv.2503.20516}
+}
+
+% Grad-CAM -- your Phase 4 explainability method (the comparison to occlusion
+% sensitivity is the core of your Results/Discussion chapters).
+@inproceedings{selvaraju2017gradcam,
+  author    = {Selvaraju, Ramprasaath R. and Cogswell, Michael and Das, Abhishek and Vedantam, Ramakrishna and Parikh, Devi and Batra, Dhruv},
+  title     = {Grad-{CAM}: Visual Explanations from Deep Networks via Gradient-Based Localization},
+  booktitle = {2017 IEEE International Conference on Computer Vision (ICCV)},
+  address   = {Venice, Italy},
+  pages     = {618--626},
+  year      = {2017},
+  publisher = {IEEE},
+  doi       = {10.1109/ICCV.2017.74}
+}
+
+%--------------------------------------------------------------------%
+% Added by Claude, [Sept 2026] -- the three foundational Related Work   %
+% papers, read (via arXiv abstract/PDF) before this entry was added,    %
+% per the checklist rule above. Bibliographic data checked against     %
+% arXiv and dblp directly, not a Google Scholar "Cite" button.          %
+%--------------------------------------------------------------------%
+
+% Defines the object-to-image (O2I) ratio by area; O2I limit at fixed
+% dataset size; input-gradient saliency as a localisation check (App. C.4).
+@misc{pawlowski2019needles,
+  author       = {Pawlowski, Nick and Bhooshan, Suvrat and Ballas, Nicolas and Ciompi, Francesco and Glocker, Ben and Drozdzal, Michal},
+  title        = {Needles in Haystacks: On Classifying Tiny Objects in Large Images},
+  year         = {2019},
+  eprint       = {1908.06037},
+  archiveprefix = {arXiv},
+  primaryclass = {cs.CV},
+  doi          = {10.48550/arXiv.1908.06037}
+}
+
+% ImageNet-9 background/foreground disentanglement (bounding boxes plus
+% GrabCut) -- background-reliance evidence at the model level.
+@inproceedings{xiao2021noise,
+  author    = {Xiao, Kai and Engstrom, Logan and Ilyas, Andrew and Madry, Aleksander},
+  title     = {Noise or Signal: The Role of Image Backgrounds in Object Recognition},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2006.09994},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% Texture-vs-shape bias in CNNs -- a loose analogue to aluminium's
+% behaviour in this thesis.
+@inproceedings{geirhos2019texture,
+  author    = {Geirhos, Robert and Rubisch, Patricia and Michaelis, Claudio and Bethge, Matthias and Wichmann, Felix A. and Brendel, Wieland},
+  title     = {{ImageNet}-trained {CNN}s are Biased Towards Texture; Increasing Shape Bias Improves Accuracy and Robustness},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2019},
+  eprint    = {1811.12231},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+%--------------------------------------------------------------------%
+% Chapter 2 additions, checked 16 Oct 2026: method and dataset         %
+% references for YOLO, LRP, ImageNet, CAM, DFR and CRP.                 %
+%--------------------------------------------------------------------%
+
+
+  title     = {You Only Look Once: Unified, Real-Time Object Detection},
+  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {779--788},
+  year      = {2016},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2016.91}
+}
+
+  title     = {On Pixel-Wise Explanations for Non-Linear Classifier Decisions by Layer-Wise Relevance Propagation},
+  journal   = {PLoS ONE},
+  volume    = {10},
+  number    = {7},
+  pages     = {e0130140},
+  year      = {2015},
+  doi       = {10.1371/journal.pone.0130140}
+}
+
+% The LRP reference the 2025 study itself cites.
+,
+  title     = {Layer-Wise Relevance Propagation: An Overview},
+  booktitle = {Explainable {AI}: Interpreting, Explaining and Visualizing Deep Learning},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {11700},
+  publisher = {Springer},
+  address   = {Cham},
+  year      = {2019},
+  doi       = {10.1007/978-3-030-28954-6_10}
+}
+
+,
+  title     = {{ImageNet}: A Large-Scale Hierarchical Image Database},
+  booktitle = {2009 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {248--255},
+  year      = {2009},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2009.5206848}
+}
+
+% Class activation maps (CAM), the family Grad-CAM generalises.
+,
+  title     = {Learning Deep Features for Discriminative Localization},
+  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {2921--2929},
+  year      = {2016},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2016.319}
+}
+
+% Deep Feature Re-weighting (DFR).
+,
+  title     = {Last Layer Re-Training is Sufficient for Robustness to Spurious Correlations},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023}
+}
+
+% Concept Relevance Propagation (CRP), the basis of L-CRP.
+,
+  title     = {From Attribution Maps to Human-Understandable Explanations through Concept Relevance Propagation},
+  journal   = {Nature Machine Intelligence},
+  volume    = {5},
+  number    = {9},
+  pages     = {1006--1019},
+  year      = {2023},
+  doi       = {10.1038/s42256-023-00711-8}
+}
+% ---- 8 entries to add to Overleaf's Sources.bib (copied from the Project's Sources.bib) ----
+% Ch. 3 needs: redmon2016yolo, bach2015lrp, montavon2019lrp, deng2009imagenet, zhou2016cam
+% Ch. 2 also needs: kirichenko2023dfr, achtibat2023crp, and the CORRECTED le2025shortcut
+% IMPORTANT: if Overleaf's Sources.bib already has an entry called le2025shortcut, DELETE the old one first.
+
+@inproceedings{redmon2016yolo,
+  author    = {Redmon, Joseph and Divvala, Santosh and Girshick, Ross and Farhadi, Ali},
+  title     = {You Only Look Once: Unified, Real-Time Object Detection},
+  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {779--788},
+  year      = {2016},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2016.91}
+}
+
+@article{bach2015lrp,
+  author    = {Bach, Sebastian and Binder, Alexander and Montavon, Gr{\'e}goire and Klauschen, Frederick and M{\"u}ller, Klaus-Robert and Samek, Wojciech},
+  title     = {On Pixel-Wise Explanations for Non-Linear Classifier Decisions by Layer-Wise Relevance Propagation},
+  journal   = {PLoS ONE},
+  volume    = {10},
+  number    = {7},
+  pages     = {e0130140},
+  year      = {2015},
+  doi       = {10.1371/journal.pone.0130140}
+}
+
+@incollection{montavon2019lrp,
+  author    = {Montavon, Gr{\'e}goire and Binder, Alexander and Lapuschkin, Sebastian and Samek, Wojciech and M{\"u}ller, Klaus-Robert},
+  title     = {Layer-Wise Relevance Propagation: An Overview},
+  booktitle = {Explainable {AI}: Interpreting, Explaining and Visualizing Deep Learning},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {11700},
+  publisher = {Springer},
+  address   = {Cham},
+  year      = {2019},
+  doi       = {10.1007/978-3-030-28954-6_10}
+}
+
+@inproceedings{deng2009imagenet,
+  author    = {Deng, Jia and Dong, Wei and Socher, Richard and Li, Li-Jia and Li, Kai and Fei-Fei, Li},
+  title     = {{ImageNet}: A Large-Scale Hierarchical Image Database},
+  booktitle = {2009 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {248--255},
+  year      = {2009},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2009.5206848}
+}
+
+@inproceedings{zhou2016cam,
+  author    = {Zhou, Bolei and Khosla, Aditya and Lapedriza, Agata and Oliva, Aude and Torralba, Antonio},
+  title     = {Learning Deep Features for Discriminative Localization},
+  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {2921--2929},
+  year      = {2016},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPR.2016.319}
+}
+
+@inproceedings{kirichenko2023dfr,
+  author    = {Kirichenko, Polina and Izmailov, Pavel and Wilson, Andrew Gordon},
+  title     = {Last Layer Re-Training is Sufficient for Robustness to Spurious Correlations},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023}
+}
+
+@article{achtibat2023crp,
+  author    = {Achtibat, Reduan and Dreyer, Maximilian and Eisenbraun, Ilona and Bosse, Sebastian and Wiegand, Thomas and Samek, Wojciech and Lapuschkin, Sebastian},
+  title     = {From Attribution Maps to Human-Understandable Explanations through Concept Relevance Propagation},
+  journal   = {Nature Machine Intelligence},
+  volume    = {5},
+  number    = {9},
+  pages     = {1006--1019},
+  year      = {2023},
+  doi       = {10.1038/s42256-023-00711-8}
+}
+
+@misc{le2025shortcut,
+  author        = {Le, Phuong Quynh and Schl{\"o}tterer, J{\"o}rg and Seifert, Christin},
+  title         = {An {XAI}-based Analysis of Shortcut Learning in Neural Networks},
+  year          = {2025},
+  eprint        = {2504.15664},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note          = {Accepted at the World Conference on eXplainable Artificial Intelligence (XAI-2025)},
+  doi           = {10.48550/arXiv.2504.15664}
+}
+

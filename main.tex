@@ -1,0 +1,225 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%%%%%%%%%%
+%packages%
+%%%%%%%%%%
+%Spracheinstellung / language setting / replace "english" if needed
+\usepackage[english]{babel}
+\usepackage[absolute,overlay]{textpos}
+\usepackage[giveninits=true,sorting=none,style=numeric,maxbibnames=5]{biblatex}
+\usepackage{csquotes}
+\addbibresource{Sources.bib}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{setspace}
+\usepackage{amssymb}
+\setlength{\emergencystretch}{2em}
+
+%--------------------------------------------%
+%--------EDIT CONTENTS OF THIS BLOCK---------%
+%------------Title Page Content--------------%
+%--------------------------------------------%
+
+
+%%% ENTER THE THESIS TITLE HERE%%%
+\newcommand{\TITLE}{
+\textbf{\begin{spacing}{1}
+Object to Image Ratio and Occlusion Sensitivity for Material Classification in a Learning Factory
+\end{spacing}}}
+%%% ENTER THE TYPE OF THESIS HERE %%%
+%%% Bachelor Thesis or Master Thesis
+\newcommand{\THESIS}{
+Master Thesis
+}
+%%% ENTER YOUR STUDY PROGRAMME HERE%%%
+\newcommand{\STUDYPROGRAMME}{
+% TODO(Tony): confirm the exact official English name of your degree programme,
+% e.g. "Artificial Intelligence (M.Sc.)" -- check your enrollment certificate.
+Artificial Intelligence
+}
+%%% ENTER YOUR NAME HERE %%%
+\newcommand{\NAME}{
+% TODO(Tony): insert your full legal name as it appears on official BTU documents
+ExampleName
+}
+%%% ENTER YOUR DATE OF BIRTH HERE %%%
+\newcommand{\DOB}{
+% TODO(Tony): insert your date of birth, format: DD Month YYYY
+01 January 0101
+}
+%%% ENTER YOUR PLACE OF BIRTH HERE %%%
+\newcommand{\POB}{
+% TODO(Tony): insert your place of birth
+ExampleTown
+}
+%%% HIER DIE EIGENE MATRIKELNUMMER EINTRAGEN %%%
+\newcommand{\MATRICULATIONNUMBER}{
+% TODO(Tony): insert your matriculation number
+0101010101
+}
+%%% ENTER FIRST REVIEWER HERE %%%
+\newcommand{\FIRSTREVIEWER}{
+% TODO(Tony): confirm with your advisers who the official first reviewer
+% (Erstgutachter) is. Best guess based on your project notes: the chair
+% professor. Confirm exact title/spelling before submission.
+Prof. Dr. Michael Breu{\ss}
+}
+%%% ENTER SECOND REVIEWER HERE %%%
+\newcommand{\SECONDREVIEWER}{
+% TODO(Tony): the second reviewer (Zweitgutachter) is not yet recorded in
+% your project notes -- ask Toni/Prof. Breuß who this will be.
+Title and name of second reviewer
+}
+%%% ENTER ADVISER HERE %%%
+\newcommand{\ADVISER}{
+% TODO(Tony): confirm Toni's exact title (e.g. "Dr." or "M.Sc.") for formal use.
+Toni Schneidereit
+}
+%%% ENTER (real) SUBMISSION DATE HERE%%%
+\newcommand{\SUBMISSIONDATE}{
+% TODO(Tony): set this once you know your actual submission date
+% (deadline is 1 December 2026 -- aim to submit a few days before that).
+02 February 0202
+}
+%%% ENTER THE ABSTRACT IN ENGLISH HERE %%%
+%%% Should not exceed half a page %%%
+\newcommand{\ABSTRACT}{
+% TODO: write this LAST, once all results and conclusions are final.
+Example summary in English.
+}
+%%% ENTER THE ABSTRACT IN GERMAN HERE %%%
+%%% Should not exceed half a page %%%
+\newcommand{\ZUSAMMENFASSUNG}{
+% TODO: translate the final English abstract into German, once it is written.
+Beispielzusammenfassung in Deutsch.
+}
+%%% ENTER THE GENERATIVE MODELS HERE %%%
+%%% Document the use of generative AI for  %%%
+%%% assistance in writing and idea finding %%%
+%%% here, be very careful with this part   %%%
+\newcommand{\GENERATIVEAI}{
+% TODO(Tony): review this list carefully and edit it so it honestly and
+% completely reflects how you actually used AI tools over the course of the
+% thesis. This is a signed declaration -- it must be accurate and complete,
+% not understated or overstated. Update it again right before submission.
+\begin{itemize}
+\item Claude (Anthropic) was used as a coding assistant: explaining PyTorch
+      concepts (Dataset/DataLoader, CNN architecture design, training loops),
+      helping debug errors during implementation, and helping design the
+      crop-extraction, one-vs-rest training, and occlusion sensitivity /
+      Grad-CAM explainability scripts. All code was reviewed, run, and
+      understood by the author; results were independently verified against
+      the model outputs.
+\item Claude (Anthropic) was used for planning and organisational support:
+      structuring the day-by-day project timeline, discussing experimental
+      design trade-offs (e.g. the one-vs-rest reformulation, epoch count
+      investigation), and tracking open questions/decisions across working
+      sessions.
+\item Claude (Anthropic) was used as a writing aid: helping structure chapter
+      drafts, checking bibliography entries against primary sources, and
+      reviewing/tightening text drafted by the author. All substantive
+      scientific content, analysis, and conclusions are the author's own;
+      AI-suggested phrasing was reviewed and edited by the author before use.
+\end{itemize}
+}
+\begin{document}
+
+
+%--------------------------------------------%
+%--------FOLGENDEN BLOCK NICHT ÄNDERN--------%
+%--------------------------------------------%
+
+
+\pagenumbering{gobble}
+\begin{center}
+{\Huge \TITLE}
+\end{center}
+\begin{textblock*}{\paperwidth}(0cm,8cm) % {block width} (coords)
+\begin{center}
+{\Huge \textbf{\THESIS} \\ \textbf{\large \STUDYPROGRAMME}} \\[2em]
+{\Large submitted by} \\[2em]
+{\Huge \NAME} \\[0.5em]
+{\large \MATRICULATIONNUMBER} \\[2em]
+{\Large born on\DOB in\POB} \\[4em]
+{\Large AI-Lab}\\[0.5em]
+{\Large Chair of Applied Mathematics} \\[0.5em]
+{\Large Brandenburg University of Technology Cottbus-Senftenberg}
+\end{center}
+\end{textblock*}
+\begin{textblock*}{\paperwidth}(2.45cm,21cm) % {block width} (coords)
+\begin{table}[!ht]
+\begin{tabular}{ll}
+{\Large Reviewer:}    & {\Large \FIRSTREVIEWER} \\[1em]
+{\Large Reviewer:}    & {\Large \SECONDREVIEWER} \\[1em]
+{\Large Adviser:}    & {\Large \ADVISER} \\[2em]
+{\Large Submission date:}    & {\Large \SUBMISSIONDATE}
+\end{tabular}
+\end{table}
+\end{textblock*}
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
+~
+\begin{textblock*}{\textwidth}(2.45cm,5cm) % {block width} (coords)
+\section*{\underline{Declaration of independence}}
+\vspace{1cm}
+I hereby declare that I have written this thesis independently, without unauthorised help and exclusively using the sources indicated. The ideas taken directly or indirectly from external sources (including electronic sources) are labelled as such without exception. The sources used verbatim and in terms of content have been cited in accordance with the recognised rules of scientific work. This work has not yet been submitted for any other review or published elsewhere.\\[0.5cm]
+\noindent
+I agree that the thesis will be checked for plagiarism with the help of a plagiarism detection service. I also hereby confirm that I comply with the \href{https://www-docs.b-tu.de/youngacademics/public/Statute_for_Safeguarding_Good_Research_Practice_BTU_2024.pdf}{“Statutes for Ensuring Good Scientific Practice and Dealing with Suspected Cases of Scientific Misconduct at the Brandenburg University of
+Technology Cottbus–Senftenberg of 20 July 2023”}\\[0.5cm]
+\noindent
+All applications of generative AI methods which are not part of the Thesis project have been explicitly identified and are documented here:
+\GENERATIVEAI
+~\\[2cm]
+\noindent
+{Cottbus, \SUBMISSIONDATE}{\hspace*{2.725cm}\underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}} \\
+{\hspace*{7.75cm} Signature of the author}
+\end{textblock*}
+
+\newpage\null\thispagestyle{empty}\newpage
+\section*{\underline{Abstract}}
+\vspace{0.5cm}
+\ABSTRACT
+\section*{\underline{Zusammenfassung}}
+\vspace{0.5cm}
+\ZUSAMMENFASSUNG
+
+
+\newpage\null\thispagestyle{empty}\newpage
+\tableofcontents
+
+\newpage\null\thispagestyle{empty}\newpage
+\pagenumbering{arabic}
+
+
+
+%---------------------------------------%
+%--------START EDITING FROM HERE--------%
+%---------------------------------------%
+
+% Chapter skeleton below follows the required BTU AI-Lab structure from
+% Thesis_Writing_Guidelines.md. Each section is currently empty except for a
+% TODO comment -- fill them in as each phase of the work is ready to write up.
+% The demo section/figure/table/equation from the original template has been
+% removed (it was only there to show LaTeX syntax examples).
+
+\input{chapters/01_introduction}
+\input{chapters/02_related_work}
+\input{chapters/03_background}
+\input{chapters/04_methodology}
+\input{chapters/05_results}
+\input{chapters/06_discussion}
+
+\newpage
+
+%Bibliography: Sources are stored in the bibtex file "Sources.bib" and referenced in the text via the reference \cite{Abbreviation}.
+%Important note: Google Scholar offers the "Cite" feature - the information there must always be checked! They are often not completely correct!
+
+\printbibliography
+
+\end{document}
