@@ -628,8 +628,8 @@ stride 16. At this ratio, the margin around the reference square of
 Section~\ref{sec:background-comparison} is 21 pixels wide, which holds Grad-CAM cells but
 no occlusion patch (Section~\ref{sec:methodology-resolution}). The model is the
 black-plastic model trained at 70\%, which classifies the crop as black plastic with
-$p_1 = 0.999$ and $z_1 = 4.32$. The $15 \times 15$ map $D$ of
-Fig.~\ref{fig:bg-methods-real}\,(b) ranges from $-0.107$ to $+0.424$, and 45 of its 225
+$p_1 > 0.999$ and $z_1 = 6.56$. The $15 \times 15$ map $D$ of
+Fig.~\ref{fig:bg-methods-real}\,(b) ranges from $-0.082$ to $+1.111$, and 32 of its 225
 drops are negative. The positive drops concentrate on the lower front of the workpiece,
 and panel (c) shows them after normalisation and interpolation. The choice of patch
 size, stride and fill is justified in Section~\ref{sec:methodology-patch}, and the
@@ -712,12 +712,16 @@ draw for ImageNet-trained CNNs.
 
 \paragraph{Grad-CAM on a real crop}
 Fig.~\ref{fig:bg-methods-real}\,(d) shows two of the 256 feature maps of c4 for the crop
-at 70\%, $A^{7}$ with $\alpha_7 = +2.0 \times 10^{-4}$ and $A^{238}$ with
-$\alpha_{238} = -4.2 \times 10^{-4}$. Of the 256 weights, 124 are positive and 132
-negative, so the map of Eq.~\eqref{eq:bg-gradcam-map} is a balance of many channels
-that push the logit in opposite directions. The measured $32 \times 32$ map of
-Fig.~\ref{fig:bg-methods-real}\,(e) covers most of the workpiece, and it already marks
-the dark structure along the top edge of the crop, outside the reference square. This is
+at 70\%, $A^{61}$ with $\alpha_{61} = +2.7 \times 10^{-5}$ and $A^{78}$ with
+$\alpha_{78} = -4.3 \times 10^{-4}$, the channels that add most to and subtract most from
+the weighted sum. Both respond mainly to the red plate around the workpiece and hardly to
+the workpiece itself, one with a small positive and the other with a negative weight. Of
+the 256 weights, 128 are positive and 128 negative, so the map of
+Eq.~\eqref{eq:bg-gradcam-map} is a balance of many channels that push the logit in
+opposite directions. The measured $32 \times 32$ map of
+Fig.~\ref{fig:bg-methods-real}\,(e) covers the centre and the lower front of the
+workpiece, and it marks the dark band along the top edge of the crop, outside the
+reference square, only weakly. This is
 one image and is meant as an illustration. How the Grad-CAM evidence spreads at 30\% and
 10\% is shown in Section~\ref{sec:results-qualitative}. In contrast to occlusion, which
 needed 225 separate local tests for the map of panel (b), Grad-CAM reads all feature
@@ -733,7 +737,8 @@ black-plastic model. (a) Crop with one grey $32 \times 32$ patch and the stride-
 (b) measured $15 \times 15$ map $D$ of drops of the positive-class logit $z_1$;
 (c) positive drops, normalised and bilinearly interpolated for display, with the
 reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
-of the fourth convolutional layer, $32 \times 32$, with their weights $\alpha$;
+of the fourth convolutional layer, $32 \times 32$, with their weights $\alpha$ (dark
+for high activation);
 (e) measured $32 \times 32$ Grad-CAM map after the rectified linear unit (ReLU),
 divided by its maximum; (f) Grad-CAM, interpolated for display, with $c$. The smooth
 appearance of (c) and (f) comes from the interpolation, not from the measurement.}
@@ -771,9 +776,9 @@ patches that cover it, and the map is divided by its maximum. This gives $c = 0.
 maximum gives $c = 0.84$. A pixel inside the square is thus about 4.9 and 5.2 times as
 important as a pixel outside it. The shares of 0.62 and 0.64 are lower, because the
 square covers only a quarter of the crop. For the real crop of
-Fig.~\ref{fig:bg-methods-real}, $c$ is 0.86 for the positive occlusion drops and 0.68 for
-Grad-CAM. The lower Grad-CAM value seems to come from the dark structure along the top
-edge, which lies outside the square. At this ratio, however, no occlusion patch lies
+Fig.~\ref{fig:bg-methods-real}, $c$ is 0.87 for the positive occlusion drops and 0.82 for
+Grad-CAM. The slightly lower Grad-CAM value seems to come from its weak response along
+the dark band at the top edge, which lies outside the square. At this ratio, however, no occlusion patch lies
 entirely outside the square, so the two values are not fully comparable
 (Section~\ref{sec:methodology-resolution}).
 
