@@ -646,12 +646,16 @@ Best epoch $\le 100$ & 4 & 4 & 6 & 2 & 3 \\
 
 \paragraph{Overall gain}
 The mean gain over all 75 cells is $+0.035$, with values from 0.000 to $+0.175$. No
-gain is negative, which holds by construction, and in 19 of the 75 cells the
-200-epoch run reached its best epoch within its first 100, so $\Delta = 0$ there. As
-noted in Section~\ref{sec:methodology-200epoch}, gains up to about 0.04, the effect of
-one validation crop, are not read as an improvement. The fall with the ratio remains
-after 200 epochs, from 0.884 at 90\% to 0.841 at 10\%, so on the validation split it
-does not seem to be an effect of the training length.
+gain is negative, which holds by construction, and part of each gain is built in,
+since the maximum of a noisy validation F1 grows with the number of epochs searched
+(Section~\ref{sec:methodology-200epoch}). In 19 of the 75 cells the 200-epoch run
+reached its best epoch within its first 100, so $\Delta = 0$ there. As noted in
+Section~\ref{sec:methodology-200epoch}, gains of a single cell up to about 0.04, the
+effect of one validation crop on the recall, are not read as an improvement. The fall
+with the ratio remains after 200 epochs, from 0.884 at 90\% to 0.841 at 10\%, but it is
+smaller than at 100 epochs (0.854 to 0.794), since the gain is largest at 10\%.
+Training length thus explains a small part of the decline on the validation split, not
+the decline itself.
 
 \paragraph{Materials}
 Per material, the mean gain over the five ratios is largest for aluminium ($+0.131$),
@@ -667,15 +671,16 @@ two weakest materials at every ratio.
 
 \paragraph{Run-to-run variation}
 For the 27 models retrained in October there are two runs with batch size 32, the
-final 100-epoch model and the first 100 epochs of the 200-epoch run. They use the same
+final 100-epoch model of October and the first 100 epochs of the 200-epoch run of
+September. They use the same
 seed and settings and differ only in the GPU software environment, which changed with
 the maintenance of the lab machine (paragraph \emph{Optimisation and determinism} in
 Section~\ref{sec:methodology-training}). Their best validation F1 differs by $+0.003$ on average,
 so there is no systematic shift, with a mean absolute difference of 0.018 and a
 standard deviation of the difference of 0.028, i.e., about 0.020 per run. The largest
 difference is 0.089 (brass at 70\%), and the two runs give the same value in 3 of the
-27 cells. A single changed decision among 25 positive crops moves the validation F1 by
-about 0.04. Against this variation, which is measured on the validation F1, the change
+27 cells. A single changed decision among 25 positive crops changes the recall by about
+0.04. Against this variation, which is measured on the validation F1, the change
 of the test F1 from 90\% to 50\%
 ($-0.017$) lies within the noise, while the fall from 50\% to 10\% ($-0.076$) is about
 four times larger. This is a partial estimate from 27 cells and two environments, not a
@@ -688,7 +693,7 @@ stated in Section~\ref{sec:methodology-training}.
 Tab.~\ref{tab:200epoch-full} gives $\Delta_{t,r}$ for all 75 cells. Aluminium gains
 more than 0.1 at every ratio, which elsewhere happens only for brass at 70\% and grey
 plastic at 10\%, and black plastic gains nothing at four of the five ratios. The reading of these values is that of
-Section~\ref{sec:results-200epoch}.
+the paragraphs above.
 
 \begin{table}[tbp]
 \centering
@@ -711,14 +716,14 @@ Steel           & $+0.002$ & $0.000^{\dagger}$ & $+0.033$ & $+0.021$ & $+0.084$ 
 Orange AG       & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $+0.016$ & $+0.020$ \\
 Yellow AG       & $+0.014$ & $+0.043$ & $+0.019$ & $+0.026$ & $+0.099$ \\
 Blue AG         & $0.000^{\dagger}$ & $+0.020$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $+0.021$ \\
-Red AG          & $+0.002$ & $+0.025$ & $+0.007$ & $+0.027$ & $+0.033$ \\
+Red AG          & $+0.002$ & $+0.025$ & $+0.008$ & $+0.027$ & $+0.033$ \\
 Red plastic     & $+0.036$ & $+0.074$ & $+0.092$ & $+0.007$ & $0.000^{\dagger}$ \\
 Blue plastic    & $+0.019$ & $+0.018$ & $0.000^{\dagger}$ & $+0.057$ & $0.000^{\dagger}$ \\
 Yellow plastic  & $+0.038$ & $+0.020$ & $+0.041$ & $+0.020$ & $+0.023$ \\
-Grey plastic    & $+0.064$ & $+0.087$ & $+0.022$ & $+0.059$ & $+0.106$ \\
+Grey plastic    & $+0.064$ & $+0.088$ & $+0.022$ & $+0.059$ & $+0.106$ \\
 Black plastic   & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $+0.021$ \\
 Light wood      & $+0.069$ & $+0.058$ & $+0.032$ & $+0.073$ & $+0.042$ \\
-Dark wood       & $+0.026$ & $+0.005$ & $+0.049$ & $+0.018$ & $+0.048$ \\
+Dark wood       & $+0.026$ & $+0.005$ & $+0.048$ & $+0.018$ & $+0.048$ \\
 \hline
 Mean           & $+0.027$ & $+0.038$ & $+0.028$ & $+0.037$ & $+0.047$ \\
 \hline
@@ -728,12 +733,11 @@ Mean           & $+0.027$ & $+0.038$ & $+0.028$ & $+0.037$ & $+0.047$ \\
 % ============================================================================
 \bigskip
 \noindent
-Taken together, the two layers of evidence show the following. The test F1 falls as the workpiece
-takes up less of the crop, mostly below 50\%. The Grad-CAM centre measure falls
-although its reference value rises, while the occlusion centre measure rises, partly
-because of the geometry of the square. The difference between the two methods grows as
-the workpiece shrinks, clearly at 10\% and as a slope, and it goes beyond what their
-different resolutions alone would produce. For neither method does $c$ lie clearly
-below 0.5 at any ratio. Why the two methods answer differently, and what this means for
-the research question and for single materials, is discussed in
-Sections~\ref{sec:discussion-answer} and~\ref{sec:discussion-material}.
+Taken together, the classification degrades as the workpiece takes up less of the crop,
+mostly below 50\%, and on average the Grad-CAM evidence moves away from the workpiece at
+the same time, while the occlusion evidence does not. This picture holds under the five
+checks of Section~\ref{sec:results-robustness}, and the decline of the classification
+also remains after 200 epochs of training. Why
+the two methods answer differently, and what this means for the research question and
+for single materials, is discussed in Sections~\ref{sec:discussion-answer}
+and~\ref{sec:discussion-material}.
