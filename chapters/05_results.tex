@@ -302,7 +302,8 @@ and are not tested as trends.
 
 The box value of 0.757 at 90\% is the 0.76 of the paragraph \emph{Reference values of
 $c$}, which explains why it lies above Eq.~\eqref{eq:c-ref-approx}; at the other ratios
-the computed values agree with that equation to within 0.01.
+the computed values agree with that equation to within 0.01 when $f$ is the mean share
+of the box inside $B_r$.
 
 \paragraph{Reference difference and the difference beyond it}
 The reference difference $c^{\mathrm{ref}}_{\mathrm{occ}} - c^{\mathrm{ref}}_{\mathrm{cam}}$
@@ -441,8 +442,9 @@ highlights and the left edge of the workpiece. At 30\% it spreads into the struc
 above and below the workpiece, and at 10\% the map is flat. Occlusion concentrates on
 the vertical highlights, with $c$ of 0.57, 0.74, 0.76, 0.55 and 0.84. At the model
 level, grey-patch occlusion lies between 0.48 and 0.54 at every ratio, i.e., it shows
-no clear preference for workpiece or background; with the black and blurred patch,
-occlusion lies on the workpiece at every ratio (Section~\ref{sec:results-fill}).
+no clear preference for workpiece or background; with the black and the blurred patch,
+occlusion lies above 0.5 at every ratio (0.56 to 0.95 and 0.57 to 0.97;
+Section~\ref{sec:results-fill}).
 Grad-CAM gives 0.75, 0.75,
 0.59, 0.58 and 0.67 and thus lies on the workpiece at most ratios.
 
@@ -529,8 +531,8 @@ blurred patch 0.89, 0.78 and 0.80, i.e., both place the evidence of steel on the
 workpiece. At 90\% and 70\%, the other two fills disagree with each other (black 0.62
 and 0.34, blur 0.39 and 0.74), so no statement about steel is possible there. This is
 the steel result already stated in Section~\ref{sec:background-occlusion}. For
-aluminium, the black and blurred patches place the evidence on the workpiece at every
-ratio, with values from 0.56 to 0.95 and from 0.57 to 0.97.
+aluminium, the black and the blurred patch give values above 0.5 at every ratio, from
+0.56 to 0.95 and from 0.57 to 0.97.
 
 The headline of Section~\ref{sec:results-divergence} thus does not depend on the fill,
 whereas the occlusion value of a single workpiece has to be read with the fill in mind.
