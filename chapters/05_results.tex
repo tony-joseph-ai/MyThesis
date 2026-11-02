@@ -470,8 +470,8 @@ Section~\ref{sec:methodology-rq}, Grad-CAM detects the shift and occlusion does 
 
 The headline of Section~\ref{sec:results-divergence} has two parts: the Grad-CAM centre
 measure falls as the ratio falls, and the method difference grows, clearly at 10\% and
-as a slope. Each of the following five checks changes one step of the pipeline that
-either part could depend on, namely the normalisation of the occlusion map, the fill of
+as a slope. Each of the following five checks changes or tests one step of the pipeline
+that either part could depend on, namely the normalisation of the occlusion map, the fill of
 the occluding patch, the interpolation, the treatment of flat Grad-CAM maps, and the
 match between the reference square and the bounding box.
 
@@ -516,9 +516,9 @@ With every fill, the occlusion centre measure rises from 90\% to 10\%: grey from
 to 0.884, black from 0.639 to 0.846 and blur from 0.562 to 0.830, while Grad-CAM
 falls. The paired change from 90\% to
 10\% is clear for grey ($+0.155$, $t(14) = 5.01$) and blur ($+0.268$,
-$t(14) = 7.33$). For black it is $+0.206 \pm 0.085$ ($p = 0.029$), not evidence on its
-own, although its slope over 50\%, 30\% and 10\% alone is clear ($-0.0464$,
-$p = 0.009$). The method difference at 10\% is clear with every fill: 0.477, 0.439 and
+$t(14) = 7.33$). For black it is $+0.206 \pm 0.085$ ($p = 0.029$), and its slope over
+all five ratios, $-0.0225$ ($p = 0.058$), is not evidence on its own either; only over
+50\%, 30\% and 10\% alone is the slope clear ($-0.0464$, $p = 0.009$). The method difference at 10\% is clear with every fill: 0.477, 0.439 and
 0.424 for grey, black and blur ($t(14) = 4.86$, 4.88 and 5.13), with occlusion above
 Grad-CAM in 13, 14 and 15 of the 15 materials. Its slope over the five ratios is clear
 with every fill as well, $-0.0551$, $-0.0603$ and $-0.0700$ ($p = 0.0004$, 0.0005 and
@@ -535,7 +535,9 @@ clearly above at 90\% and 10\% only, and blur occlusion is clearly above from 70
 \paragraph{Single workpieces}
 The value of a single workpiece can depend strongly on the fill. At 50\%, the value drops when the patch resembles the workpiece:
 with grey for steel (0.30), aluminium (0.54) and grey plastic (0.56), with black for
-black plastic (0.18), and with blur for dark wood (0.52) and grey plastic (0.42). No
+black plastic (0.18), and with blur for dark wood (0.52) and grey plastic (0.42). The
+black patch also lowers blue plastic (0.31) and blue AG (0.32), which do not resemble
+it, so resemblance is not the only cause. No
 fill is neutral for every workpiece. For steel, the grey-patch value is a fill artefact
 at 50\%, 30\% and 10\%, where the black patch gives 0.72, 0.88 and 0.91 and the
 blurred patch 0.89, 0.78 and 0.80, i.e., both place the evidence of steel on the
@@ -575,18 +577,24 @@ Flat maps pull $c$ towards 0.5, which makes a decline from values above 0.5 look
 smaller, not larger. Without them, the Grad-CAM centre measure is $0.798 \pm 0.039$
 (14 models), $0.766 \pm 0.036$ (13), $0.720 \pm 0.045$ (14), $0.648 \pm 0.077$ (15) and
 $0.363 \pm 0.083$ (15) from 90\% to 10\%, where a model with only flat maps drops out.
-The decline is unchanged and even steeper. A further 20 analyses give $c = 0$ exactly,
-0, 0, 1, 2 and 17 by ratio. These are not flat maps: the map is non-zero, but no
-importance lies inside the reference square. No occlusion map is flat.
+The decline remains and is even steeper (0.798 to 0.363), and at 10\% the value is
+still not clearly below 0.5 ($t(14) = -1.64$, $p = 0.12$). A further 20 analyses give
+$c = 0$ exactly, 0, 0, 1, 2 and 17 by ratio. These are not flat maps: the map is
+non-zero, but no importance lies inside the reference square. They do not come from the
+8-bit step of Eq.~\eqref{eq:upsample}, since all 20 also give $c = 0$ in the
+no-interpolation check of Section~\ref{sec:results-interpolation}, which is computed in
+floating point without that step. That check also gives 0.404 at 10\% against 0.407. No
+occlusion map is flat.
 
 \subsubsection{Crop Centring and the Reference Square}
 \label{sec:results-centering}
 
 The centre measure assumes that the workpiece lies at the centre of the crop. This
 holds by construction, since every crop is centred on its bounding box and crops that
-would leave the photograph are skipped (Section~\ref{sec:methodology-crops}). A pixel
-measurement on a test crop confirmed it, with an offset of the workpiece centre of
-$-1.1\%$ of the crop width and $+1.8\%$ of its height. At 90\%, 991 of the 2,490 boxes
+would leave the photograph are skipped (Section~\ref{sec:methodology-crops}). Over all
+12,170 crops, the box centre lies at most 4.3 pixels from the centre of the
+$256 \times 256$ input at 90\% and at most 1.4 pixels at 10\%, after rounding and
+resizing. At 90\%, 991 of the 2,490 boxes
 (39.8\%) extend beyond the crop, as given in Section~\ref{sec:methodology-crops}. At
 70\% this holds for 109 boxes (4.4\%), with the long side cut by 3.1\% for the median
 cut box and by at most 12.8\%, and from 50\% downwards for none.
@@ -594,10 +602,14 @@ cut box and by at most 12.8\%, and from 50\% downwards for none.
 The reference square and the box overlap by about 94\% at every ratio
 (paragraph \emph{Reference square} in Section~\ref{sec:methodology-reduction}).
 Counting only the part of the box inside the crop, the share $f$ of the box inside
-$B_r$ is 0.961, 0.941, 0.942, 0.939 and 0.930 from 90\% to 10\%, and the ellipse
-variant of Section~\ref{sec:results-reference} gives the same picture. The square is
-therefore a fair stand-in for the box at every ratio, and its small mismatch is
-contained in the reference values, which already account for it.
+$B_r$ is 0.961, 0.941, 0.942, 0.939 and 0.930 from 90\% to 10\%, and with the ellipse
+in place of the box (Section~\ref{sec:results-reference}), the value at 10\% and the
+slope remain clear. The square is therefore a fair stand-in for the box at every
+ratio, and its small mismatch is accounted for by the reference values.
+
+\paragraph{Summary of the section}
+None of the five checks changes the two parts of the headline; the agreement of the
+two methods at 90\% holds only for positive drops with the grey fill.
 
 % ============================================================================
 \subsection{Extended Training at 200 Epochs}
