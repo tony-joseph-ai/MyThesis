@@ -17,6 +17,7 @@
 \hypersetup{hidelinks}
 \usepackage{setspace}
 \usepackage{amssymb}
+\usepackage{placeins} % \FloatBarrier keeps floats inside their section
 \setlength{\emergencystretch}{2em}
 
 %--------------------------------------------%
@@ -208,11 +209,17 @@ All applications of generative AI methods which are not part of the Thesis proje
 % The demo section/figure/table/equation from the original template has been
 % removed (it was only there to show LaTeX syntax examples).
 
+\clearpage
 \input{chapters/01_introduction}
+\clearpage
 \input{chapters/02_related_work}
+\clearpage
 \input{chapters/03_background}
+\clearpage
 \input{chapters/04_methodology}
+\clearpage
 \input{chapters/05_results}
+\clearpage
 \input{chapters/06_discussion}
 
 \newpage

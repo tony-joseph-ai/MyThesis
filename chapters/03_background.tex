@@ -609,7 +609,7 @@ workpiece, and the measure of Section~\ref{sec:background-comparison} becomes 0.
 is the grey-fill question raised for steel in Section~\ref{sec:related-work-o2i}, in
 miniature. The surface of a steel workpiece is grey or reflects grey surroundings, so a
 grey patch may remove little of its evidence. For the real steel models, the fill-colour
-test of Section~\ref{sec:results-robustness} confirms this at 50\%, 30\% and 10\%: with a
+test of Section~\ref{sec:results-fill} confirms this at 50\%, 30\% and 10\%: with a
 black or blurred patch instead of a grey one, occlusion places the evidence of steel on
 the workpiece, so its grey-patch result is an artefact of the fill rather than a sign of
 background reliance (Section~\ref{sec:discussion-material}).
@@ -684,7 +684,7 @@ map, and the ReLU keeps
 only the places where such channels outweigh the others. For display and comparison,
 $G$ is divided by its maximum. If the weighted sum has no positive entry, $G$ is zero
 everywhere and cannot be scaled. How often this happened in the thesis is reported in
-Section~\ref{sec:results-robustness}. The map has the resolution of the layer it is
+Section~\ref{sec:results-degeneracy}. The map has the resolution of the layer it is
 attached to. For c4 this is $32 \times 32$, i.e., one cell per 8 pixels of the
 $256 \times 256$ input.
 

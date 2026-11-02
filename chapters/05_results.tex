@@ -68,7 +68,7 @@ $p = 0.0013$), positive in 14 of 15 materials, and over 50\%, 30\% and 10\% alon
 $+0.0190 \pm 0.0046$ ($t(14) = 4.12$, $p = 0.001$). Both are clear: classification
 degrades as the workpiece takes up less of the crop.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Test F1 of the 75 one-vs-rest models]{Test F1 of the 75 one-vs-rest models
 per material and object-to-image (O2I) ratio, with the checkpoint of the highest
@@ -131,6 +131,7 @@ crop, shows that the weakness of the two metals is not only an effect of the rat
 The material ranking is compared with that of the 2025 study in
 Section~\ref{sec:discussion-material}.
 
+\FloatBarrier
 % ============================================================================
 \subsection{Where the Heatmap Importance Lies}
 \label{sec:results-divergence}
@@ -150,7 +151,7 @@ then over the 15 models of a ratio.
 Tab.~\ref{tab:centerfrac} gives both centre measures and their difference at every
 ratio, and Fig.~\ref{fig:centerfrac-ratio} plots the two curves.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Centre measure $c$ of both methods per ratio]{Centre measure $c$ of occlusion
 sensitivity ($c_{\mathrm{occ}}$, positive drops, grey fill) and Grad-CAM
@@ -185,7 +186,7 @@ the reference difference, with its $p$-value.}
 \end{tabular}
 \end{table}
 
-\begin{figure}[tbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{fig_centerfrac_vs_ratio.pdf}
 \caption[Centre measure $c$ against the O2I ratio]{Centre measure $c$ of (orange,
@@ -258,7 +259,7 @@ Section~\ref{sec:methodology-reference}). Tab.~\ref{tab:reference} lists these
 reference values for the box itself and at the resolution of each method, together
 with the reference gaps $c - c^{\mathrm{ref}}$ of both methods.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Reference values of $c$ per ratio]{Reference values of the centre measure
 $c$ per object-to-image (O2I) ratio, i.e., $c$ of a map that is uniform on the
@@ -365,20 +366,6 @@ only. At 90\% the background ring around $B_{90}$ is about 6.5 pixels wide, narr
 than one Grad-CAM cell and one occlusion step, so a map at 90\% cannot show importance
 lying outside the workpiece (paragraph \emph{Resolution limits at 90\% and 70\%} in
 Section~\ref{sec:methodology-resolution}).
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{same_13_black_plastic_2024-04-15-095336.pdf}
-\caption[One black-plastic photograph at five ratios]{One validation photograph of
-black plastic (2024-04-15-095336) cropped at the five object-to-image (O2I) ratios,
-each crop explained by the black-plastic model of its ratio. (Top) crop with the
-reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
-fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
-give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
-\label{fig:same-black}
-\end{figure}
-
 \paragraph{Black plastic}
 Fig.~\ref{fig:same-black} shows the photograph that is also the real example of
 Fig.~\ref{fig:bg-methods-real} and of the worked example in
@@ -394,20 +381,6 @@ Grad-CAM value stays above 0.5, however, so the spread into the background is a
 statement about this photograph, not about the model. The black parts of the learning
 factory seem salient for the black-plastic model without lowering its classification;
 Section~\ref{sec:discussion-material} relates this to the 2025 study.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{same_4_steel_metal_2024-04-11-103345.pdf}
-\caption[One steel photograph at five ratios]{One validation photograph of steel
-(2024-04-11-103345) cropped at the five object-to-image (O2I) ratios, each crop
-explained by the steel model of its ratio. (Top) crop with the reference square $B_r$
-(dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
-Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
-probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
-\label{fig:same-steel}
-\end{figure}
-
 \paragraph{Steel}
 In Fig.~\ref{fig:same-steel}, the steel photograph is classified with $p_1$ of 0.97,
 0.96, 0.89 and 0.89 from 90\% to 30\%, while the model at 10\% fails on this crop
@@ -423,20 +396,6 @@ model level, the Grad-CAM centre measure of steel is 0.58, 0.57, 0.68, 0.80 and 
 from 90\% to 10\%, so it rises as the ratio falls, opposite to the mean over the 15
 materials, while grey-patch occlusion stays below 0.5 at every ratio. Whether steel
 relies on the background therefore remains open.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\textwidth]{same_2_aluminium_metal_2024-04-15-100518.pdf}
-\caption[One aluminium photograph at five ratios]{One validation photograph of
-aluminium (2024-04-15-100518) cropped at the five object-to-image (O2I) ratios, each
-crop explained by the aluminium model of its ratio. (Top) crop with the reference
-square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey fill;
-(bottom) Gradient-weighted Class Activation Mapping (Grad-CAM), where ``flat map''
-marks a map that is zero everywhere. The panel titles give the probability $p_1$ of the
-positive class and the centre measure $c$. Maps are interpolated for display.}
-\label{fig:same-alu}
-\end{figure}
-
 \paragraph{Aluminium}
 The aluminium photograph of Fig.~\ref{fig:same-alu} is classified with $p_1$ of 0.93,
 0.97, 0.89, 0.60 and 0.63. From 90\% to 50\%, Grad-CAM marks the bright vertical
@@ -449,6 +408,45 @@ occlusion lies above 0.5 at every ratio (0.56 to 0.95 and 0.57 to 0.97;
 Section~\ref{sec:results-fill}).
 Grad-CAM gives 0.75, 0.75,
 0.59, 0.58 and 0.67 and thus lies on the workpiece at most ratios.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{same_13_black_plastic_2024-04-15-095336.pdf}
+\caption[One black-plastic photograph at five ratios]{One validation photograph of
+black plastic (2024-04-15-095336) cropped at the five object-to-image (O2I) ratios,
+each crop explained by the black-plastic model of its ratio. (Top) crop with the
+reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
+fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
+give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
+interpolated for display.}
+\label{fig:same-black}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{same_4_steel_metal_2024-04-11-103345.pdf}
+\caption[One steel photograph at five ratios]{One validation photograph of steel
+(2024-04-11-103345) cropped at the five object-to-image (O2I) ratios, each crop
+explained by the steel model of its ratio. (Top) crop with the reference square $B_r$
+(dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
+Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
+probability $p_1$ of the positive class and the centre measure $c$. Maps are
+interpolated for display.}
+\label{fig:same-steel}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{same_2_aluminium_metal_2024-04-15-100518.pdf}
+\caption[One aluminium photograph at five ratios]{One validation photograph of
+aluminium (2024-04-15-100518) cropped at the five object-to-image (O2I) ratios, each
+crop explained by the aluminium model of its ratio. (Top) crop with the reference
+square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey fill;
+(bottom) Gradient-weighted Class Activation Mapping (Grad-CAM), where ``flat map''
+marks a map that is zero everywhere. The panel titles give the probability $p_1$ of the
+positive class and the centre measure $c$. Maps are interpolated for display.}
+\label{fig:same-alu}
+\end{figure}
 
 Aluminium and steel have the lowest F1 at every ratio, yet neither shows a model-level
 Grad-CAM centre measure below 0.5. A low F1 is therefore not the same as a heatmap that
@@ -464,6 +462,7 @@ rises, partly because of the geometry, so the difference between the two methods
 as the workpiece shrinks and is clear at 10\%. By the detection rule of
 Section~\ref{sec:methodology-rq}, Grad-CAM detects the shift and occlusion does not.
 
+\FloatBarrier
 % ============================================================================
 \subsection{Robustness Checks}
 \label{sec:results-robustness}
@@ -611,6 +610,7 @@ ratio, and its small mismatch is accounted for by the reference values.
 None of the five checks changes the two parts of the headline; the agreement of the
 two methods at 90\% holds only for positive drops with the grey fill.
 
+\FloatBarrier
 % ============================================================================
 \subsection{Extended Training at 200 Epochs}
 \label{sec:results-200epoch}
@@ -620,7 +620,7 @@ Eq.~\eqref{eq:delta-f1} compares the best validation F1 of each 200-epoch run wi
 that of its own first 100 epochs (Section~\ref{sec:methodology-200epoch}).
 Tab.~\ref{tab:200epoch} summarises the results per ratio.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[200-epoch check per ratio]{Validation F1 after 100 epochs (final
 models) and best validation F1 within 200 epochs per object-to-image (O2I) ratio, mean
@@ -695,7 +695,7 @@ more than 0.1 at every ratio, which elsewhere happens only for brass at 70\% and
 plastic at 10\%, and black plastic gains nothing at four of the five ratios. The reading of these values is that of
 the paragraphs above.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[200-epoch gain for all 75 cells]{Gain $\Delta_{t,r}$ in validation F1 from 100
 to 200 epochs, taken within each 200-epoch run (Eq.~\eqref{eq:delta-f1}), per material
