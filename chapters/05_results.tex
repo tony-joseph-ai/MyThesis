@@ -381,6 +381,20 @@ Grad-CAM value stays above 0.5, however, so the spread into the background is a
 statement about this photograph, not about the model. The black parts of the learning
 factory seem salient for the black-plastic model without lowering its classification;
 Section~\ref{sec:discussion-material} relates this to the 2025 study.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{same_13_black_plastic_2024-04-15-095336.pdf}
+\caption[One black-plastic photograph at five ratios]{One validation photograph of
+black plastic (2024-04-15-095336) cropped at the five object-to-image (O2I) ratios,
+each crop explained by the black-plastic model of its ratio. (Top) crop with the
+reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
+fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
+give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
+interpolated for display.}
+\label{fig:same-black}
+\end{figure}
+
 \paragraph{Steel}
 In Fig.~\ref{fig:same-steel}, the steel photograph is classified with $p_1$ of 0.97,
 0.96, 0.89 and 0.89 from 90\% to 30\%, while the model at 10\% fails on this crop
@@ -396,6 +410,20 @@ model level, the Grad-CAM centre measure of steel is 0.58, 0.57, 0.68, 0.80 and 
 from 90\% to 10\%, so it rises as the ratio falls, opposite to the mean over the 15
 materials, while grey-patch occlusion stays below 0.5 at every ratio. Whether steel
 relies on the background therefore remains open.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{same_4_steel_metal_2024-04-11-103345.pdf}
+\caption[One steel photograph at five ratios]{One validation photograph of steel
+(2024-04-11-103345) cropped at the five object-to-image (O2I) ratios, each crop
+explained by the steel model of its ratio. (Top) crop with the reference square $B_r$
+(dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
+Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
+probability $p_1$ of the positive class and the centre measure $c$. Maps are
+interpolated for display.}
+\label{fig:same-steel}
+\end{figure}
+
 \paragraph{Aluminium}
 The aluminium photograph of Fig.~\ref{fig:same-alu} is classified with $p_1$ of 0.93,
 0.97, 0.89, 0.60 and 0.63. From 90\% to 50\%, Grad-CAM marks the bright vertical
@@ -409,33 +437,7 @@ Section~\ref{sec:results-fill}).
 Grad-CAM gives 0.75, 0.75,
 0.59, 0.58 and 0.67 and thus lies on the workpiece at most ratios.
 
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth]{same_13_black_plastic_2024-04-15-095336.pdf}
-\caption[One black-plastic photograph at five ratios]{One validation photograph of
-black plastic (2024-04-15-095336) cropped at the five object-to-image (O2I) ratios,
-each crop explained by the black-plastic model of its ratio. (Top) crop with the
-reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
-fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
-give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
-\label{fig:same-black}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth]{same_4_steel_metal_2024-04-11-103345.pdf}
-\caption[One steel photograph at five ratios]{One validation photograph of steel
-(2024-04-11-103345) cropped at the five object-to-image (O2I) ratios, each crop
-explained by the steel model of its ratio. (Top) crop with the reference square $B_r$
-(dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
-Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
-probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
-\label{fig:same-steel}
-\end{figure}
-
-\begin{figure}[p]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{same_2_aluminium_metal_2024-04-15-100518.pdf}
 \caption[One aluminium photograph at five ratios]{One validation photograph of
