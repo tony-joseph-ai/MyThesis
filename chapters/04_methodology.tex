@@ -480,8 +480,7 @@ earlier values of $c$ to within 0.0003. Each model draws its own sample, so the
 photographs of one material at 90\% are in general not the same as those at 10\%. The
 comparison across ratios is therefore made on averages over different photographs; a
 paired comparison on the same photograph at all five ratios is shown in
-Section~\ref{sec:results}.
-% point to the same-image subsection once it has its own label
+Section~\ref{sec:results-qualitative}.
 
 \paragraph{Occlusion sensitivity}
 \label{sec:methodology-occlusion-impl}
@@ -546,7 +545,7 @@ little on a workpiece with a uniform surface. All three fills were applied to th
 centre measure $c$ of Section~\ref{sec:methodology-reduction}. With the grey fill, this
 recomputation reproduces the values of the main analysis exactly. The test covers all
 750 analyses. The results are reported in
-Section~\ref{sec:results-robustness}.
+Section~\ref{sec:results-fill}.
 
 \paragraph{Grad-CAM}
 \label{sec:methodology-gradcam-impl}
@@ -562,7 +561,7 @@ cells of $G$ correspond to input positions 8 pixels apart, so $G$ has twice the 
 resolution of the occlusion map $D$. If the weighted sum has no positive entry, $G$ is
 zero everywhere. How such maps enter the centre measure is defined in
 Section~\ref{sec:methodology-reduction}, and how often they occur is reported in
-Section~\ref{sec:results-robustness}.
+Section~\ref{sec:results-degeneracy}.
 
 % ============================================================================
 \subsection{From Heatmap to a Single Number}
@@ -636,7 +635,7 @@ smallest drop and move $c$ away from 0.5; this case does not occur among the 750
 The min-max rule was the original computation of this thesis. The positive-drops rule
 was introduced as a correction during the analysis, when the floor was found to make
 the two methods not comparable on equal terms. The min-max values are reported as a
-robustness comparison in Section~\ref{sec:results-robustness}; every other occlusion
+robustness comparison in Section~\ref{sec:results-normalisation}; every other occlusion
 value of $c$ in this thesis uses positive drops.
 
 \paragraph{Upsampling}
@@ -830,7 +829,7 @@ counts the whole box. A box cut by the crop (Eq.~\eqref{eq:box-contained}) loses
 part that overflows, which lies outside $B_r$, so in the input the share at 90\% is
 0.96 on average. Since $c_{\mathrm{box}}$ changes fastest with $f$ at 90\%, the value
 computed for the analysed crops is 0.76 there, while at the other ratios it agrees with
-Eq.~\eqref{eq:c-ref-approx} to within 0.01 (Section~\ref{sec:results}). The same
+Eq.~\eqref{eq:c-ref-approx} to within 0.01 (Section~\ref{sec:results-reference}). The same
 spill of 6\% of the box falls into the 6,972 pixels outside $B_{90}$ but into the
 59,136 pixels outside $B_{10}$, so it lowers $c$ strongly at 90\% and hardly at all at
 10\%. A flat map still gives 0.5 at every ratio; what depends on $r$ is the value of
@@ -918,7 +917,7 @@ side for one crop, the photograph of Fig.~\ref{fig:bg-methods-real} at 90\%. The
 transitions of the interpolated maps are not present in the measurements. For this
 crop, the interpolation raises $c$ for positive-drops occlusion from 0.709 to 0.743,
 and for Grad-CAM only from 0.995 to 0.996. The effect of the interpolation on $c$ over
-all 750 analyses is reported in Section~\ref{sec:results-robustness}.
+all 750 analyses is reported in Section~\ref{sec:results-interpolation}.
 
 \begin{figure}[tbp]
 \centering
