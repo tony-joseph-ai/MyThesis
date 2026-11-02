@@ -192,8 +192,10 @@ the reference difference, with its $p$-value.}
 squares) occlusion sensitivity with positive drops and grey fill and (blue, circles)
 Gradient-weighted Class Activation Mapping (Grad-CAM) against the object-to-image (O2I)
 ratio. Each point is the mean over the 15 materials, each material the mean of 10
-validation crops; (bars) $\pm$ one standard error (SE), $n = 15$; (dotted) $c = 0.5$,
-the value of a flat map.}
+validation crops; (bars) $\pm$ one standard error (SE), $n = 15$; (dashed, thin) the
+reference value of each method, i.e., $c$ of a map that is uniform on the bounding box
+at the resolution of that method (Tab.~\ref{tab:reference}); (dotted) $c = 0.5$, the
+value of a flat map.}
 \label{fig:centerfrac-ratio}
 \end{figure}
 
@@ -290,7 +292,8 @@ Reference gap, Grad-CAM  & $+0.015$ & $-0.137$ & $-0.258$ & $-0.338$ & $-0.581$ 
 Every reference value rises as the ratio falls: the box itself from 0.757 to 0.992,
 the occlusion reference from 0.569 to 0.956, the Grad-CAM reference from 0.721 to
 0.988, and the receptive-field variant from 0.598 to 0.967. A map that stayed on the
-workpiece would thus reach a higher $c$ at 10\% than at 90\%. The fall of
+workpiece would thus reach a higher $c$ at 10\% than at 90\%, as the dashed lines of
+Fig.~\ref{fig:centerfrac-ratio} show. The fall of
 $c_{\mathrm{cam}}$ from 0.737 to 0.407 goes against this rise, so it can be
 explained neither by the geometry of the square nor by the resolution of Grad-CAM,
 even at the 38-pixel receptive field. The Grad-CAM reference gap accordingly falls from $+0.015$ at
@@ -331,9 +334,8 @@ and 50\% do.
 \paragraph{Lower ratios alone}
 Over 50\%, 30\% and 10\% alone, the slope of the method difference is $-0.0911$
 ($p = 0.003$) and that of $c_{\mathrm{cam}}$ is $+0.0664$ ($p = 0.0039$), both clear.
-The slope of $c_{\mathrm{occ}}$, $-0.0248$ ($p = 0.021$), is not evidence on its own,
-and the F1 slope of $+0.0190$ ($p = 0.001$) is clear, as in
-Section~\ref{sec:results-primary-table}.
+The slope of $c_{\mathrm{occ}}$, $-0.0248$ ($p = 0.021$), is not evidence on its
+own.
 
 \paragraph{Second part of the research question}
 By the rule of Section~\ref{sec:methodology-rq}, a method detects the shift if its
@@ -452,6 +454,15 @@ Aluminium and steel have the lowest F1 at every ratio, yet neither shows a model
 Grad-CAM centre measure below 0.5. A low F1 is therefore not the same as a heatmap that
 lies on the background. The possible reasons for the weakness of the two metals are
 taken up in Section~\ref{sec:discussion-material}.
+
+\paragraph{Summary of the section}
+Classification degrades as the workpiece takes up less of the crop, mostly below 50\%.
+The Grad-CAM centre measure falls although every reference value rises, so the fall
+comes neither from the geometry of the square nor from the resolution of the method, yet
+it never lies clearly below the no-preference level of 0.5. The occlusion centre measure
+rises, partly because of the geometry, so the difference between the two methods grows
+as the workpiece shrinks and is clear at 10\%. By the detection rule of
+Section~\ref{sec:methodology-rq}, Grad-CAM detects the shift and occlusion does not.
 
 % ============================================================================
 \subsection{Robustness Checks}
