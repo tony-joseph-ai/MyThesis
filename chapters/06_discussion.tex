@@ -129,7 +129,102 @@ architecture is trained on crops of different ratios.
 \subsection{Material-Dependent Effects}
 \label{sec:discussion-material}
 
-[6.2 to follow]
+\paragraph{Comparison with the 2025 study}
+The mean test F1 of each material over the five ratios (Tab.~\ref{tab:ovr-full-results})
+adds values to the comparison of Section~\ref{sec:related-work-fischertechnik} with the
+2025 study of T. Schneidereit, Gohrenz and Breuß~\cite{schneidereitYOLOv8}. Aluminium
+(0.492, 14th of 15) and steel (0.483, 15th), problematic there, are the two weakest
+materials here at every ratio, and brass (0.864, 6th) was hard in neither study. Red
+plastic (0.688, 12th) and red AG (0.684, 13th), both problematic there, are the weakest
+materials apart from the metals here. Of the four materials learned very well there, yellow
+plastic (0.910, 3rd) and white plastic (0.878, 5th) are strong here, and orange AG
+(0.794, 9th) and light wood (0.760, 10th) lie in the middle. Two materials differ. Black
+plastic, the hardest workpiece there, has the highest mean here (0.956), which may partly
+come from task and training: mAP@[.5:.95] rewards boxing the workpiece among the black
+parts of the learning factory, F1 on centred crops scores only the material decision,
+and the 2025 models were trained with 13 augmenters, the models here without
+augmentation. Grey plastic, not among the problematic materials there, is 11th here (0.717), possibly because the two metals, which resemble it as the 2025 study
+notes, are hard negatives for its one-vs-rest model; this was not tested.
+
+\paragraph{Reading single materials}
+The heatmap values of single materials are means over the 10 validation crops of one
+model and are indicative only. Like the means in Section~\ref{sec:discussion-answer},
+they are read against the reference value of each ratio, which is nearly the same for
+all materials (standard deviation over the 15 models at most about 0.03). Since only crops of
+the target material are explained (Section~\ref{sec:methodology-sampling}), the
+heatmaps cannot show why a negative crop is misclassified.
+
+\paragraph{Black plastic}
+The Grad-CAM centre measure of black plastic stays above 0.5 at every ratio (0.82,
+0.62, 0.65, 0.66 and 0.68 from 90\% to 10\%), so the background never outweighs the
+workpiece, but from 70\% on it lies well below the reference value, so part of the
+evidence seems to leave the box. Fig.~\ref{fig:same-black}
+shows where it goes in one photograph, to the dark structure above the workpiece, while
+the crop is still classified with $p_1 \ge 0.97$. This fits the suggestion of the 2025
+study that the black parts of the learning factory matter for black plastic, although
+here they do not lower the classification.
+
+\paragraph{Steel}
+Steel is weak already at 90\% (F1 0.516) and weakest at 10\% (0.286). Training length
+explains little of this, since its 200-epoch gain of $+0.028$ is typical and its
+validation loss is flat from about epoch 40 (Fig.~\ref{fig:loss-curves}). Its Grad-CAM
+centre measure is higher at 10\% than at 90\% (0.73 against 0.58), opposite to the mean, but it stays well below its reference
+value at every ratio, so the rise does not show the evidence moving onto the workpiece.
+Grey-patch
+occlusion lies below 0.5 at every ratio, but at 50\%, 30\% and 10\% this is a fill
+artefact, since the black patch (0.72, 0.88, 0.91) and the blurred patch (0.89, 0.78,
+0.80) both favour the workpiece (Section~\ref{sec:results-fill}). At 90\% and 70\% the
+two other fills disagree (black 0.62 and 0.34, blur 0.39 and 0.74). Whether steel relies
+on the background therefore remains open.
+
+Two causes of its weakness are possible, and neither is tested. The 2025 study names the
+reflecting characteristic as a relevant factor in general. For steel, a polished surface
+shows parts of its surroundings, which would fit Grad-CAM marking the bright rim in
+Fig.~\ref{fig:same-steel} at 70\% to 30\%. In the
+one-vs-rest setting, negative crops that look like steel may also be hard to reject,
+since depending on the light, steel, aluminium and grey plastic may resemble each other,
+as the 2025 study notes. Which negatives the steel models mistake for steel was not
+analysed, and the heatmaps, computed only on steel crops, cannot show it.
+
+\paragraph{Aluminium}
+Aluminium is about as weak (0.492) but partly undertrained, with the largest 200-epoch
+gain of all materials ($+0.131$, Section~\ref{sec:results-200epoch}).
+At 90\%, its Grad-CAM centre measure (0.75) is about the value of a map on the box
+(0.72), while its F1 is already only 0.613, so at 90\% the evidence for its own crops
+does not lie in the background. Below 90\%, its centre measure stays well below the rising
+reference value (0.75, 0.59, 0.58 and 0.67 from 70\% to 10\%), so part of its evidence
+leaves the box there as well. Occlusion shows no clear preference with the grey patch
+and gives values above 0.5 with the other two. Besides the training
+length, two explanations are possible, neither of them tested: a reflecting surface whose
+appearance changes with its surroundings, a loose analogue of the texture bias of
+Geirhos et al.~\cite{geirhos2019texture}, whose networks were trained on ImageNet, far
+larger and more varied than the roughly 1,700 training crops per model here; and the resemblance
+to steel and grey plastic, which makes these two materials hard negatives. A cause in
+the background is possible too, since aluminium also occurs in the learning factory, in
+the supports of the suction pads, and might make negative crops look like aluminium.
+Following the caveat of Le et al.~\cite{le2025shortcut} on under-learned models,
+steering the evidence towards the workpiece may not help aluminium
+(Section~\ref{sec:discussion-future}).
+
+\paragraph{Material versus ratio}
+Both metals have a low F1 already at 90\%, where the background takes up little of the
+crop, so their weakness is not only an effect of the ratio, and per material the changes
+do not follow the mean (Section~\ref{sec:discussion-answer}). Black plastic and steel
+take opposite courses of $c$ over the ratios, and since the reference values are nearly
+the same for all materials, this difference between them does not come from the
+geometry. The course of the evidence thus seems to depend on the material as
+well as on the ratio, consistent with Adhikari et al.~\cite{adhikari2024lostincontext},
+who find that object size alone does not predict how much a model relies on context. As
+neither metal has a model-level Grad-CAM centre measure below 0.5, a low F1 is also not
+the same as a heatmap on the background.
+
+\paragraph{Reliability of Grad-CAM by material}
+The flat Grad-CAM maps are concentrated in a few materials, above all yellow plastic and
+light wood, and four models have only flat maps (Section~\ref{sec:results-degeneracy}),
+so the Grad-CAM values of these two materials say little. Yellow plastic enters the
+correlation of Section~\ref{sec:discussion-answer} with such a value at 90\%. Without
+it, the correlation is $r = -0.28$ ($p = 0.34$, $n = 14$), so still no link is shown.
+Why some materials produce flat maps more often was not examined.
 
 % ============================================================================
 \subsection{Limitations}
