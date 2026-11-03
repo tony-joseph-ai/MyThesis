@@ -110,10 +110,10 @@ The fall is not spread evenly over the ratios. From 90\% to 50\% the mean is nea
 flat (0.813, 0.799, 0.796), and the paired change of $-0.017 \pm 0.014$
 ($t(14) = -1.21$, $p = 0.25$, a fall in 9 of 15 materials) shows no difference. From
 50\% to 10\% the mean falls clearly, by $-0.076 \pm 0.018$ ($t(14) = -4.12$,
-$p = 0.001$), in 13 of 15 materials. The change from 90\% to 50\% is also within the
-run-to-run variation of the validation F1, about 0.020 per run, that
-Section~\ref{sec:results-200epoch} estimates from the 27 cells trained twice, while the
-fall from 50\% to 10\% is about four times larger.
+$p = 0.001$), in 13 of 15 materials, about four times the change from 90\% to 50\%.
+A change of $-0.017$ in a single cell would also lie within the run-to-run variation of
+the validation F1, about 0.020 per run, that Section~\ref{sec:results-200epoch}
+estimates from the 27 cells trained twice.
 Most of the decline therefore lies below 50\%. The mean ROC-AUC stays between 0.970 and
 0.982 at every ratio. The models thus continue to rank most positive crops above most
 negative ones, while the F1 at the decision threshold $p_1 = 0.5$ falls.
@@ -212,9 +212,9 @@ As the ratio falls, $c_{\mathrm{cam}}$ falls at every step, from 0.737 through 0
 0.672 and 0.627 to 0.407 at 10\%. The paired change from 90\% to 10\% is
 $-0.330 \pm 0.079$ ($t(14) = -4.17$, $p = 0.0009$), with a fall in 13 of 15
 materials, and the slope is $+0.0377$ per 10 percentage points ($p = 0.0012$),
-positive in 14 of 15. Both are clear. By Eq.~\eqref{eq:odds}, a pixel inside the
-reference square carries on average 2.80 times the Grad-CAM importance of a pixel
-outside it at 90\%, and 0.69 times at 10\%.
+positive in 14 of 15. Both are clear. At the mean values of 0.737 and 0.407,
+Eq.~\eqref{eq:odds} gives $m_{\mathrm{in}}/m_{\mathrm{out}} = 2.80$ at 90\% and 0.69
+at 10\%.
 
 \paragraph{Occlusion}
 Occlusion moves the other way. Its centre measure rises from 0.728 through 0.781,
@@ -376,9 +376,11 @@ structure above it from 50\% on ($c = 0.49$, 0.46 and 0.47), most visibly at 30\
 10\%. At the model level, the centre measure of black plastic is 0.81, 0.93, 0.93,
 0.97 and 0.94 for occlusion and 0.82, 0.62, 0.65, 0.66 and 0.68 for Grad-CAM from 90\%
 to 10\%. The two methods agree at 90\% and differ at every lower ratio, which makes
-black plastic the clearest single-material picture of the method difference. The mean
-Grad-CAM value stays above 0.5, however, so the spread into the background is a
-statement about this photograph, not about the model. The black parts of the learning
+black plastic the clearest single-material picture of the method difference. The
+model-level Grad-CAM value stays above 0.5, so the background never outweighs the
+workpiece, but from 70\% on it lies well below the reference value of
+Tab.~\ref{tab:reference}, so part of the evidence seems to leave the box at the model
+level too; where it goes is shown only by this photograph. The black parts of the learning
 factory seem salient for the black-plastic model without lowering its classification;
 Section~\ref{sec:discussion-material} relates this to the 2025 study.
 
@@ -435,7 +437,9 @@ no clear preference for workpiece or background; with the black and the blurred 
 occlusion lies above 0.5 at every ratio (0.56 to 0.95 and 0.57 to 0.97;
 Section~\ref{sec:results-fill}).
 Grad-CAM gives 0.75, 0.75,
-0.59, 0.58 and 0.67 and thus lies on the workpiece at most ratios.
+0.59, 0.58 and 0.67, so it favours the workpiece at every ratio; at 90\% this is about
+the reference value of Tab.~\ref{tab:reference}, and from 70\% on it lies well below
+it.
 
 \begin{figure}[tbp]
 \centering
@@ -541,8 +545,7 @@ black patch also lowers blue plastic (0.31) and blue AG (0.32), which do not res
 it, so resemblance is not the only cause. No
 fill is neutral for every workpiece. For steel, the grey-patch value is a fill artefact
 at 50\%, 30\% and 10\%, where the black patch gives 0.72, 0.88 and 0.91 and the
-blurred patch 0.89, 0.78 and 0.80, i.e., both place the evidence of steel on the
-workpiece. At 90\% and 70\%, the other two fills disagree with each other (black 0.62
+blurred patch 0.89, 0.78 and 0.80, i.e., both favour the workpiece for steel. At 90\% and 70\%, the other two fills disagree with each other (black 0.62
 and 0.34, blur 0.39 and 0.74), so no statement about steel is possible there. This is
 the steel result already stated in Section~\ref{sec:background-occlusion}. For
 aluminium, the black and the blurred patch give values above 0.5 at every ratio, from
@@ -682,10 +685,9 @@ so there is no systematic shift, with a mean absolute difference of 0.018 and a
 standard deviation of the difference of 0.028, i.e., about 0.020 per run. The largest
 difference is 0.089 (brass at 70\%), and the two runs give the same value in 3 of the
 27 cells. A single changed decision among 25 positive crops changes the recall by about
-0.04. Against this variation, which is measured on the validation F1, the change
-of the test F1 from 90\% to 50\%
-($-0.017$) lies within the noise, while the fall from 50\% to 10\% ($-0.076$) is about
-four times larger. This is a partial estimate from 27 cells and two environments, not a
+0.04. This variation concerns a single cell: a change as large as the mean change of
+the test F1 from 90\% to 50\% ($-0.017$) would lie within it, whereas the mean over the
+15 materials is judged by the paired tests of Section~\ref{sec:results-primary-table}. This is a partial estimate from 27 cells and two environments, not a
 study over several seeds, and the variation between seeds remains unestimated, as
 stated in Section~\ref{sec:methodology-training}.
 
