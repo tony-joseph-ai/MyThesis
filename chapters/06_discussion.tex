@@ -1,201 +1,150 @@
 % !TEX root = ../main.tex
-\section{General Discussion and Conclusion}
+\section{Discussion and Conclusion}
 \label{sec:discussion}
 
+This chapter answers the research question from the results of
+Section~\ref{sec:results}, discusses the materials that depart from the average, and
+closes with the limitations of the study, possible future work and a conclusion.
+
+% ============================================================================
 \subsection{Answering the Research Question}
 \label{sec:discussion-answer}
 
-This thesis asked at what object-to-image ratio the factory background begins to dominate
-a material classifier's decision, and whether explainability methods can detect that
-shift. The answer this thesis provides rests on two layers of evidence: what happens to
-raw classification accuracy as the ratio shrinks, and what the explainability methods say
-about \emph{why}. The two explainability methods applied here do not agree with each
-other, and that disagreement is itself informative rather than a failure to reach a
-conclusion.
+The research question has two parts: at which O2I ratio the complex background of the
+learning factory begins to dominate the classification decision, and whether
+explainability methods can detect this shift. Section~\ref{sec:methodology-rq} sets out
+how the results are read for each part, and the answer below follows that reading.
 
-At the classification level, the answer is direct: mean test-set F1 across all 15
-materials declines from $0.820$ at a $90\%$ O2I ratio to $0.720$ at a $10\%$ ratio
-(Table~\ref{tab:ovr-full-results}, Section~\ref{sec:results-primary-table}), and the
-decline accelerates rather than staying linear as the ratio shrinks. Since the only thing
-occupying the growing share of each frame as the ratio falls is the factory background,
-this decline is direct evidence that the background increasingly interferes with
-classification as the object shrinks -- confirming the effect the research question
-anticipated, before any explainability method is even applied. This effect is not uniform
-across materials, however: Section~\ref{sec:discussion-material} discusses how the two
-bare metals depart from this pattern in materially different ways.
+\paragraph{Classification}
+Averaged over the 15 materials, the test F1 falls from 0.813 at an O2I ratio of 90\% to
+0.720 at 10\% (Tab.~\ref{tab:ovr-full-results}), and it falls in 14 of the 15
+materials. Most of this fall lies below 50\%. From 90\% to 50\% the mean changes by
+$-0.017$, and the paired test shows no difference ($p = 0.25$), whereas from 50\% to
+10\% it falls clearly, by 0.076 ($p = 0.001$). After 200 epochs the validation F1
+still falls with the ratio, from 0.884 at 90\% to 0.841 at 10\%, against 0.854 to
+0.794 after 100 epochs, so the training length explains a small part of the decline,
+not the decline itself.
 
-Grad-CAM answers the explainability half of the question directly and in the expected
-direction: its
-$\text{center\_frac}$ falls steadily from $0.709$ at a $90\%$ O2I ratio to $0.407$ at a
-$10\%$ ratio (Table~\ref{tab:centerfrac}), indicating that as the object shrinks, the
-network's internal evidence measurably shifts away from the object and toward the
-background. This is direct, quantitative evidence that the background does come to
-dominate the classification decision as the object shrinks -- confirming, from the
-model's-own-gradient perspective, the effect the research question anticipated.
+\paragraph{Two caveats}
+The mean ROC-AUC stays between 0.970 and 0.982 at every ratio, so the models still rank
+most positive crops above most negative ones while the F1 at the threshold $p_1 = 0.5$
+falls. The decline of the F1 also does not isolate the background. With a fixed input
+of $256 \times 256$ pixels, the side of a square with the area of the box shrinks from
+about 243 pixels at 90\% to about 81 pixels at 10\%, i.e., from about 6.4 to about 2.1
+times the 38-pixel receptive field of the fourth convolutional layer (paragraph
+\emph{What changes with the ratio} in Section~\ref{sec:methodology-crops}). The F1
+decline fits a growing influence of the background, but it cannot separate that
+influence from the smaller scale of the workpiece.
 
-Occlusion sensitivity, however, shows the opposite trend, and Section~\ref{sec:results-divergence}
-argues this is not a contradiction but a demonstration of a real, structural limitation:
-patch-based occlusion is poorly suited to detecting reliance on \emph{distributed},
-repetitive background, because removing any single patch of a large, redundant background
-leaves the network's evidence largely intact elsewhere in the frame. The second half of
-the answer to the research question, then, is that \emph{not every} explainability method
-can detect this shift -- whether a given method can depends on whether its underlying
-mechanism is holistic (like Grad-CAM) or strictly local (like occlusion sensitivity), which
-is itself a finding worth reporting rather than a limitation to be hidden.
+\paragraph{Where the evidence lies}
+The Grad-CAM centre measure falls at every step, from 0.737 at 90\% to 0.407 at 10\%
+(Tab.~\ref{tab:centerfrac}). At these mean values, Eq.~\eqref{eq:odds} gives
+$m_{\mathrm{in}}/m_{\mathrm{out}} = 2.80$ and 0.69. Since every reference value rises as
+the ratio falls (Tab.~\ref{tab:reference}), the fall can come neither from the geometry
+of the square nor from the resolution of Grad-CAM, and it is read as evidence moving
+from the workpiece into the background. Its largest step, from 30\% to 10\%, lies in
+the same interval as the largest step of the F1. This is a description of the two
+curves, not a tested result (Section~\ref{sec:methodology-tests}).
 
-This two-part, method-dependent answer is not something Pawlowski et
-al.~\cite{pawlowski2019needles} -- the paper that originally frames the O2I ratio as a
-formal variable (Section~\ref{sec:related-work-o2i}) -- anticipate, because their work
-does not use any explainability method at all: they characterise the O2I ratio's effect
-purely through classification accuracy and architectural choices (receptive field size,
-pooling operation), establishing \emph{that} a generalisation threshold exists as the
-ratio shrinks without asking \emph{why} in terms of what the network attends to. This
-thesis's classification-level finding (mean F1 declining from $0.820$ to $0.720$) is, in
-that sense, a direct extension of Pawlowski et al.'s threshold effect to a new, real-world,
-complex-background setting rather than their controlled MNIST-derived and histopathology
-benchmarks; the explainability half of the answer above -- that whether the shift is even
-\emph{visible} depends on which method is asked -- is a genuinely new contribution this
-thesis makes on top of that prior work, not something their accuracy-only framing could
-have revealed either way.
+Under the rule of Section~\ref{sec:methodology-rq}, the background outweighs the
+workpiece only where $c$ lies clearly below 0.5, and this holds at no ratio for either
+method. At 10\%, Grad-CAM is below 0.5 on average and in 9 of the 15 materials, but not
+clearly ($t(14) = -1.36$), and the same holds without the flat maps (0.363,
+$t(14) = -1.64$). The criterion is strict by design. At 10\% the region outside the
+reference square has about nine times its area, so the background holds more of the
+total importance whenever $c$ is below about 0.9. By that total, even occlusion would
+show the background dominating at 10\% on average, since its mean centre measure of
+0.884 lies below 0.9 although it strongly favours the square per pixel. The total depends on the area of
+the square and would change with the ratio even for a flat map, which is why the
+per-pixel measure is used (Section~\ref{sec:methodology-rq}). The answer to the first
+part of the research question is therefore a gradual shift of the evidence towards the
+background over the five ratios, without a ratio at which the background clearly
+dominates, although the classification suffers mainly below 50\%.
 
+\paragraph{Detection of the shift}
+By the detection rule of Section~\ref{sec:methodology-rq}, Grad-CAM detects the shift:
+its centre measure changes by $-0.330$ from 90\% to 10\% ($t(14) = -4.17$) while the
+test F1 changes by $-0.093$ ($t(14) = -4.76$). Occlusion sensitivity does not, since
+its centre measure rises from 0.728 to 0.884. The rise does not show that the occlusion
+evidence stays on the workpiece. The occlusion reference value rises faster, from 0.569
+to 0.956, so the reference gap of occlusion falls from $+0.159$ at 90\% to about zero or
+below from 50\% on. This fall is at most an indirect sign of a shift, since the
+reference gaps are not tested as trends (Section~\ref{sec:methodology-refgap}).
+
+The two methods agree at 90\% and then move apart. The method difference is clear at
+10\% (0.477) and as a slope over the five ratios, and at 10\% the difference beyond the
+reference is 0.509, so the different resolutions of the two methods do not produce it
+(Section~\ref{sec:results-reference}). Grad-CAM thus detects the shift and occlusion
+sensitivity, the method specified for this thesis, does not, and whether a shift of the
+evidence is visible depends on the method used to look for it. None of the five checks of
+Section~\ref{sec:results-robustness} changes this result. The agreement at 90\% does
+not hold under all of them: it holds only for positive drops with the grey fill, while
+with min-max normalisation or a blurred patch occlusion lies clearly below Grad-CAM at
+90\%.
+
+\paragraph{Why the two methods answer differently}
+Section~\ref{sec:background-comparison} gives the reason why the two methods can
+disagree. If the background holds many similar cues, like a room full of clocks,
+covering one of them with a patch changes the score little, while Grad-CAM marks all of
+them at once. The results add two points to this. At 10\% the workpiece fits into a
+reference square of about 81 pixels, and one $32 \times 32$ patch covers about 40\% of
+its width, so a few patches remove most of the workpiece and the drops concentrate
+there. Together with the rising reference value, this would explain why the occlusion
+centre measure even rises as the ratio falls. The fill of the patch, in contrast, cannot
+explain the average divergence, since the divergence appears with the grey, the black
+and the blurred patch alike (Section~\ref{sec:results-fill}); the fill matters for
+single workpieces (Section~\ref{sec:discussion-material}). The redundancy explanation
+remains a hypothesis. The thesis measures that the methods diverge, not why. The toy of
+Section~\ref{sec:background-comparison} shows only the ingredients, and neither map is
+ground truth for what the model uses. A direct test would replace the whole background
+at once instead of one patch (Section~\ref{sec:discussion-future}).
+
+\paragraph{On average, not per material}
+The detection rule compares means over the 15 materials. It shows that the mean F1 and
+the mean Grad-CAM centre measure fall together, not that the materials whose
+classification suffers most are those whose evidence moves most, and per material no
+such link is shown. Over the 15 materials, the change from 90\% to 10\% of the test F1
+(Tab.~\ref{tab:ovr-full-results}) and that of the per-model Grad-CAM centre measures
+behind Tab.~\ref{tab:centerfrac} give a Pearson correlation of $r = -0.20$
+($p = 0.47$) and a Spearman rank correlation of $\rho = -0.14$ ($p = 0.63$). Steel
+loses most F1, 0.230, while its Grad-CAM centre measure rises by 0.148, aluminium loses
+0.224 while its centre measure falls by only 0.074, and blue AG has the largest
+Grad-CAM fall, 0.827, with almost no loss of F1 (0.028). Grad-CAM thus shows that the
+evidence shifts towards the background as the background grows, not that this shift is
+why a given material is misclassified (Section~\ref{sec:discussion-material}).
+
+\paragraph{Relation to earlier work}
+The gradual decline of the F1, without a fall to chance, fits the results of Pawlowski
+et al.~\cite{pawlowski2019needles} for ratio ranges that cover those studied here
+(Section~\ref{sec:related-work-o2i}). Unlike their saliency maps, which fail where the
+classifier fails, the Grad-CAM evidence here moves away from the workpiece while the
+classification declines only moderately and the models still rank the crops well
+(mean ROC-AUC of at least 0.970). Xiao et al.~\cite{xiao2021noise} showed that the
+background can carry evidence for a class, so evidence in the background is not by
+itself an error. Their further finding, that more accurate models exploit the
+background more, compares different architectures on the same images, whereas here one
+architecture is trained on crops of different ratios.
+
+% ============================================================================
 \subsection{Material-Dependent Effects}
 \label{sec:discussion-material}
 
-The Grad-CAM degeneracy analysis (Section~\ref{sec:results-degeneracy}) surfaced a
-secondary finding worth discussing in its own right: materials differ substantially in how
-often Grad-CAM produces a usable heatmap at all, from $0\%$ degeneracy for black plastic to
-$74\%$ for yellow plastic. This suggests that Grad-CAM's reliability as an explainability
-tool is not uniform across material appearance -- plausibly related to how strongly a
-material's surface drives activation in the final convolutional layer -- and that
-per-material Grad-CAM results should be read with this variation in mind, rather than
-treating the aggregate trend in Table~\ref{tab:centerfrac} as equally reliable for every
-material.
+[6.2 to follow]
 
-A second, and arguably more consequential, material-dependent effect is visible directly
-in the primary classification results (Section~\ref{sec:results-primary-table},
-Table~\ref{tab:ovr-full-results}): the two bare, reflective metals, aluminium and steel,
-are the weakest performers in the entire study at every O2I ratio, including $90\%$,
-where background interference should in principle be minimal. The qualitative overlay
-evidence in Section~\ref{sec:results-qualitative} shows that these two materials fail for
-two distinct underlying reasons despite similarly poor F1 scores. Steel's occlusion
-sensitivity and Grad-CAM maps place the network's evidence \emph{outside} the object, in
-the surrounding background, even at a $90\%$ ratio (Figure~\ref{fig:overlay-steel-r90}) --
-a direct qualitative demonstration of background dominance occurring independently of the
-O2I ratio, which the ratio-only framing of the research question does not, by itself,
-anticipate. Aluminium's overlays, by contrast, stay concentrated on the object at both
-ratios examined (Figures~\ref{fig:overlay-alu-r90} and~\ref{fig:overlay-alu-r10}), which
-points instead toward an unreliable object-level signal -- plausibly the object's own
-mirror-like surface reflecting its surroundings and thereby varying in appearance from
-crop to crop -- rather than the model ignoring the object outright. Both are consistent
-with the material being a bare, unpainted metal rather than a painted plastic or acrylic,
-suggesting that surface reflectivity is a material property that can defeat reliable
-classification through (at least) two different mechanisms, only one of which is the
-background-dominance effect this thesis was originally designed to study. This is a
-concrete illustration of why material identity matters as a variable in its own right,
-not only as 15 repetitions of the same ratio experiment.
-
-Steel and aluminium's two distinct failure modes map cleanly onto two separate findings in
-the wider literature (Section~\ref{sec:related-work-o2i}), rather than being an unexplained
-peculiarity of this dataset. Steel's overlays placing evidence in the background even at a
-$90\%$ ratio is a single-model, single-class instance of the same phenomenon Xiao et
-al.~\cite{xiao2021noise} demonstrate at the level of whole ImageNet classifiers: a network
-can and does extract usable classification evidence directly from background pixels, not
-merely tolerate their presence. Aluminium's case is better read through Geirhos et
-al.~\cite{geirhos2019texture}'s texture-versus-shape framing: its overlays stay correctly
-located on the object at every ratio examined, so this is not a spatial background-reliance
-failure in Xiao et al.'s sense, but is consistent with a texture-level failure -- a
-reflective surface whose local appearance (colour, highlight position, apparent
-brightness) varies with whatever it happens to be reflecting, making it an unstable
-\emph{texture} cue even when correctly localised. Read together, the two metals in this
-thesis are not two independent anomalies but two separate, previously-documented failure
-modes (spatial background reliance and texture instability) converging on the same
-underlying material property: surface reflectivity.
-
-This material-dependent effect also offers a direct point of comparison against the
-advisers' own prior detection study on this exact dataset
-(Section~\ref{sec:related-work-fischertechnik}). Schneidereit et
-al.~\cite{schneidereitYOLOv8} report the bare metals as similarly difficult to detect,
-which this thesis's classification results replicate closely and, via the overlay
-evidence above, now partially explain at the pixel level. Their reported hardest
-materials overall, however, were black plastic and the red-toned materials, attributed to
-colour overlap with the factory background -- a finding this thesis's own primary results
-(Table~\ref{tab:ovr-full-results}) do \emph{not} replicate: black plastic is consistently
-one of the strongest performers here, and the reds sit in the unremarkable middle of the
-ranking. Section~\ref{sec:related-work-fischertechnik} argues this divergence is best
-explained by the difference between whole-scene detection and object-centred,
-ratio-controlled classification: a colour clash with nearby background structure, unlike a
-reflective material's dependence on whatever surrounds it, is a property of the
-\emph{scene}, not of the material's own surface, and cropping tightly around the object
-removes most of it. The metals replicate because their difficulty travels with the
-material; black plastic and the reds do not, because their difficulty in the advisers'
-study travelled with the surrounding scene instead.
-
+% ============================================================================
 \subsection{Limitations}
 \label{sec:discussion-limitations}
 
-Three limitations are reported explicitly here, each investigated directly during the
-project rather than discovered after the fact.
+[6.3 to follow]
 
-First, the Grad-CAM degeneracy discussed in Section~\ref{sec:results-degeneracy} means
-that roughly a quarter of all Grad-CAM analyses fall back to a neutral, uninformative
-value; although Section~\ref{sec:results-degeneracy} shows this does not manufacture the
-aggregate trend, it does add noise to the per-image and per-material estimates, and a
-Grad-CAM variant less prone to this failure mode (for example, one targeting an earlier or
-different feature map) could sharpen the findings in future work.
-
-Second, the steel metal ratio-70 result in the 200-epoch supplementary investigation
-(Table~\ref{tab:200epoch}, Section~\ref{sec:results-200epoch}) is a documented
-reproducibility caveat: that specific 200-epoch training run underperformed the original
-100-epoch baseline from early in training, most plausibly due to GPU-level run-to-run
-numerical noise rather than any effect of extended training itself. This is reported
-transparently with the caveat attached rather than smoothed over, but it does mean that
-single-run F1 values in this thesis (as is standard for a project of this scope) do not
-capture run-to-run variance; repeating key runs with multiple seeds would be a natural
-extension.
-
-Third, both explainability analyses (Section~\ref{sec:results-divergence}) were computed
-on 10 sampled images per model from the validation split, consistent with the
-project's split protocol (Section~\ref{sec:methodology-split}) of reserving the test split
-exclusively for final reported classification performance. The explainability findings
-should therefore be read as characterising model behaviour on validation-distribution
-images; extending the same analysis to the test split would be a natural robustness check
-before treating the divergence finding as fully final.
-
+% ============================================================================
 \subsection{Future Work}
 \label{sec:discussion-future}
 
-Beyond completing the contextualisation against the remaining related-work papers
-(Section~\ref{sec:related-work}), one item that was previously listed here as candidate
-future work has since been completed rather than left open: extending the 200-epoch
-supplementary investigation from the three materials checked first to the remaining 12,
-raised during project supervision, was carried out and is now reported in full in
-Section~\ref{sec:results-200epoch-full}. A genuine remaining extension suggested by that
-result is targeted retraining: since aluminium metal is now confirmed as the one material
-substantially undertrained at 100 epochs (mean $\Delta = +0.143$ across ratios,
-Section~\ref{sec:results-200epoch-full}), the primary result set could, in principle, be
-strengthened by retraining aluminium's five primary models specifically at a higher epoch
-count while leaving the other 14 materials' already-converged 100-epoch models untouched.
-This is not pursued in this thesis, since it would mean the primary result table
-(Table~\ref{tab:ovr-full-results}) mixes two different training configurations across
-materials, which is a harder result to defend cleanly than a single, uniform, clearly
-documented configuration applied to all 15 materials with a transparent supplementary
-check attached -- but it is recorded here as a reasonable next step if aluminium's
-classification accuracy specifically becomes important to improve in future work on this
-dataset.
+[6.4 to follow]
 
-Repeating the occlusion sensitivity analysis with a different patch size or stride (for
-example $16\times16$ instead of $32\times32$) was considered as a possible robustness
-check on the divergence finding in Section~\ref{sec:results-divergence}, testing whether a
-finer patch grid narrows the gap with Grad-CAM by better detecting distributed background
-reliance. It is not pursued as an open action item here: Section~\ref{sec:methodology-occlusion-impl}
-sets out, in detail, the reasoning behind the $32\times32$/stride-16 configuration actually
-used, and that documented reasoning -- rather than an untested alternative configuration --
-is treated as the methodological justification for the results reported in this thesis. A
-patch-size sweep remains a legitimate, low-cost extension if reviewers request it, but is
-not currently planned.
+% ============================================================================
+\subsection{Conclusion}
+\label{sec:discussion-conclusion}
 
-% TODO(Tony): write the closing paragraph of the thesis once the above open items are
-% resolved -- it should restate the two-part answer from
-% Section~\ref{sec:discussion-answer} concisely and end on the material- and
-% method-dependent nature of "does the model rely on the object or the background" as the
-% thesis's central contribution.
+[6.5 to follow]
