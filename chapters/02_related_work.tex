@@ -82,8 +82,7 @@ Section~\ref{sec:results-primary-table}), these findings agree in part, although
 and metric differ. Aluminium and steel, the two metals the 2025 study found problematic,
 are the two weakest materials here at every O2I ratio. Brass, which was chosen for its
 resemblance to the yellow workpieces, was difficult in neither study. The two red
-materials are among the weaker materials here as well, which matches the partial
-agreement the 2025 study reports for them. Two differences remain. Grey plastic, which
+materials, both problematic there, are among the weaker materials here as well. Two differences remain. Grey plastic, which
 did better than black and red there, is also among the weaker materials here, and black
 plastic, the hardest workpiece there, is here one of the strongest materials and the most
 stable across ratios. Part of the black-plastic difference may come from task and
@@ -180,9 +179,9 @@ networks towards shape and, according to the authors, also improves their robust
 several types of image distortion. Texture bias concerns the type of feature a network
 uses, not where in the image that feature lies, so it can occur even when the evidence
 lies on the object. Among the papers reviewed here, it is the closest analogue to the
-behaviour of aluminium in this thesis. For aluminium, Grad-CAM places heatmap importance
-on the workpiece at most ratios but spreads into the structure around it at 30\%, while
-occlusion shows no clear preference for workpiece or background
+behaviour of aluminium in this thesis. For aluminium, Grad-CAM favours the workpiece at
+every ratio, most strongly at 90\% and 70\%, while occlusion with the grey patch shows
+no clear preference for workpiece or background
 (Section~\ref{sec:results-qualitative}). Classification is weak at every ratio. A
 texture-related reading is possible: a polished surface reflects its surroundings and
 may offer an unstable texture even when the workpiece is located correctly. This fits
@@ -281,7 +280,7 @@ stays the same. The authors read this as a change in how the
 neurons are combined rather than a removal of the spurious features, and they
 hypothesise that last-layer re-weighting would fail when a model has under-learned the
 relevant information. In this thesis, the caveat may apply mainly to aluminium. Its
-Grad-CAM evidence lies on the workpiece at most ratios, and it is partly undertrained,
+Grad-CAM evidence favours the workpiece at every ratio, and it is partly undertrained,
 so a method that steers evidence towards the object may not be what it needs. Its weak
 classification could reflect a weak object signal, which would be related to the
 under-learning that Le et al.\ describe, although there it concerns the representation
