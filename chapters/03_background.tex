@@ -610,8 +610,8 @@ is the grey-fill question raised for steel in Section~\ref{sec:related-work-o2i}
 miniature. The surface of a steel workpiece is grey or reflects grey surroundings, so a
 grey patch may remove little of its evidence. For the real steel models, the fill-colour
 test of Section~\ref{sec:results-fill} confirms this at 50\%, 30\% and 10\%: with a
-black or blurred patch instead of a grey one, occlusion places the evidence of steel on
-the workpiece, so its grey-patch result is an artefact of the fill rather than a sign of
+black or blurred patch instead of a grey one, occlusion favours the workpiece for
+steel, so its grey-patch result is an artefact of the fill rather than a sign of
 background reliance (Section~\ref{sec:discussion-material}).
 
 \paragraph{What occlusion measures}
@@ -704,8 +704,8 @@ the full $8 \times 8$ resolution of the input.
 \paragraph{Where, not what}
 Grad-CAM shows where channels with a positive weight are active, not what kind of
 feature these channels respond to. A channel that responds to dark regions and one that
-responds to a surface texture can look the same in $G$. For aluminium, Grad-CAM places
-the evidence on the workpiece at most ratios (Section~\ref{sec:related-work-o2i}), but
+responds to a surface texture can look the same in $G$. For aluminium, Grad-CAM favours
+the workpiece at every ratio (Section~\ref{sec:related-work-o2i}), but
 the map cannot tell whether the model uses the shape of the workpiece or the texture of
 its reflecting surface, the distinction that Geirhos et al.~\cite{geirhos2019texture}
 draw for ImageNet-trained CNNs.

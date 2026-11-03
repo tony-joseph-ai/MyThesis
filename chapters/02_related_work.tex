@@ -82,8 +82,7 @@ Section~\ref{sec:results-primary-table}), these findings agree in part, although
 and metric differ. Aluminium and steel, the two metals the 2025 study found problematic,
 are the two weakest materials here at every O2I ratio. Brass, which was chosen for its
 resemblance to the yellow workpieces, was difficult in neither study. The two red
-materials are among the weaker materials here as well, which matches the partial
-agreement the 2025 study reports for them. Two differences remain. Grey plastic, which
+materials, both problematic there, are among the weaker materials here as well. Two differences remain. Grey plastic, which
 did better than black and red there, is also among the weaker materials here, and black
 plastic, the hardest workpiece there, is here one of the strongest materials and the most
 stable across ratios. Part of the black-plastic difference may come from task and
@@ -147,7 +146,7 @@ thesis, and there the models of Pawlowski et al.\ still reached reasonable accur
 fall to chance level is therefore not expected at the ratios studied here, although
 their limit depends on the dataset size, and each model here is trained on at most 116
 positive crops, all showing the same physical workpiece. The mean test F1 over the 15
-materials does decline, but gradually, from 0.820 at 90\% to 0.720 at 10\%
+materials does decline, but gradually, from 0.813 at 90\% to 0.720 at 10\%
 (Section~\ref{sec:results-primary-table}).
 
 Xiao et al.~\cite{xiao2021noise} approach background reliance from the other direction.
@@ -162,12 +161,14 @@ robust to changed backgrounds, a finding at the level of whole models. This thes
 at a finer
 level. Since a separate model is trained for every material and ratio, 75 models in
 total, background reliance can be compared between materials and between ratios. Steel
-shows why such a comparison needs more than one method. For steel, occlusion assigns
-more importance per pixel to the region outside the reference square than to the square
-itself at every ratio. This reading is exposed to a possible confound, since the grey
-occlusion patch may resemble the metal and remove little of its evidence. Grad-CAM gives
-a different picture: for steel its centre measure rises as the ratio falls, and in an
-example crop it concentrates on the bright rim of the workpiece and moves partly to the
+shows why such a comparison needs more than one method. For steel, occlusion with the
+grey patch assigns more importance per pixel to the region outside the reference square
+than to the square itself at every ratio. The fill-colour test shows that at 50\%, 30\%
+and 10\% this is an artefact of the fill, most likely because the grey patch resembles
+the metal and removes little of its evidence; at 90\% and 70\% the black and the blurred
+patch disagree, so no reading is possible there (Section~\ref{sec:results-fill}). Grad-CAM gives a different picture: for steel
+its centre measure is higher at 10\% than at 90\% but stays below the value of a map on
+the box at every ratio, and in an example crop it concentrates on the bright rim of the workpiece and moves partly to the
 background only at 10\% (Section~\ref{sec:results-qualitative}). Whether steel relies
 on the background therefore remains open. The evidence rests on ten analysed crops per
 model and is indicative only, and Section~\ref{sec:discussion-material} returns to it.
@@ -180,9 +181,9 @@ networks towards shape and, according to the authors, also improves their robust
 several types of image distortion. Texture bias concerns the type of feature a network
 uses, not where in the image that feature lies, so it can occur even when the evidence
 lies on the object. Among the papers reviewed here, it is the closest analogue to the
-behaviour of aluminium in this thesis. For aluminium, Grad-CAM places heatmap importance
-on the workpiece at most ratios but spreads into the structure around it at 30\%, while
-occlusion shows no clear preference for workpiece or background
+behaviour of aluminium in this thesis. For aluminium, Grad-CAM favours the workpiece at
+every ratio, most strongly at 90\% and 70\%, while occlusion with the grey patch shows
+no clear preference for workpiece or background
 (Section~\ref{sec:results-qualitative}). Classification is weak at every ratio. A
 texture-related reading is possible: a polished surface reflects its surroundings and
 may offer an unstable texture even when the workpiece is located correctly. This fits
@@ -281,13 +282,13 @@ stays the same. The authors read this as a change in how the
 neurons are combined rather than a removal of the spurious features, and they
 hypothesise that last-layer re-weighting would fail when a model has under-learned the
 relevant information. In this thesis, the caveat may apply mainly to aluminium. Its
-Grad-CAM evidence lies on the workpiece at most ratios, and it is partly undertrained,
+Grad-CAM evidence favours the workpiece at every ratio, and it is partly undertrained,
 so a method that steers evidence towards the object may not be what it needs. Its weak
 classification could reflect a weak object signal, which would be related to the
 under-learning that Le et al.\ describe, although there it concerns the representation
 and here partly the training length. Steel
-would be a candidate for background suppression only if its occlusion result reflects
-reliance on the background rather than the grey-fill confound.
+would be a candidate for background suppression only if it relies on the background,
+which remains open (Section~\ref{sec:discussion-material}).
 
 % ============================================================================
 \subsection{Industrial Material Classification and Small-Object Recognition}
@@ -361,7 +362,6 @@ thesis, occlusion sensitivity and Grad-CAM are applied to the same validation cr
 each of the 75 models. The two methods diverge as the workpiece shrinks, most clearly at
 10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
 (Section~\ref{sec:results-divergence}).
-% agreement at 90% depends on the occlusion normalisation, decided 20 Oct
 A possible mechanism is that occluding a single patch cannot reveal reliance on a large,
 repetitive background, because the rest of that background stays visible. This
 explanation is offered as a hypothesis, not as a measured cause.
