@@ -146,7 +146,7 @@ thesis, and there the models of Pawlowski et al.\ still reached reasonable accur
 fall to chance level is therefore not expected at the ratios studied here, although
 their limit depends on the dataset size, and each model here is trained on at most 116
 positive crops, all showing the same physical workpiece. The mean test F1 over the 15
-materials does decline, but gradually, from 0.820 at 90\% to 0.720 at 10\%
+materials does decline, but gradually, from 0.813 at 90\% to 0.720 at 10\%
 (Section~\ref{sec:results-primary-table}).
 
 Xiao et al.~\cite{xiao2021noise} approach background reliance from the other direction.
@@ -161,12 +161,14 @@ robust to changed backgrounds, a finding at the level of whole models. This thes
 at a finer
 level. Since a separate model is trained for every material and ratio, 75 models in
 total, background reliance can be compared between materials and between ratios. Steel
-shows why such a comparison needs more than one method. For steel, occlusion assigns
-more importance per pixel to the region outside the reference square than to the square
-itself at every ratio. This reading is exposed to a possible confound, since the grey
-occlusion patch may resemble the metal and remove little of its evidence. Grad-CAM gives
-a different picture: for steel its centre measure rises as the ratio falls, and in an
-example crop it concentrates on the bright rim of the workpiece and moves partly to the
+shows why such a comparison needs more than one method. For steel, occlusion with the
+grey patch assigns more importance per pixel to the region outside the reference square
+than to the square itself at every ratio. The fill-colour test shows that at 50\%, 30\%
+and 10\% this is an artefact of the fill, most likely because the grey patch resembles
+the metal and removes little of its evidence; at 90\% and 70\% the black and the blurred
+patch disagree, so no reading is possible there (Section~\ref{sec:results-fill}). Grad-CAM gives a different picture: for steel
+its centre measure is higher at 10\% than at 90\% but stays below the value of a map on
+the box at every ratio, and in an example crop it concentrates on the bright rim of the workpiece and moves partly to the
 background only at 10\% (Section~\ref{sec:results-qualitative}). Whether steel relies
 on the background therefore remains open. The evidence rests on ten analysed crops per
 model and is indicative only, and Section~\ref{sec:discussion-material} returns to it.
@@ -285,8 +287,8 @@ so a method that steers evidence towards the object may not be what it needs. It
 classification could reflect a weak object signal, which would be related to the
 under-learning that Le et al.\ describe, although there it concerns the representation
 and here partly the training length. Steel
-would be a candidate for background suppression only if its occlusion result reflects
-reliance on the background rather than the grey-fill confound.
+would be a candidate for background suppression only if it relies on the background,
+which remains open (Section~\ref{sec:discussion-material}).
 
 % ============================================================================
 \subsection{Industrial Material Classification and Small-Object Recognition}
@@ -360,7 +362,6 @@ thesis, occlusion sensitivity and Grad-CAM are applied to the same validation cr
 each of the 75 models. The two methods diverge as the workpiece shrinks, most clearly at
 10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
 (Section~\ref{sec:results-divergence}).
-% agreement at 90% depends on the occlusion normalisation, decided 20 Oct
 A possible mechanism is that occluding a single patch cannot reveal reliance on a large,
 repetitive background, because the rest of that background stays visible. This
 explanation is offered as a hypothesis, not as a measured cause.
