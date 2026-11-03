@@ -243,10 +243,9 @@ found here is their combined effect (Section~\ref{sec:discussion-answer}).
 \paragraph{Training and statistics}
 Each of the 75 cells is a single training run with a single seed, so the standard
 errors contain no variation between runs. The only estimate of that variation, about
-0.020 per run in validation F1, comes from the 27 cells trained twice in two software
-environments and applies to a single cell (Section~\ref{sec:results-200epoch}).
-Training is deterministic within one environment but not across the maintenance of the
-lab machine, after which these 27 models were retrained. The comparisons were chosen
+0.020 per run in validation F1, applies to a single cell and comes from the 27 cells
+trained twice, whose two runs differ only because training is not bit-exact across the
+maintenance of the lab machine (Section~\ref{sec:results-200epoch}). The comparisons were chosen
 after an exploratory analysis, no correction for the number of tests is applied, and
 the 15 models of a ratio are not fully independent, since they are trained on the same
 crops with different labels. This is why only $p < 0.01$ is called clear
@@ -254,17 +253,20 @@ crops with different labels. This is why only $p < 0.01$ is called clear
 
 \paragraph{Explainability measurement}
 Both methods were applied to 10 validation crops of the target material per model,
-i.e., 750 analyses per method (Section~\ref{sec:methodology-sampling}), not to the test
-split, and the heatmaps were not recomputed for the 200-epoch models. Per-material
+i.e., 750 analyses per method, on the split that also selected the checkpoints
+(Section~\ref{sec:methodology-sampling}) and not on the test split, and the heatmaps were not recomputed for the 200-epoch models. Per-material
 values are therefore indicative, and the single photographs of
-Figs.~\ref{fig:same-black} to~\ref{fig:same-alu} are illustrations. At 90\%, and for
-occlusion also at 70\%, the margin around the reference square is narrower than one
-measurement (Section~\ref{sec:methodology-resolution}), so $c$ there depends on the
-interpolation across the border of the square. The centre measure compares a centred
+Figs.~\ref{fig:same-black} to~\ref{fig:same-alu} are illustrations. At 90\% the margin
+around the reference square (7 pixels) is narrower than one Grad-CAM cell and one
+occlusion patch, and at 70\% it is still narrower than an occlusion patch
+(Section~\ref{sec:methodology-resolution}). There, a map can hardly place evidence
+entirely outside the square, so the agreement of the two methods at 90\% is partly a
+consequence of this limit; the interpolation itself changes $c$ little
+(Section~\ref{sec:results-interpolation}). The centre measure compares a centred
 square, not the shape of the workpiece, and the box itself contains some background.
-The reference values account for this in part, and with an ellipse in place of the box
-the value at 10\% and the slope of the method difference stay clear, while the values
-at 70\% and 50\% change (Section~\ref{sec:results-reference}). Occlusion depends on its
+The reference values account for this in part, and with an ellipse in place of the box,
+the difference beyond the reference stays clear at 10\% and as a slope, but no longer at
+70\% and 50\% (Section~\ref{sec:results-reference}). Occlusion depends on its
 fill, and no fill is neutral for every workpiece (Section~\ref{sec:results-fill}).
 Grad-CAM gives flat maps in 18.3\% of the analyses, concentrated in a few materials
 (Section~\ref{sec:results-degeneracy}).
@@ -300,10 +302,11 @@ Section~\ref{sec:discussion-answer} suggests.
 \paragraph{Background suppression}
 An experiment in the style of ISNet~\cite{bassi2024isnet}, which penalises relevance
 outside the object during training, could be run here only with box-shaped
-approximations of the masks it needs (Section~\ref{sec:related-work-mitigation}). Given
-the caveat of Le et al.~\cite{le2025shortcut}, it would be a candidate for steel only if
-steel turns out to rely on the background, which remains open, while aluminium may need
-more training rather than a steered explanation (Section~\ref{sec:discussion-material}).
+approximations of the masks it needs (Section~\ref{sec:related-work-mitigation}). It
+would be a candidate for steel only if steel turns out to rely on the background, which
+remains open. For aluminium, the caveat of Le et al.~\cite{le2025shortcut} on
+under-learned models suggests more training rather than a steered explanation
+(Section~\ref{sec:discussion-material}).
 
 \paragraph{Testing the redundancy hypothesis}
 The room-full-of-clocks explanation could be tested directly by occluding the whole
@@ -323,7 +326,8 @@ average pooling of the network allows this without a change of architecture (par
 Several seeds per cell would give the run-to-run variation that the standard errors
 now lack. Explainability on the test split and on more crops per model, and heatmaps for
 the 200-epoch models, would make the per-material values more than indicative. A
-confusion analysis of which negatives the metal models mistake for positives would test
+confusion analysis of which negatives the metal and grey-plastic models mistake for
+positives would test
 the hard-negative explanations of Section~\ref{sec:discussion-material}, and more
 workpieces per material would show whether the results carry over beyond the 15 pieces
 photographed here.
