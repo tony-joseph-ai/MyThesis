@@ -1,7 +1,211 @@
 % !TEX root = ../main.tex
 \section{Introduction}
 \label{sec:introduction}
-% TODO(Tony): paste in your introduction_draft.tex content here once you're
-% ready to bring it into Overleaf (you said this can wait for now).
-% Remember: it currently has two [[TODO]] markers for citations that depend
-% on reading Pawlowski (2019) / Xiao (2020) / Geirhos (2019).
+
+\paragraph{Motivation}
+In the production systems described as Industry~4.0, machines, sensors and software are
+connected, and many decisions that were once made by a worker are taken from data
+recorded during production~\textbf{[CITATION NEEDED]}. Cameras are among the most common
+of these sensors. Automated visual inspection uses them to check whether a part is
+present, correctly placed or free of defects, and to identify what a part is made of,
+e.g., before it is sorted or processed further~\textbf{[CITATION NEEDED]}. For such image
+tasks, convolutional neural networks (CNNs) have become a standard tool, because they
+learn the relevant features directly from labelled images instead of relying on rules
+designed by hand~\textbf{[CITATION NEEDED]}.
+
+A camera in a production cell, however, rarely sees the workpiece alone. Around it lie
+conveyor belts, grippers, cables and other machine parts, and some of them share the
+colour or the surface of the workpiece. A CNN trained on such images is not told which
+pixels belong to the workpiece. It can therefore reach a correct decision from the
+surroundings rather than from the workpiece itself, and its accuracy in the setting it
+was trained in does not reveal this. A model that has learned a background cue may fail
+as soon as the background changes~\cite{xiao2021noise}, e.g., when the workpiece appears
+at another station. Whether a decision rests on the workpiece or on the background is
+thus a question about the model that accuracy alone does not answer. If the evidence
+behind a decision can be made visible, a model that relies on the background can be
+recognised, provided the method used to show the evidence does not itself miss it.
+
+Studying this question in a running factory is difficult, since its scenes cannot be
+repeated at will. Learning factories, i.e., scaled-down production environments built
+for teaching and research, offer a controlled alternative. They contain the machines of
+a production line and a simpler version of its visual complexity, but the
+workpieces, their positions and the lighting can be chosen and recorded
+systematically~\textbf{[CITATION NEEDED]}.
+
+\paragraph{The learning factory and its dataset}
+This thesis works with the Fischertechnik Industry~4.0 learning factory, a model
+production line with five modules, namely a sorting machine, an oven, a milling machine,
+a high-bay warehouse and a vacuum gripper~\cite{schneidereitFischertechnik2023,
+schneidereitYOLOv8}. Its red and blue building blocks, its many black parts, its cables
+and its grey base plate form a complex background for any workpiece placed in it. An
+earlier study by S.~Schneidereit et al.~\cite{schneidereitFischertechnik2023} applied
+YOLO (You Only Look Once) object detectors~\cite{redmon2016yolo} to the learning factory,
+with a dataset of its own, and already linked detection errors to workpieces that share
+their colour with the background.
+
+The dataset of this thesis was created in the later study by T.~Schneidereit, Gohrenz
+and Breu{\ss}~\cite{schneidereitYOLOv8}, referred to below as the 2025 study. It
+contains 15 cylindrical workpieces that differ only in material and colour, namely six
+plastics, four workpieces of acrylic glass (AG), three metals and two woods. Each
+workpiece was photographed at the same 33 positions in each of the five stations of the
+learning factory. Lighting and camera position changed between positions, but at a given
+position they are the same for all 15 workpieces, so that there only the workpiece
+changes. The resemblance to the background is intended. Several workpieces were chosen
+because they resemble parts of the learning factory, e.g., the black workpiece because
+it matches the many black factory parts. With YOLOv8 detectors and heatmaps computed by
+layer-wise relevance propagation (LRP)~\cite{bach2015lrp, montavon2019lrp}, the 2025
+study found that some background parts influenced the detection, and black plastic was the
+workpiece detected worst. Section~\ref{sec:related-work-fischertechnik} reviews both
+studies, and Section~\ref{sec:background-dataset} describes the copy of the dataset used
+here.
+
+\paragraph{Why the object-to-image ratio matters}
+Both studies examined detection, i.e., finding and boxing the workpiece in the whole
+photograph. In a photograph of $960 \times 720$ pixels, a typical workpiece covers only
+about 0.33\% of the image, and nearly everything the detector sees is learning factory.
+A classifier that decides on the material of a workpiece usually works on a crop around
+it, and how tightly that crop is cut decides how much of the input is workpiece and how
+much is background. This share is the object-to-image (O2I) ratio, defined by area as
+the area of the object divided by the area of the image, following Pawlowski et
+al.~\cite{pawlowski2019needles}. They treat the ratio as an experimental variable for
+the classification of small objects in large images, e.g., lesions in histopathology
+images, and find that the task becomes harder as the ratio falls. For a fixed amount of
+training data, there is a ratio below which none of their models performs better than
+chance. The ratios studied here, from 90\% down to 10\%, lie well above the ratios at
+which their models reached that limit, although the limit depends on the amount of
+training data.
+
+A lower ratio does more than make the object small relative to the image. It also gives
+the model more background from which to draw evidence. Xiao et
+al.~\cite{xiao2021noise} showed for ImageNet classifiers that the background alone can
+carry enough information for a non-trivial accuracy, and that for 87.5\% of foregrounds
+some background of another class makes the model predict that class. Background
+evidence can thus outweigh the object. In the learning factory, whose workpieces were
+chosen to resemble their background, this raises a concrete question. As the crop
+around a workpiece is loosened and the learning factory takes up more of it, at which
+point does the background begin to carry the decision instead of the workpiece? The
+classification score alone cannot answer it. It can show that the classification gets
+worse as the ratio falls, but not whether the background is the reason.
+
+\paragraph{Why explainability, and why two methods}
+Explainability methods for CNNs answer a narrower question than accuracy, namely which
+regions of one input carried the evidence for the decision. Their output is a heatmap
+over the image. Occlusion sensitivity, introduced by Zeiler and
+Fergus~\cite{zeilerFergus2014}, covers one region of the input at a time with a grey
+patch and records how much the score of the class drops, so that a large drop marks a
+region the model needs. It is the method specified for this thesis. Gradient-weighted
+Class Activation Mapping (Grad-CAM), introduced by Selvaraju et
+al.~\cite{selvaraju2017gradcam}, takes a different route. It leaves the input unchanged
+and uses the gradients of the class score with respect to the feature maps of a
+convolutional layer to weight those maps, which it combines into one coarse map in a
+single backward pass. Grad-CAM was added because it belongs to a different family of
+methods: occlusion sensitivity changes the input, Grad-CAM reads gradients inside the
+network.
+
+A second method is needed because a heatmap is not ground truth for what the network
+uses~\textbf{[CITATION NEEDED]}, and different methods can give different answers for
+the same decision (Section~\ref{sec:related-work-explainability}). A shift of the
+evidence that only one method shows, or that one method misses, could then be a property
+of that method rather than of the model. This is why both methods are applied to the
+same crops, and why each of their results is also read against the value that a map on
+the workpiece would give.
+
+To compare heatmaps across ratios, each map has to be reduced to a number that says
+whether its importance lies on the workpiece or on the background. This thesis uses the
+centre measure $c$ (Eq.~\eqref{eq:center-frac}). It compares the mean heatmap importance
+per pixel inside a centred reference square, whose area is $r\%$ of the crop at an O2I
+ratio of $r\%$, with the mean importance per pixel outside it. A flat map gives $c =
+0.5$ at every ratio. A value above 0.5 means that a pixel of the square carries more
+importance on average than a pixel outside it, and a value below 0.5 the opposite. The
+background is taken to dominate only where $c$ lies clearly below 0.5, i.e., where a
+test over the 15 materials places it below 0.5 with $p < 0.01$. A method is taken to
+detect the shift if its centre measure falls clearly from 90\% to 10\% while the test F1
+also falls clearly over the same range (Section~\ref{sec:methodology-rq}).
+
+\paragraph{Research question}
+The thesis addresses the following research question:
+\begin{quote}
+\emph{At what object-to-image ratio does the complex factory background begin to
+dominate the model's classification decision, and can explainability methods detect
+this shift?}
+\end{quote}
+The first part asks whether, and from which ratio on, the background outweighs the
+workpiece in the evidence behind the decision. The second asks whether occlusion
+sensitivity and Grad-CAM register a shift of the evidence towards the background.
+
+\paragraph{Problem statement and contribution}
+The aim of this thesis is to measure how the share of complex background in the input
+affects the material classification of a CNN, and whether two explainability methods
+detect a resulting shift of the evidence from the workpiece to the background. The
+reviewed literature covers the parts of this question separately
+(Section~\ref{sec:related-work-gap}). Pawlowski et al.\ vary the O2I ratio but use a
+single saliency method, as a localisation check. The two studies on the learning factory
+detect workpieces against its complex background, and only the later one computes
+heatmaps, with one method. Studies of background reliance change the background or the
+context of an image rather than the share of the image that the object covers. The
+contribution of this thesis is a comparison of two explainability methods on the same
+crops as a function of a controlled O2I ratio, against a complex industrial background,
+with a per-pixel measure of whether the evidence concentrates on the workpiece or on the
+background.
+
+For this comparison, crops centred on the workpiece were cut from the photographs of the
+dataset at five ratios, 90\%, 70\%, 50\%, 30\% and 10\%. Since all crops are resized to
+the same input size, the share of background and the scale of the workpiece change
+together, so the effect of the ratio found here is their combined effect
+(Section~\ref{sec:discussion-limitations}). For each of the 15 materials and each ratio,
+a binary one-vs-rest CNN that separates one material from the other 14 was trained from
+scratch, without a pre-trained model, which gives 75 models trained with identical
+settings and the same seed (Section~\ref{sec:methodology-ovr}). Classification is
+measured with the F1 score of the target material on a held-out test split. Occlusion
+sensitivity and Grad-CAM were applied to the same 10 validation crops of each model,
+i.e., 750 analyses per method. Besides the level 0.5, each centre measure is read
+against a reference value, the value that a map lying uniformly on the bounding box of
+the workpiece would give at the resolution of each method. Five robustness checks test
+how far the results depend on the occlusion normalisation, the fill of the occluding
+patch, the interpolation of the maps, the flat Grad-CAM maps and the centring of the
+crops, and an extension to 200 epochs tests the training length.
+
+The results answer the two parts of the question as follows. As the ratio falls from
+90\% to 10\%, the mean test F1 over the 15 materials drops from 0.813 to 0.720, and most
+of this loss occurs below 50\%. Over the same range, the mean Grad-CAM centre measure
+drops from 0.737 to 0.407, but at no ratio is it clearly below 0.5. By the per-pixel
+criterion above, there is therefore no ratio at which the background clearly dominates.
+What the data show instead is a gradual shift of the evidence towards the background
+over the five ratios. For the second part, Grad-CAM detects this shift and occlusion
+sensitivity does not. The two readings are not equally strong. The fall of the Grad-CAM
+centre measure runs against its reference value, which rises as the ratio falls, so
+neither the geometry of the square nor the resolution of the method can produce it. The
+occlusion centre measure rises from 0.728 to 0.884, but less than its own reference
+value, so the rise does not show that the occlusion evidence stays on the workpiece. The
+difference between the two methods grows as the workpiece shrinks, is clear at 10\%, and
+appears with all three fills of the occluding patch. A possible reason, offered as a
+hypothesis and not tested, is that covering one patch at a time cannot reveal reliance
+on a large and repetitive background, since the rest of that background stays visible.
+
+These results hold on average over the 15 materials. Per material, no link between the
+loss of F1 and the change of the Grad-CAM centre measure is shown. On average, the
+evidence shifts as the background grows, but the results do not show that this shift is
+why a given material is misclassified. The materials also differ in ways that are not
+only an effect of the ratio. Steel and aluminium are the two weakest materials at every
+ratio, including 90\%, where little of the crop is background, and at the level of the
+model neither has a Grad-CAM centre measure below 0.5, so a low F1 does not coincide
+with a heatmap on the background. Black plastic, which the 2025 study detected worst, is
+here the material with the highest mean test F1 (0.956), although the two studies differ
+in task, metric and training.
+
+\paragraph{Structure of the thesis}
+Section~\ref{sec:related-work} reviews the earlier work on the learning factory, the
+literature on the O2I ratio and on background reliance, explainability methods that
+attribute a decision to an object or to its context, methods that reduce such reliance,
+and work on industrial material classification and small objects, and it states the gap
+this thesis fills. Section~\ref{sec:background} introduces the dataset, the O2I ratio,
+the CNN and its training, the two explainability methods and the comparison of object
+and background in a heatmap, on a toy example and on one real crop.
+Section~\ref{sec:methodology} describes the crops and their split, the one-vs-rest
+design, the training, the explainability pipeline, the reduction of a heatmap to the
+centre measure and how the results are aggregated and read.
+Section~\ref{sec:results} reports the classification results, the centre measures of
+both methods with their reference values, the robustness checks and the 200-epoch
+extension. Finally, Section~\ref{sec:discussion} answers the research question,
+discusses the materials that depart from the average and closes with the limitations,
+future work and a conclusion.
