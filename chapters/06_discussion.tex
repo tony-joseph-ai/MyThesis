@@ -336,4 +336,35 @@ photographed here.
 \subsection{Conclusion}
 \label{sec:discussion-conclusion}
 
-[6.5 to follow]
+This thesis asked at which O2I ratio the complex background of the Fischertechnik
+learning factory begins to dominate the material classification of a CNN, and whether
+explainability methods can detect this shift. For 15 workpieces, 75 one-vs-rest models
+were trained from scratch on crops at five ratios, and occlusion sensitivity and
+Grad-CAM were compared through the centre measure $c$, read against reference values
+that show what the geometry of the crop alone would produce.
+
+Classification degrades as the workpiece takes up less of the crop. The mean test F1
+falls from 0.813 at 90\% to 0.720 at 10\%, mostly below 50\%, and from 90\% to 50\% no
+loss is shown, so in this dataset crops in which the workpiece fills at least half of
+the area classify about as well as the tightest ones. At the same time the Grad-CAM
+evidence moves away from the workpiece, from 0.737 to 0.407, although every reference
+value rises, yet it never lies clearly below the level of no preference. There is
+therefore no single ratio at which the background takes over, but a gradual shift.
+Grad-CAM detects this shift, whereas occlusion sensitivity, the method specified for
+this thesis, does not: its centre measure rises from 0.728 to 0.884, partly because of
+the geometry. Whether a shift of the evidence becomes visible thus depends on the method
+used to look for it.
+
+The materials add a second layer. Steel and aluminium, the two weakest, are weak
+already at 90\% and fail in different ways, and neither has a Grad-CAM centre measure
+below 0.5. Whether steel relies on the background remains open, while aluminium seems
+limited by its object signal and partly by its training. Black plastic, the hardest
+workpiece of the 2025 study, has the highest mean test F1 here. The Grad-CAM evidence and the F1
+fall together on average, but per material no link is shown, so the shift of the
+evidence is not shown to explain why a given material is misclassified.
+
+Whether a model relies on the workpiece or on the background is therefore a question
+whose answer depends on the material and on the explainability method, and a single
+method can miss a shift that another one shows. For work with the learning factory,
+this argues for checking a heatmap result with a second method, and against the value
+a map on the workpiece would give, before reading it as evidence about the model.
