@@ -7,7 +7,15 @@
 %Spracheinstellung / language setting / replace "english" if needed
 \usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
 \usepackage[absolute,overlay]{textpos}
-\usepackage[giveninits=true,sorting=none,style=numeric,maxbibnames=5]{biblatex}
+\usepackage[giveninits=true,sorting=none,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
+% Line breaks in URLs and DOIs: allowed after letters (penalty 100), but
+% inside a number only as a last resort (9000), so a DOI is not split
+% mid-number. The bibliography is set ragged right with little stretch at
+% slashes and dots, so a loose line is not spread across a DOI's characters.
+\setcounter{biburlnumpenalty}{9000}
+\setcounter{biburlucpenalty}{100}
+\setcounter{biburllcpenalty}{100}
+\AtBeginBibliography{\raggedright\biburlbigskip=0mu plus 0.5mu\relax}
 \usepackage{csquotes}
 \addbibresource{Sources.bib}
 \usepackage{amsmath}
