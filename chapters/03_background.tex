@@ -199,7 +199,7 @@ network of Section~\ref{sec:background-cnn} shows why the second part matters.
 Fig.~\ref{fig:bg-cnn-toy} follows the tight toy crop through the first stages of a
 convolutional neural network (CNN). A CNN computes a stack of feature maps, each from
 the maps before it, and ends in a small number of scores, one per
-class~\textbf{[CITATION NEEDED]}.
+class~\cite[Sec.~9.3]{goodfellow2016deep}.
 
 \paragraph{Convolution}
 Let $X \in \mathbb{R}^{C \times N \times N}$ be an input with $C$ channels, e.g., the
@@ -218,7 +218,7 @@ $b^k \in \mathbb{R}$ its bias, $(u, v)$ the row and column of an output position
 $Y^k \in \mathbb{R}^{N \times N}$ the output for kernel $k$. The same kernel is applied at
 every position, so a pattern is detected wherever it occurs. Strictly,
 Eq.~\eqref{eq:bg-conv} is a cross-correlation, since the kernel is not flipped, but
-deep learning calls it a convolution~\textbf{[CITATION NEEDED]}. At the border, the sum
+deep learning calls it a convolution~\cite[Sec.~9.1]{goodfellow2016deep}. At the border, the sum
 reaches beyond the input. Padding with one row and column of zeros on each side keeps
 the output at $N \times N$, which is what the network of this thesis does. The toy
 instead repeats the edge pixels, because a border of zeros would look dark to a
@@ -233,7 +233,7 @@ weights $+1/9$ and the bias $-0.7$ and responds where the mean is above 0.7.
 
 \paragraph{Rectified linear unit}
 The rectified linear unit (ReLU) keeps positive values and sets negative ones to zero,
-$A^k = \max(Y^k, 0)$ element by element~\textbf{[CITATION NEEDED]}. The result
+$A^k = \max(Y^k, 0)$ element by element~\cite[Sec.~6.3.1]{goodfellow2016deep}. The result
 $A^k \in \mathbb{R}_{\ge 0}^{N \times N}$ is the feature map of channel $k$.
 Fig.~\ref{fig:bg-cnn-toy}\,(d) shows the dark feature map $A^1$ of the tight crop. The
 dark detector responds to any dark region that fills its $3 \times 3$ neighbourhood,
@@ -247,7 +247,7 @@ study, with a hedge, explained the difficulty of its detector with this workpiec
 
 \paragraph{Max pooling}
 Max pooling with $2 \times 2$ windows halves the resolution by keeping the largest value
-of each window~\textbf{[CITATION NEEDED]},
+of each window~\cite[Sec.~9.3]{goodfellow2016deep},
 
 \begin{equation}
 M^k_{uv} = \max_{\Delta u,\,\Delta v \in \{0, 1\}} A^k_{2u+\Delta u,\,2v+\Delta v},
@@ -270,7 +270,7 @@ its outputs as a weighted sum of all its inputs plus a bias. The last layer retu
 logits, real-valued scores without bounds, one per class, which the softmax of
 Section~\ref{sec:background-training} turns into probabilities. The toy network instead
 takes the mean of each whole pooled map, the special case with a single region, called
-global average pooling~\textbf{[CITATION NEEDED]}. This gives
+global average pooling~\cite{lin2014network}. This gives
 $g = (g_1, g_2) = (0.201, 0.125)$ for the dark and the light channel. A single linear
 unit with the weights $(10, -5)$ and no bias then returns the logit
 $z = 10 \cdot 0.201 - 5 \cdot 0.125 = 1.39$, and a positive $z$ stands for the decision
@@ -279,7 +279,7 @@ ones.
 
 \paragraph{Receptive field}
 Each value of a feature map depends only on a limited region of the input, its receptive
-field~\textbf{[CITATION NEEDED]}. In the toy, one value of $A^1$ sees $3 \times 3$
+field~\cite{araujo2019computing}. In the toy, one value of $A^1$ sees $3 \times 3$
 pixels. Through the four
 convolutional layers of the network of this thesis and the three poolings between them,
 its width grows as $1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$ pixels, and the
@@ -367,7 +367,7 @@ photographs per material.
 
 \paragraph{One-vs-rest}
 A classification problem with several classes can be split into one binary problem per
-class, each of which separates that class from all others~\textbf{[CITATION NEEDED]}.
+class, each of which separates that class from all others~\cite{rifkin2004defense}.
 Here, each binary classifier decides whether a crop shows a given material or one of the
 other 14 (Section~\ref{sec:methodology-ovr}), so every binary task is imbalanced by
 about 1:14.
@@ -375,7 +375,7 @@ about 1:14.
 \paragraph{Output and loss}
 For an input crop $I$, a binary network returns two logits $z_0(I)$ and $z_1(I)$ for the
 negative and the positive class. The softmax turns them into
-probabilities~\textbf{[CITATION NEEDED]},
+probabilities~\cite[Sec.~6.2.2.3]{goodfellow2016deep},
 
 \begin{equation}
 p_j(I) = \frac{e^{z_j(I)}}{e^{z_0(I)} + e^{z_1(I)}}, \qquad j \in \{0, 1\},
@@ -389,7 +389,7 @@ of the logits, $p_1 = 1/(1 + e^{-(z_1 - z_0)})$. The single logit $z$ of the toy
 the role of this difference, so the tight crop with $z = 1.39$ has $p_1 = 0.80$ and is
 called positive, and the loose crop with $z = -0.25$ has $p_1 = 0.44$ and is called
 negative. During training, the network is penalised for each crop by the
-cross-entropy~\textbf{[CITATION NEEDED]},
+cross-entropy~\cite[Sec.~6.2.1.1]{goodfellow2016deep},
 
 \begin{equation}
 \ell(I, y) = -\log p_y(I),
@@ -410,7 +410,7 @@ Training changes the parameters $\theta$ of the network, i.e., all kernels, bias
 weights of the fully connected layers, so that the batch loss falls. The gradient
 $\nabla_\theta L$, the vector of all partial derivatives of $L$ with respect to the
 parameters, points in the direction in which the loss increases fastest. A step of
-gradient descent moves against it~\textbf{[CITATION NEEDED]},
+gradient descent moves against it~\cite[Sec.~4.3]{goodfellow2016deep},
 
 \begin{equation}
 \theta \leftarrow \theta - \eta\, \nabla_\theta L,
@@ -420,7 +420,7 @@ gradient descent moves against it~\textbf{[CITATION NEEDED]},
 where $\eta > 0$ is the learning rate. The network is a chain of functions, layer after
 layer, so each partial derivative is a product of local derivatives by the chain rule.
 Backpropagation evaluates these products from the output backwards, one layer at a
-time~\textbf{[CITATION NEEDED]}. The same computation gives the derivative of a logit
+time~\cite[Sec.~6.5]{goodfellow2016deep}. The same computation gives the derivative of a logit
 with respect to any intermediate feature map, the quantity on which Grad-CAM is built.
 
 The toy shows how such a derivative is formed. Its logit is $z = 10\,g_1 - 5\,g_2$, the
@@ -449,9 +449,9 @@ derivatives over the map.
 \paragraph{Optimiser and dropout}
 Adam is a variant of the step of Eq.~\eqref{eq:bg-gd} that scales the step of each
 parameter by running averages of its past gradients and squared
-gradients~\textbf{[CITATION NEEDED]}. Dropout sets each output of a layer to zero with a
+gradients~\cite{kingma2015adam}. Dropout sets each output of a layer to zero with a
 fixed probability during training and rescales the remaining outputs so that their
-expected value is unchanged~\textbf{[CITATION NEEDED]}. A network trained this way is
+expected value is unchanged~\cite{srivastava2014dropout}. A network trained this way is
 discouraged from relying on any single unit. Dropout is switched off when the trained
 network is evaluated, including during the explainability analyses. The settings used
 here are listed in Tab.~\ref{tab:training-config}.
@@ -463,14 +463,14 @@ with the best validation result is kept. Because the validation split took part 
 choice, its results are slightly optimistic, which matters again for the explainability
 analyses, since they also run on validation crops
 (Section~\ref{sec:methodology-sampling}). The test split is evaluated once, after all
-choices have been made~\textbf{[CITATION NEEDED]}. The split itself is made by
+choices have been made~\cite[Sec.~5.3]{goodfellow2016deep}. The split itself is made by
 photograph (Section~\ref{sec:methodology-split}).
 
 \paragraph{Metrics under class imbalance}
 On a split with true labels, the predictions of a binary classifier fall into four
 counts, the true positives $\mathrm{TP}$, false positives $\mathrm{FP}$, false negatives
 $\mathrm{FN}$ and true negatives $\mathrm{TN}$. Precision, recall and the F1 score of the
-positive class are~\textbf{[CITATION NEEDED]}
+positive class are~\cite[Sec.~11.1]{goodfellow2016deep}
 
 \begin{equation}
 P = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FP}}, \qquad
@@ -488,7 +488,7 @@ characteristic (ROC) curve plots the recall against the false positive rate
 $\mathrm{FP}/(\mathrm{FP} + \mathrm{TN})$ while the decision threshold on $p_1$ moves
 from 1 to 0. The area under this curve (ROC-AUC) equals the probability that a randomly
 chosen positive crop receives a higher score than a randomly chosen negative
-one~\textbf{[CITATION NEEDED]},
+one~\cite{fawcett2006roc},
 
 \begin{equation}
 \mathrm{AUC} = \Pr\big[p_1(I^+) > p_1(I^-)\big]
@@ -800,7 +800,7 @@ Occlusion and Grad-CAM answer different questions. Occlusion asks what replacing
 patch with grey changes in the score while the rest of the image stays in place.
 Grad-CAM asks where the channels that push the score up are active. Both can be right
 about their own question and still point to different regions, and neither map is
-ground truth for what the model uses~\textbf{[CITATION NEEDED]}. One way in which the
+ground truth for what the model uses~\cite{adebayo2018sanity}. One way in which the
 two answers could separate is a hypothesis that this thesis cannot test directly. If the
 background contains many similar cues, like a room full of clocks, covering one of them
 leaves the others visible and changes the score little, while Grad-CAM marks all of

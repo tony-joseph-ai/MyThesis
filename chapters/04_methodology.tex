@@ -120,7 +120,7 @@ $256 \times 256$ input at 90\%, and at most 1.4 pixels at 10\%.
 \paragraph{Resizing}
 Every crop was resized to $256 \times 256$ pixels with the bilinear interpolation of
 the Python Imaging Library (Pillow), which smooths the image when a crop is reduced
-\textbf{[CITATION NEEDED]}, and converted to a tensor
+\cite{pillow2025docs}, and converted to a tensor
 $I \in [0,1]^{3 \times 256 \times 256}$ with three colour channels, red, green and
 blue (RGB). The crops are small. The crop side has a median of 51 pixels at 90\%
 (5th to 95th percentile: 33 to 103 pixels) and of 152 pixels at 10\% (100 to 308
@@ -164,8 +164,8 @@ separate the share of background from the scale of the workpiece and the interpo
 \label{sec:methodology-split}
 The photographs, not the crops, were divided into training, validation and test sets
 in the proportions 70/15/15, separately for each material, i.e., stratified by
-material \textbf{[CITATION NEEDED]} and grouped by photograph
-\textbf{[CITATION NEEDED]}. For each material, the file names of its 166 photographs
+material \cite{kohavi1995study} and grouped by photograph
+\cite{roberts2017cross}. For each material, the file names of its 166 photographs
 were sorted and shuffled with Python's \texttt{random.Random}, seeded with 42 plus the
 position of the material in the list of folder names compared as character strings.
 The first $\operatorname{round}(0.70 \cdot 166) = 116$ photographs went to training,
@@ -291,8 +291,8 @@ Epochs & 100; 200 in the supplementary check \\
 Model selection & Epoch with the highest validation F1 \\
 Seed & 42, reset before every model; deterministic cuDNN, benchmark mode off \\
 Hardware & NVIDIA RTX A6000 GPU (48\,GB) at the AI-Lab \\
-Software & Python 3.9.25, PyTorch 2.8.0 and torchvision 0.23.0 (CUDA 12.8 builds),
-cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2, scikit-learn 1.6.1; NVIDIA driver 580.178.04
+Software & Python 3.9.25, PyTorch 2.8.0~\cite{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
+cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
 at the time of the retraining \\
 \hline
 \end{tabular}
@@ -316,7 +316,7 @@ softmax of Eq.~\eqref{eq:bg-softmax} gives the probability $p_1(I)$ of the posit
 class. The predicted label $\hat{y}(I)$ is 1 if $z_1(I) > z_0(I)$ and 0 otherwise, so a
 tie counts as negative, and the prediction is positive exactly when $p_1(I) > 0.5$. The
 loss is the cross-entropy of Eq.~\eqref{eq:bg-ce}, in which each class is weighted to
-offset the imbalance of Section~\ref{sec:methodology-ovr} \textbf{[CITATION NEEDED]}.
+offset the imbalance of Section~\ref{sec:methodology-ovr} \cite{johnson2019survey}.
 The class weights are
 
 \begin{equation}
@@ -340,15 +340,15 @@ Eq.~\eqref{eq:ovr-label}, $p_0(I) = 1 - p_1(I)$, and $L \ge 0$ is a scalar. Each
 term $-\log p_{y}(I)$ is the per-crop loss $\ell(I, y)$ of
 Eq.~\eqref{eq:bg-ce}. The denominator normalises by the total weight of the batch
 rather than by the number of crops, which is how the weighted cross-entropy of PyTorch
-is defined \textbf{[CITATION NEEDED]}.
+is defined \cite{pytorch2025crossentropy}.
 
 \paragraph{Optimisation and determinism}
 The weights and biases were initialised with the default of PyTorch
-\textbf{[CITATION NEEDED]}, i.e., drawn uniformly from
+\cite{pytorch2025init}, i.e., drawn uniformly from
 $[-1/\sqrt{k_{\mathrm{in}}},\, 1/\sqrt{k_{\mathrm{in}}}]$, where $k_{\mathrm{in}}$ is
 the number of inputs of one unit: $9\,C_{\mathrm{in}}$ for a $3 \times 3$ convolution
 with $C_{\mathrm{in}}$ input channels, and the number of input features for a linear
-layer. They were optimised with Adam \textbf{[CITATION NEEDED]} at a constant learning
+layer. They were optimised with Adam \cite{kingma2015adam} at a constant learning
 rate of $3 \times 10^{-4}$. Before each of the 75 models was built, the random number
 generators of Python, NumPy and PyTorch, on the central processing unit (CPU) and the
 graphics processing unit (GPU), were reset to the seed 42, and
@@ -356,7 +356,7 @@ cuDNN was set to deterministic mode with benchmark mode switched off. Because th
 is reset before the network is created, all 75 models start from the same initial
 weights. The training crops were shuffled in every epoch by the seeded generator and
 loaded by two worker processes. Bit-exact repetition of GPU training can in general be
-expected only on the same hardware and software \textbf{[CITATION NEEDED]}. Training was
+expected only on the same hardware and software \cite{pytorch2025reproducibility}. Training was
 deterministic within a fixed software environment: two repeated runs gave the same
 losses to six decimal places, and the 48 models trained in August reproduce the first 100 epochs of their
 September 200-epoch runs exactly. The 27 models retrained in October, after a maintenance
@@ -516,7 +516,7 @@ $(256 - 32 + 1)^2 = 50{,}625$, i.e., about 38 million instead of 168,750 occlude
 passes for the 750 analyses. The second is the scale of the network's own features. Starting
 from one pixel, each $3 \times 3$ convolution widens the receptive field by two pixel
 spacings, and each $2 \times 2$ pooling widens it by one spacing and doubles the
-spacing \textbf{[CITATION NEEDED]}. Through the four convolutional layers and the
+spacing \cite{araujo2019computing}. Through the four convolutional layers and the
 three poolings between them, the field grows as
 $1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$. A unit of the fourth convolutional
 layer therefore sees $38 \times 38$ input pixels, and neighbouring units are 8 pixels
@@ -537,7 +537,7 @@ steel, aluminium and grey plastic, whose surfaces are grey or reflect grey
 surroundings. Occlusion was therefore repeated with two further fills. The black fill
 writes 0.0 into all three channels of $\Omega_{ij}$. The blur fill replaces the pixels
 of $\Omega_{ij}$ by those of a copy of the crop filtered with a Gaussian kernel of
-$31 \times 31$ pixels and standard deviation 8 pixels \textbf{[CITATION NEEDED]}, which
+$31 \times 31$ pixels and standard deviation 8 pixels \cite{torchvision2025gaussianblur}, which
 removes texture and edges and keeps the local colour. Neither is neutral for every
 workpiece either: a black patch resembles black plastic, and a blurred patch changes
 little on a workpiece with a uniform surface. All three fills were applied to the same
@@ -650,7 +650,7 @@ H = \frac{1}{255}\, \mathcal{U}\big( \lfloor 255\, \hat{H} \rfloor \big),
 where $\lfloor \cdot \rfloor$ rounds down element by element, which is how the
 conversion to an 8-bit image truncates; $\mathcal{U}$ is the bilinear resizing of
 Pillow applied to that 8-bit image, with output size $256 \times 256$ pixels and
-integer output values in $\{0, \dots, 255\}$ \textbf{[CITATION NEEDED]}; and
+integer output values in $\{0, \dots, 255\}$ \cite{pillow2025docs}; and
 $H \in \{0, \tfrac{1}{255}, \dots, 1\}^{256 \times 256}$. The 8-bit step is inherited
 from the function that draws the displayed heatmaps, and $c$ is computed on the same
 maps. It lowers every value by less than $1/255$ before the interpolation and sets
@@ -785,7 +785,7 @@ is on average three times as important as a pixel outside it. Measures of how mu
 explanation falls on the object or on its context are also used by Dreyer et
 al.~\cite{dreyer2023revealing} and Le et al.~\cite{le2025shortcut}. A sum-based relative of $c$ is
 the share of saliency inside the bounding box, the energy-based pointing game used with
-Score-CAM \textbf{[CITATION NEEDED]}; unlike $c$, it depends on the area of the box.
+Score-CAM \cite{wang2020scorecam}; unlike $c$, it depends on the area of the box.
 
 \paragraph{Worked example}
 \label{sec:methodology-example}
@@ -999,7 +999,7 @@ $\phi$ falls as the ratio falls.
 \paragraph{Comparisons and how they are read}
 \label{sec:methodology-tests}
 Each comparison is a two-sided one-sample Student's $t$ test on 15 per-model values,
-with 14 degrees of freedom \textbf{[CITATION NEEDED]}: a difference or a slope is
+with 14 degrees of freedom \cite{student1908probable, virtanen2020scipy}: a difference or a slope is
 tested against 0, and $c$ against 0.5. The tests were computed with SciPy 1.18.1
 under Python 3.13, outside the training environment of Tab.~\ref{tab:training-config}.
 Writing $c_{\mathrm{occ}}$ for $c$ of

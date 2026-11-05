@@ -18,7 +18,7 @@
   pages={7975--7989},
   year={2022},
   publisher={Springer},
-  doi={https://doi.org/10.1007/s00521-022-06901-6}
+  doi={10.1007/s00521-022-06901-6}
 }
 
 %--------------------------------------------------------------------%
@@ -33,9 +33,13 @@
 @inproceedings{schneidereitYOLOv8,
   author    = {Schneidereit, Toni and Gohrenz, Stefan and Breu{\ss}, Michael},
   title     = {Object Detection Characteristics in a Learning Factory Environment using {YOLOv8}},
-  booktitle = {Intelligent Systems and Applications (IntelliSys 2025)},
+  booktitle = {Intelligent Systems and Applications},
+  eventtitle = {Intelligent Systems Conference (IntelliSys 2025)},
+  eventdate = {2025-08-28/2025-08-29},
+  venue     = {Amsterdam},
   editor    = {Arai, Kohei},
   series    = {Lecture Notes in Networks and Systems},
+  volume    = {1567},
   publisher = {Springer},
   address   = {Cham},
   pages     = {288--308},
@@ -48,7 +52,10 @@
 @inproceedings{schneidereitFischertechnik2023,
   author    = {Schneidereit, Slavomira and Yarahmadi, Ashkan Mansouri and Schneidereit, Toni and Breu{\ss}, Michael and Gebauer, Marc},
   title     = {{YOLO}-Based Object Detection in Industry 4.0 Fischertechnik Model Environment},
-  booktitle = {Intelligent Systems and Applications (IntelliSys 2023)},
+  booktitle = {Intelligent Systems and Applications},
+  eventtitle = {Intelligent Systems Conference (IntelliSys 2023)},
+  eventdate = {2023-09-07/2023-09-08},
+  venue     = {Amsterdam},
   editor    = {Arai, Kohei},
   series    = {Lecture Notes in Networks and Systems},
   volume    = {823},
@@ -95,20 +102,6 @@
   doi       = {10.1038/s41467-023-44371-z}
 }
 
-% Neuron spurious score (binarised Grad-CAM per neuron, overlap with a mask
-% of the spurious feature); DFR changes how neurons are combined rather than
-% removing spurious features. Corrected 16 Oct 2026: the earlier entry
-% pointed to arXiv 2502.09150, which is a different paper (Suhail et al.).
-,
-  title         = {An {XAI}-based Analysis of Shortcut Learning in Neural Networks},
-  year          = {2025},
-  eprint        = {2504.15664},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.LG},
-  note          = {Accepted at the World Conference on eXplainable Artificial Intelligence (XAI-2025)},
-  doi           = {10.48550/arXiv.2504.15664}
-}
-
 % How context/background affects feature-attribution methods, not just
 % accuracy (object-versus-context attribution measure).
 @inproceedings{adhikari2024lostincontext,
@@ -125,9 +118,10 @@
   author    = {Singh, Krishna Kumar and Mahajan, Dhruv and Grauman, Kristen and Lee, Yong Jae and Feiszli, Matt and Ghadiyaram, Deepti},
   title     = {Don't Judge an Object by Its Context: Learning to Overcome Contextual Bias},
   booktitle = {2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {11070--11078},
   year      = {2020},
   publisher = {IEEE},
-  url       = {https://openaccess.thecvf.com/content_CVPR_2020/papers/Singh_Dont_Judge_an_Object_by_Its_Context_Learning_to_Overcome_CVPR_2020_paper.pdf}
+  doi       = {10.1109/CVPR42600.2020.01108}
 }
 
 % L-CRP (CRP for localisation models): background-vs-object context score
@@ -136,8 +130,10 @@
   author    = {Dreyer, Maximilian and Achtibat, Reduan and Wiegand, Thomas and Samek, Wojciech and Lapuschkin, Sebastian},
   title     = {Revealing Hidden Context Bias in Segmentation and Object Detection through Concept-specific Explanations},
   booktitle = {2023 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},
+  pages     = {3829--3839},
   year      = {2023},
-  publisher = {IEEE}
+  publisher = {IEEE},
+  doi       = {10.1109/CVPRW59228.2023.00397}
 }
 
 % Industry 4.0 material classification via classical ML on colour
@@ -178,11 +174,12 @@
   title         = {Small Object Detection: A Comprehensive Survey on Challenges, Techniques and Real-World Applications},
   journal       = {Intelligent Systems with Applications},
   volume        = {27},
+  pages         = {200561},
   year          = {2025},
   publisher     = {Elsevier},
   eprint        = {2503.20516},
   archiveprefix = {arXiv},
-  doi           = {10.48550/arXiv.2503.20516}
+  doi           = {10.1016/j.iswa.2025.200561}
 }
 
 % Grad-CAM -- your Phase 4 explainability method (the comparison to occlusion
@@ -191,7 +188,6 @@
   author    = {Selvaraju, Ramprasaath R. and Cogswell, Michael and Das, Abhishek and Vedantam, Ramakrishna and Parikh, Devi and Batra, Dhruv},
   title     = {Grad-{CAM}: Visual Explanations from Deep Networks via Gradient-Based Localization},
   booktitle = {2017 IEEE International Conference on Computer Vision (ICCV)},
-  address   = {Venice, Italy},
   pages     = {618--626},
   year      = {2017},
   publisher = {IEEE},
@@ -213,8 +209,7 @@
   year         = {2019},
   eprint       = {1908.06037},
   archiveprefix = {arXiv},
-  primaryclass = {cs.CV},
-  doi          = {10.48550/arXiv.1908.06037}
+  primaryclass = {cs.CV}
 }
 
 % ImageNet-9 background/foreground disentanglement (bounding boxes plus
@@ -247,76 +242,6 @@
 %--------------------------------------------------------------------%
 
 
-  title     = {You Only Look Once: Unified, Real-Time Object Detection},
-  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  pages     = {779--788},
-  year      = {2016},
-  publisher = {IEEE},
-  doi       = {10.1109/CVPR.2016.91}
-}
-
-  title     = {On Pixel-Wise Explanations for Non-Linear Classifier Decisions by Layer-Wise Relevance Propagation},
-  journal   = {PLoS ONE},
-  volume    = {10},
-  number    = {7},
-  pages     = {e0130140},
-  year      = {2015},
-  doi       = {10.1371/journal.pone.0130140}
-}
-
-% The LRP reference the 2025 study itself cites.
-,
-  title     = {Layer-Wise Relevance Propagation: An Overview},
-  booktitle = {Explainable {AI}: Interpreting, Explaining and Visualizing Deep Learning},
-  series    = {Lecture Notes in Computer Science},
-  volume    = {11700},
-  publisher = {Springer},
-  address   = {Cham},
-  year      = {2019},
-  doi       = {10.1007/978-3-030-28954-6_10}
-}
-
-,
-  title     = {{ImageNet}: A Large-Scale Hierarchical Image Database},
-  booktitle = {2009 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  pages     = {248--255},
-  year      = {2009},
-  publisher = {IEEE},
-  doi       = {10.1109/CVPR.2009.5206848}
-}
-
-% Class activation maps (CAM), the family Grad-CAM generalises.
-,
-  title     = {Learning Deep Features for Discriminative Localization},
-  booktitle = {2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  pages     = {2921--2929},
-  year      = {2016},
-  publisher = {IEEE},
-  doi       = {10.1109/CVPR.2016.319}
-}
-
-% Deep Feature Re-weighting (DFR).
-,
-  title     = {Last Layer Re-Training is Sufficient for Robustness to Spurious Correlations},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2023}
-}
-
-% Concept Relevance Propagation (CRP), the basis of L-CRP.
-,
-  title     = {From Attribution Maps to Human-Understandable Explanations through Concept Relevance Propagation},
-  journal   = {Nature Machine Intelligence},
-  volume    = {5},
-  number    = {9},
-  pages     = {1006--1019},
-  year      = {2023},
-  doi       = {10.1038/s42256-023-00711-8}
-}
-% ---- 8 entries to add to Overleaf's Sources.bib (copied from the Project's Sources.bib) ----
-% Ch. 3 needs: redmon2016yolo, bach2015lrp, montavon2019lrp, deng2009imagenet, zhou2016cam
-% Ch. 2 also needs: kirichenko2023dfr, achtibat2023crp, and the CORRECTED le2025shortcut
-% IMPORTANT: if Overleaf's Sources.bib already has an entry called le2025shortcut, DELETE the old one first.
-
 @inproceedings{redmon2016yolo,
   author    = {Redmon, Joseph and Divvala, Santosh and Girshick, Ross and Farhadi, Ali},
   title     = {You Only Look Once: Unified, Real-Time Object Detection},
@@ -338,14 +263,17 @@
   doi       = {10.1371/journal.pone.0130140}
 }
 
+% The LRP reference the 2025 study itself cites.
 @incollection{montavon2019lrp,
   author    = {Montavon, Gr{\'e}goire and Binder, Alexander and Lapuschkin, Sebastian and Samek, Wojciech and M{\"u}ller, Klaus-Robert},
   title     = {Layer-Wise Relevance Propagation: An Overview},
   booktitle = {Explainable {AI}: Interpreting, Explaining and Visualizing Deep Learning},
+  editor    = {Samek, Wojciech and Montavon, Gr{\'e}goire and Vedaldi, Andrea and Hansen, Lars Kai and M{\"u}ller, Klaus-Robert},
   series    = {Lecture Notes in Computer Science},
   volume    = {11700},
   publisher = {Springer},
   address   = {Cham},
+  pages     = {193--209},
   year      = {2019},
   doi       = {10.1007/978-3-030-28954-6_10}
 }
@@ -374,7 +302,10 @@
   author    = {Kirichenko, Polina and Izmailov, Pavel and Wilson, Andrew Gordon},
   title     = {Last Layer Re-Training is Sufficient for Robustness to Spurious Correlations},
   booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2023}
+  year      = {2023},
+  eprint    = {2204.02937},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG}
 }
 
 @article{achtibat2023crp,
@@ -388,6 +319,10 @@
   doi       = {10.1038/s42256-023-00711-8}
 }
 
+% Neuron spurious score (binarised Grad-CAM per neuron, overlap with a mask
+% of the spurious feature); DFR changes how neurons are combined rather than
+% removing spurious features. Corrected 16 Oct 2026: the earlier entry
+% pointed to arXiv 2502.09150, which is a different paper (Suhail et al.).
 @misc{le2025shortcut,
   author        = {Le, Phuong Quynh and Schl{\"o}tterer, J{\"o}rg and Seifert, Christin},
   title         = {An {XAI}-based Analysis of Shortcut Learning in Neural Networks},
@@ -395,7 +330,287 @@
   eprint        = {2504.15664},
   archiveprefix = {arXiv},
   primaryclass  = {cs.LG},
-  note          = {Accepted at the World Conference on eXplainable Artificial Intelligence (XAI-2025)},
-  doi           = {10.48550/arXiv.2504.15664}
+  note          = {Accepted at the World Conference on eXplainable Artificial Intelligence (XAI-2025)}
 }
 
+%--------------------------------------------------------------------%
+% Chapters 1, 3 and 4: sources for the former [CITATION NEEDED]      %
+% marks, added 5 Nov 2026. Each source was read at the cited place;  %
+% bibliographic data checked against the publisher, arXiv, JMLR,     %
+% CVF/IEEE or library records. Software documentation is cited for   %
+% the versions used (Ch. 4, Tab. training-config).                   %
+%--------------------------------------------------------------------%
+
+% ---- Chapter 1 ----
+
+@article{lasi2014industry,
+  author    = {Lasi, Heiner and Fettke, Peter and Kemper, Hans-Georg and Feld, Thomas and Hoffmann, Michael},
+  title     = {Industry 4.0},
+  journal   = {Business \& Information Systems Engineering},
+  volume    = {6},
+  number    = {4},
+  pages     = {239--242},
+  year      = {2014},
+  publisher = {Springer},
+  doi       = {10.1007/s12599-014-0334-4}
+}
+
+@article{czimmermann2020visual,
+  author    = {Czimmermann, Tam{\'a}s and Ciuti, Gastone and Milazzo, Mario and Chiurazzi, Marcello and Roccella, Stefano and Oddo, Calogero Maria and Dario, Paolo},
+  title     = {Visual-Based Defect Detection and Classification Approaches for Industrial Applications---{A} {SURVEY}},
+  journal   = {Sensors},
+  volume    = {20},
+  number    = {5},
+  pages     = {1459},
+  year      = {2020},
+  publisher = {MDPI},
+  doi       = {10.3390/s20051459}
+}
+
+@article{lecun2015deep,
+  author    = {LeCun, Yann and Bengio, Yoshua and Hinton, Geoffrey},
+  title     = {Deep Learning},
+  journal   = {Nature},
+  volume    = {521},
+  number    = {7553},
+  pages     = {436--444},
+  year      = {2015},
+  doi       = {10.1038/nature14539}
+}
+
+% "Typical learning factories are characterized by selective simplification
+% or scaling-down" (abstract, p. 47).
+@article{kemeny2016complementary,
+  author    = {Kem{\'e}ny, Zsolt and Nacsa, J{\'a}nos and Erd{\H{o}}s, G{\'a}bor and Glawar, Robert and Sihn, Wilfried and Monostori, L{\'a}szl{\'o} and Ilie-Zudor, Elisabeth},
+  title     = {Complementary Research and Education Opportunities -- A Comparison of Learning Factory Facilities and Methodologies at {TU} {Wien} and {MTA} {SZTAKI}},
+  journal   = {Procedia {CIRP}},
+  volume    = {54},
+  pages     = {47--52},
+  year      = {2016},
+  publisher = {Elsevier},
+  addendum  = {6th CIRP Conference on Learning Factories},
+  doi       = {10.1016/j.procir.2016.05.064}
+}
+
+@inproceedings{adebayo2018sanity,
+  author        = {Adebayo, Julius and Gilmer, Justin and Muelly, Michael and Goodfellow, Ian and Hardt, Moritz and Kim, Been},
+  title         = {Sanity Checks for Saliency Maps},
+  booktitle     = {Advances in Neural Information Processing Systems 31 (NeurIPS 2018)},
+  year          = {2018},
+  eprint        = {1810.03292},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% ---- Chapter 3 ----
+
+% Cited with section numbers (e.g. \cite[Sec.~9.1]{goodfellow2016deep}).
+@book{goodfellow2016deep,
+  author    = {Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
+  title     = {Deep Learning},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA},
+  year      = {2016},
+  isbn      = {978-0-262-03561-3},
+  url       = {https://www.deeplearningbook.org}
+}
+
+@inproceedings{lin2014network,
+  author        = {Lin, Min and Chen, Qiang and Yan, Shuicheng},
+  title         = {Network In Network},
+  booktitle     = {International Conference on Learning Representations (ICLR)},
+  year          = {2014},
+  eprint        = {1312.4400},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.NE}
+}
+
+@article{araujo2019computing,
+  author    = {Araujo, Andr{\'e} and Norris, Wade and Sim, Jack},
+  title     = {Computing Receptive Fields of Convolutional Neural Networks},
+  journal   = {Distill},
+  year      = {2019},
+  doi       = {10.23915/distill.00021},
+  url       = {https://distill.pub/2019/computing-receptive-fields/}
+}
+
+@article{rifkin2004defense,
+  author    = {Rifkin, Ryan and Klautau, Aldebaro},
+  title     = {In Defense of One-Vs-All Classification},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {5},
+  pages     = {101--141},
+  year      = {2004}
+}
+
+@inproceedings{kingma2015adam,
+  author        = {Kingma, Diederik P. and Ba, Jimmy},
+  title         = {Adam: A Method for Stochastic Optimization},
+  booktitle     = {International Conference on Learning Representations (ICLR)},
+  year          = {2015},
+  eprint        = {1412.6980},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG}
+}
+
+@article{srivastava2014dropout,
+  author    = {Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+  title     = {Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {15},
+  number    = {56},
+  pages     = {1929--1958},
+  year      = {2014}
+}
+
+@article{fawcett2006roc,
+  author    = {Fawcett, Tom},
+  title     = {An Introduction to {ROC} Analysis},
+  journal   = {Pattern Recognition Letters},
+  volume    = {27},
+  number    = {8},
+  pages     = {861--874},
+  year      = {2006},
+  publisher = {Elsevier},
+  doi       = {10.1016/j.patrec.2005.10.010}
+}
+
+% ---- Chapter 4 ----
+
+@inproceedings{kohavi1995study,
+  author    = {Kohavi, Ron},
+  title     = {A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection},
+  booktitle = {Proceedings of the 14th International Joint Conference on Artificial Intelligence (IJCAI)},
+  volume    = {2},
+  pages     = {1137--1144},
+  publisher = {Morgan Kaufmann},
+  year      = {1995}
+}
+
+@article{roberts2017cross,
+  author    = {Roberts, David R. and Bahn, Volker and Ciuti, Simone and Boyce, Mark S. and Elith, Jane and Guillera-Arroita, Gurutzeta and Hauenstein, Severin and Lahoz-Monfort, Jos{\'e} J. and Schr{\"o}der, Boris and Thuiller, Wilfried and Warton, David I. and Wintle, Brendan A. and Hartig, Florian and Dormann, Carsten F.},
+  title     = {Cross-Validation Strategies for Data with Temporal, Spatial, Hierarchical, or Phylogenetic Structure},
+  journal   = {Ecography},
+  volume    = {40},
+  number    = {8},
+  pages     = {913--929},
+  year      = {2017},
+  publisher = {Wiley},
+  doi       = {10.1111/ecog.02881}
+}
+
+@article{johnson2019survey,
+  author    = {Johnson, Justin M. and Khoshgoftaar, Taghi M.},
+  title     = {Survey on Deep Learning with Class Imbalance},
+  journal   = {Journal of Big Data},
+  volume    = {6},
+  pages     = {27},
+  year      = {2019},
+  publisher = {Springer},
+  doi       = {10.1186/s40537-019-0192-5}
+}
+
+@inproceedings{wang2020scorecam,
+  author    = {Wang, Haofan and Wang, Zifan and Du, Mengnan and Yang, Fan and Zhang, Zijian and Ding, Sirui and Mardziel, Piotr and Hu, Xia},
+  title     = {{Score-CAM}: Score-Weighted Visual Explanations for Convolutional Neural Networks},
+  booktitle = {2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},
+  pages     = {111--119},
+  year      = {2020},
+  publisher = {IEEE},
+  doi       = {10.1109/CVPRW50498.2020.00020}
+}
+
+@article{student1908probable,
+  author    = {{Student}},
+  title     = {The Probable Error of a Mean},
+  journal   = {Biometrika},
+  volume    = {6},
+  number    = {1},
+  pages     = {1--25},
+  year      = {1908},
+  doi       = {10.1093/biomet/6.1.1}
+}
+
+@article{virtanen2020scipy,
+  author    = {Virtanen, Pauli and others},
+  title     = {{SciPy} 1.0: Fundamental Algorithms for Scientific Computing in {Python}},
+  journal   = {Nature Methods},
+  volume    = {17},
+  number    = {3},
+  pages     = {261--272},
+  year      = {2020},
+  doi       = {10.1038/s41592-019-0686-2}
+}
+
+@inproceedings{paszke2019pytorch,
+  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and K{\"o}pf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+  title     = {{PyTorch}: An Imperative Style, High-Performance Deep Learning Library},
+  booktitle = {Advances in Neural Information Processing Systems 32 (NeurIPS 2019)},
+  pages     = {8024--8035},
+  year      = {2019}
+}
+
+@article{pedregosa2011scikit,
+  author    = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
+  title     = {Scikit-learn: Machine Learning in {Python}},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {12},
+  number    = {85},
+  pages     = {2825--2830},
+  year      = {2011}
+}
+
+% Software documentation, versions as in Ch. 4, Tab. training-config.
+% Corporate authors in double braces, so giveninits does not abbreviate them.
+
+@misc{pytorch2025crossentropy,
+  author  = {{PyTorch Contributors}},
+  title   = {{torch.nn.CrossEntropyLoss}},
+  howpublished = {PyTorch 2.8 documentation},
+  version = {2.8},
+  year    = {2025},
+  url     = {https://docs.pytorch.org/docs/2.8/generated/torch.nn.CrossEntropyLoss.html},
+  urldate = {2026-11-05}
+}
+
+@misc{pytorch2025init,
+  author  = {{PyTorch Contributors}},
+  title   = {{torch.nn.Conv2d} and {torch.nn.Linear}},
+  howpublished = {PyTorch 2.8 documentation},
+  version = {2.8},
+  year    = {2025},
+  url     = {https://docs.pytorch.org/docs/2.8/generated/torch.nn.Conv2d.html},
+  urldate = {2026-11-05},
+  note    = {Initialisation of the weights and biases; for torch.nn.Linear see \url{https://docs.pytorch.org/docs/2.8/generated/torch.nn.Linear.html}}
+}
+
+@misc{pytorch2025reproducibility,
+  author  = {{PyTorch Contributors}},
+  title   = {Reproducibility},
+  howpublished = {PyTorch 2.8 documentation, Notes},
+  version = {2.8},
+  year    = {2025},
+  url     = {https://docs.pytorch.org/docs/2.8/notes/randomness.html},
+  urldate = {2026-11-05}
+}
+
+@misc{torchvision2025gaussianblur,
+  author  = {{Torchvision Contributors}},
+  title   = {{torchvision.transforms.GaussianBlur}},
+  howpublished = {Torchvision 0.23 documentation},
+  version = {0.23},
+  year    = {2025},
+  url     = {https://docs.pytorch.org/vision/0.23/generated/torchvision.transforms.GaussianBlur.html},
+  urldate = {2026-11-05}
+}
+
+% Credit line of the documentation: Fredrik Lundh (PIL), Jeffrey A. Clark (Pillow).
+@misc{pillow2025docs,
+  author  = {Lundh, Fredrik and Clark, Jeffrey A.},
+  title   = {Pillow ({PIL} Fork) Documentation},
+  version = {11.3.0},
+  year    = {2025},
+  url     = {https://github.com/python-pillow/Pillow/blob/11.3.0/docs/handbook/concepts.rst},
+  urldate = {2026-11-05},
+  note    = {Handbook, Concepts: Modes and Filters. PIL by Fredrik Lundh, Pillow by Jeffrey A. Clark and contributors}
+}
