@@ -5,7 +5,7 @@
 %packages%
 %%%%%%%%%%
 %Spracheinstellung / language setting / replace "english" if needed
-\usepackage[english]{babel}
+\usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
 \usepackage[absolute,overlay]{textpos}
 \usepackage[giveninits=true,sorting=none,style=numeric,maxbibnames=5]{biblatex}
 \usepackage{csquotes}
@@ -89,14 +89,60 @@ Toni Schneidereit
 %%% ENTER THE ABSTRACT IN ENGLISH HERE %%%
 %%% Should not exceed half a page %%%
 \newcommand{\ABSTRACT}{
-% TODO: write this LAST, once all results and conclusions are final.
-Example summary in English.
+Convolutional neural networks (CNNs) for automated visual inspection in Industry~4.0 can
+base their decisions on the background instead of the workpiece. In the reviewed
+literature, studies that vary the share of background use at most one saliency method,
+and none compares explainability methods against a complex industrial background as that
+share grows. This thesis makes that comparison on 15 workpieces that differ only in
+material and colour, photographed in the Fischertechnik Industry~4.0 learning factory.
+Crops at five object-to-image (O2I) ratios from 90\% to 10\% were classified by 75
+one-vs-rest CNNs trained from scratch. Occlusion sensitivity and Gradient-weighted Class
+Activation Mapping (Grad-CAM) were compared on the same crops through a per-pixel centre
+measure, read against the value of a map lying on the workpiece, the reference value. As the ratio falls, the
+mean test F1 drops from 0.813 to 0.720, with most of the loss below a ratio of 50\%.
+Steel and aluminium are the weakest materials at every ratio, already at 90\%. The
+Grad-CAM centre measure falls from 0.737 to 0.407 while its reference value rises, so
+its evidence shifts gradually towards the background, but at no ratio does it lie
+clearly below the no-preference level of 0.5. Grad-CAM detects the shift; occlusion
+sensitivity does not, since its centre measure rises, though less than its reference
+value. This holds on average; per material, no link between the F1 loss and the Grad-CAM
+change is shown. A single explainability method can therefore miss a shift that another
+reveals.
+
+\medskip\noindent
+\textbf{Keywords:} material classification, object-to-image ratio, complex background,
+occlusion sensitivity, Grad-CAM, explainability, learning factory
 }
 %%% ENTER THE ABSTRACT IN GERMAN HERE %%%
 %%% Should not exceed half a page %%%
 \newcommand{\ZUSAMMENFASSUNG}{
-% TODO: translate the final English abstract into German, once it is written.
-Beispielzusammenfassung in Deutsch.
+\begin{otherlanguage}{ngerman}
+Convolutional Neural Networks (CNNs) für die automatisierte Sichtprüfung in der
+Industrie~4.0 können ihre Entscheidungen auf den Hintergrund statt auf das Werkstück
+stützen. In der gesichteten Literatur wird bei variiertem Hintergrundanteil höchstens
+eine Saliency-Methode eingesetzt, und kein Vergleich von Erklärbarkeitsmethoden vor
+einem komplexen industriellen Hintergrund bei wachsendem Anteil liegt vor. Diese Arbeit
+vergleicht zwei solche Methoden an 15 Werkstücken, die sich nur in Material und Farbe
+unterscheiden und in der Fischertechnik-Industrie-4.0-Lernfabrik aufgenommen wurden.
+Ausschnitte mit fünf Objekt-Bild-Verhältnissen (object-to-image, O2I) von 90\,\% bis
+10\,\% wurden mit 75 von Grund auf trainierten One-vs-Rest-CNNs klassifiziert;
+Okklusionssensitivität und Gradient-weighted Class Activation Mapping (Grad-CAM) wurden
+auf denselben Ausschnitten über ein pixelbezogenes Zentrumsmaß verglichen, gemessen am Wert einer auf dem Werkstück liegenden Heatmap, dem Referenzwert. Mit sinkendem Verhältnis fällt der
+mittlere Test-F1-Wert von 0,813 auf 0,720, wobei der Rückgang großteils unterhalb von
+50\,\% liegt. Stahl und Aluminium sind bei jedem Verhältnis die schwächsten Materialien,
+schon bei 90\,\%. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, während sein
+Referenzwert steigt; die für die Entscheidung relevanten Bildbereiche verschieben sich
+also allmählich zum Hintergrund, doch bei keinem Verhältnis liegt das Maß eindeutig
+unter dem neutralen Wert 0,5. Grad-CAM erkennt die Verschiebung, die
+Okklusionssensitivität nicht, da ihr Zentrumsmaß steigt, wenn auch weniger als ihr
+Referenzwert. Dies gilt im Mittel; je Material zeigt sich kein Zusammenhang zwischen
+F1-Verlust und Grad-CAM-Änderung. Eine einzelne Erklärbarkeitsmethode kann also eine
+Verschiebung übersehen, die eine andere zeigt.
+
+\medskip\noindent
+\textbf{Schlagwörter:} Materialklassifikation, Objekt-Bild-Verhältnis, komplexer
+Hintergrund, Okklusionssensitivität, Grad-CAM, Erklärbarkeit, Lernfabrik
+\end{otherlanguage}
 }
 %%% ENTER THE GENERATIVE MODELS HERE %%%
 %%% Document the use of generative AI for  %%%
@@ -186,12 +232,13 @@ All applications of generative AI methods which are not part of the Thesis proje
 \section*{\underline{Abstract}}
 \vspace{0.5cm}
 \ABSTRACT
+\newpage % Zusammenfassung on the back of the Abstract page (both exceed half a page)
 \section*{\underline{Zusammenfassung}}
 \vspace{0.5cm}
 \ZUSAMMENFASSUNG
 
 
-\newpage\null\thispagestyle{empty}\newpage
+\newpage
 \tableofcontents
 
 \newpage\null\thispagestyle{empty}\newpage
@@ -227,6 +274,6 @@ All applications of generative AI methods which are not part of the Thesis proje
 %Bibliography: Sources are stored in the bibtex file "Sources.bib" and referenced in the text via the reference \cite{Abbreviation}.
 %Important note: Google Scholar offers the "Cite" feature - the information there must always be checked! They are often not completely correct!
 
-\printbibliography
+\printbibliography[heading=bibnumbered, title={References}]
 
 \end{document}
