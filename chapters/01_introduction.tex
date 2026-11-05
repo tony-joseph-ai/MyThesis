@@ -5,13 +5,13 @@
 \paragraph{Motivation}
 In the production systems described as Industry~4.0, machines, sensors and software are
 connected, and many decisions that were once made by a worker are taken from data
-recorded during production~\textbf{[CITATION NEEDED]}. Cameras are among the most common
-of these sensors. Automated visual inspection uses them to check whether a part is
-present, correctly placed or free of defects, and to identify what a part is made of,
-e.g., before it is sorted or processed further~\textbf{[CITATION NEEDED]}. For such image
+recorded during production~\cite{lasi2014industry}. Automated visual inspection uses
+cameras, one of these sensors, to check whether a part is free of defects, and to
+identify what a part is made of,
+e.g., before it is sorted or processed further~\cite{czimmermann2020visual, penumuru2020material}. For such image
 tasks, convolutional neural networks (CNNs) have become a standard tool, because they
 learn the relevant features directly from labelled images instead of relying on rules
-designed by hand~\textbf{[CITATION NEEDED]}.
+designed by hand~\cite{lecun2015deep}.
 
 A camera in a production cell, however, rarely sees the workpiece alone. Around it lie
 conveyor belts, grippers, cables and other machine parts, and some of them share the
@@ -30,7 +30,7 @@ repeated at will. Learning factories, i.e., scaled-down production environments 
 for teaching and research, offer a controlled alternative. They contain the machines of
 a production line and a simpler version of its visual complexity, but the
 workpieces, their positions and the lighting can be chosen and recorded
-systematically~\textbf{[CITATION NEEDED]}.
+systematically~\cite{kemeny2016complementary, schneidereitYOLOv8}.
 
 \paragraph{The learning factory and its dataset}
 This thesis works with the Fischertechnik Industry~4.0 learning factory, a model
@@ -103,7 +103,7 @@ methods: occlusion sensitivity changes the input, Grad-CAM reads gradients insid
 network.
 
 A second method is needed because a heatmap is not ground truth for what the network
-uses~\textbf{[CITATION NEEDED]}, and different methods can give different answers for
+uses~\cite{adebayo2018sanity}, and different methods can give different answers for
 the same decision (Section~\ref{sec:related-work-explainability}). A shift of the
 evidence that only one method shows, or that one method misses, could then be a property
 of that method rather than of the model. This is why both methods are applied to the
