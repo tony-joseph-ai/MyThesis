@@ -98,7 +98,7 @@ material and colour, photographed in the Fischertechnik Industry~4.0 learning fa
 Crops at five object-to-image (O2I) ratios from 90\% to 10\% were classified by 75
 one-vs-rest CNNs trained from scratch. Occlusion sensitivity and Gradient-weighted Class
 Activation Mapping (Grad-CAM) were compared on the same crops through a per-pixel centre
-measure, read against the value of a map lying on the workpiece. As the ratio falls, the
+measure, read against the value of a map lying on the workpiece, the reference value. As the ratio falls, the
 mean test F1 drops from 0.813 to 0.720, with most of the loss below a ratio of 50\%.
 Steel and aluminium are the weakest materials at every ratio, already at 90\%. The
 Grad-CAM centre measure falls from 0.737 to 0.407 while its reference value rises, so
@@ -127,8 +127,7 @@ unterscheiden und in der Fischertechnik-Industrie-4.0-Lernfabrik aufgenommen wur
 Ausschnitte mit fünf Objekt-Bild-Verhältnissen (object-to-image, O2I) von 90\,\% bis
 10\,\% wurden mit 75 von Grund auf trainierten One-vs-Rest-CNNs klassifiziert;
 Okklusionssensitivität und Gradient-weighted Class Activation Mapping (Grad-CAM) wurden
-auf denselben Ausschnitten über ein pixelbezogenes Zentrumsmaß verglichen, gemessen am
-Wert einer auf dem Werkstück liegenden Heatmap. Mit sinkendem Verhältnis fällt der
+auf denselben Ausschnitten über ein pixelbezogenes Zentrumsmaß verglichen, gemessen am Wert einer auf dem Werkstück liegenden Heatmap, dem Referenzwert. Mit sinkendem Verhältnis fällt der
 mittlere Test-F1-Wert von 0,813 auf 0,720, wobei der Rückgang großteils unterhalb von
 50\,\% liegt. Stahl und Aluminium sind bei jedem Verhältnis die schwächsten Materialien,
 schon bei 90\,\%. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, während sein
