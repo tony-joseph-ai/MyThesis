@@ -49,6 +49,20 @@
 \setlength{\@fpbot}{0pt plus 1fil}
 \makeatother
 \setlength{\floatsep}{1.3\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+% Equal space above and below in-text tables/figures. By default, when a
+% table is followed by a heading, LaTeX adds the heading's space on top of the
+% table's own space, so the gap under the table was larger than above it.
+% Here, a heading that comes straight after an in-text table/figure adds no
+% extra space; the next normal paragraph resets this.
+\usepackage{etoolbox}
+\makeatletter
+\newif\if@afterintextfloat
+\patchcmd{\@addtocurcol}{\@inserttrue}{\@inserttrue\global\@afterintextfloattrue}{}
+  {\PackageWarning{main}{float spacing patch 1 failed}}
+\patchcmd{\@startsection}{\addvspace\@tempskipa}{\if@afterintextfloat\else\addvspace\@tempskipa\fi}{}
+  {\PackageWarning{main}{float spacing patch 2 failed}}
+\AddToHook{para/begin}{\global\@afterintextfloatfalse}
+\makeatother
 % Table captions are above the table: put the gap between caption and table.
 \usepackage{caption}
 \captionsetup[table]{position=top,skip=8pt}
@@ -226,10 +240,7 @@ Electrical Engineering and Information Technology}\\[0.9em]
 \restoregeometry
 
 
-~
-\begin{textblock*}{\textwidth}(2.45cm,5cm) % {block width} (coords)
 \section*{\underline{Declaration of independence}}
-\vspace{1cm}
 I hereby declare that I have written this thesis independently, without unauthorised help and exclusively using the sources indicated. The ideas taken directly or indirectly from external sources (including electronic sources) are labelled as such without exception. The sources used verbatim and in terms of content have been cited in accordance with the recognised rules of scientific work. This work has not yet been submitted for any other review or published elsewhere.\\[0.5cm]
 \noindent
 I agree that the thesis will be checked for plagiarism with the help of a plagiarism detection service. I also hereby confirm that I comply with the \href{https://www-docs.b-tu.de/youngacademics/public/Statute_for_Safeguarding_Good_Research_Practice_BTU_2024.pdf}{“Statutes for Ensuring Good Scientific Practice and Dealing with Suspected Cases of Scientific Misconduct at the Brandenburg University of
@@ -241,7 +252,6 @@ All applications of generative AI methods which are not part of the Thesis proje
 \noindent
 {Cottbus, \SUBMISSIONDATE}{\hspace*{2.725cm}\underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}} \\
 {\hspace*{7.75cm} Signature of the author}
-\end{textblock*}
 
 \newpage
 \section*{\underline{Abstract}}
