@@ -178,7 +178,7 @@ training image at 10\%, and a comparison across ratios would mix the effect of t
 ratio with a change in the tested photographs. Tab.~\ref{tab:crop-counts} lists the
 resulting crop counts.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Crop counts per ratio and split]{Number of crops per object-to-image (O2I) ratio and split, and number of
 photographs whose crop window violates Eq.~\eqref{eq:crop-inside} at that ratio
@@ -266,7 +266,7 @@ All 75 models use the network \texttt{MaterialCNNBinary}
 (Tab.~\ref{tab:cnn-architecture}), trained from scratch with the configuration in
 Tab.~\ref{tab:training-config}.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Training configuration]{Training configuration of the 75 one-vs-rest models, where F1 is the harmonic
 mean of precision and recall on the positive class (Eq.~\eqref{eq:bg-prf}), GPU stands
@@ -690,7 +690,7 @@ where $u$ and $v$ are the row and column of a pixel, $a_r$ and $b_r$ are integer
 bounds in pixels, and $|B_r| = (b_r - a_r)^2$ is the number of pixels in the square.
 Tab.~\ref{tab:reference-square} lists the resulting squares.
 
-\begin{table}[tbp]
+\begin{table}[htbp]
 \centering
 \caption[Reference square per ratio]{Reference square $B_r$ for each object-to-image (O2I) ratio $r$ in the
 $256 \times 256$ input (Eqs.~\eqref{eq:box-side} and~\eqref{eq:box-bounds}). Area is
@@ -919,7 +919,7 @@ crop, the interpolation raises $c$ for positive-drops occlusion from 0.709 to 0.
 and for Grad-CAM only from 0.995 to 0.996. The effect of the interpolation on $c$ over
 all 750 analyses is reported in Section~\ref{sec:results-interpolation}.
 
-\begin{figure}[tbp]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{resolution_black_plastic_r90.pdf}
 \caption[Measured, block and interpolated heatmaps of one crop]{Heatmaps of the
