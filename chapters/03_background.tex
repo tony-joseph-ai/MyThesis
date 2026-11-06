@@ -100,7 +100,7 @@ between them cannot come from a different set of backgrounds. The single box per
 photograph allows a crop with a prescribed share of workpiece, which is the variable of
 the experiment. Finally, the per-material results of the 2025 study give a reference
 point for the material ranking found here, although task and metric differ
-(Section~\ref{sec:related-work-fischertechnik}).
+(Sections~\ref{sec:related-work-fischertechnik} and~\ref{sec:discussion-material}).
 
 \paragraph{Limitation}
 Each material is represented by one physical workpiece that was photographed 166 times.
@@ -186,9 +186,8 @@ With a fixed input size, loosening a crop changes two things together. The share
 background in the input grows, and the workpiece covers fewer input pixels. In the toy,
 the workpiece shrinks from $4 \times 4$ to $2 \times 2$ pixels. In the real crops, the
 side of the square with the area of the box shrinks from about 243 pixels at 90\% to
-about 81 pixels at 10\% of the $256$-pixel input. Section~\ref{sec:related-work-o2i}
-made this point in contrast to the digit data of Pawlowski et al., who keep the digits
-at their native size, and Fig.~\ref{fig:bg-o2i} shows it directly. An effect of the ratio in this thesis
+about 81 pixels at 10\% of the $256$-pixel input. Fig.~\ref{fig:bg-o2i} shows this
+directly. An effect of the ratio in this thesis
 is therefore the combined effect of more background and a smaller workpiece, and the
 network of Section~\ref{sec:background-cnn} shows why the second part matters.
 
@@ -199,7 +198,7 @@ network of Section~\ref{sec:background-cnn} shows why the second part matters.
 Fig.~\ref{fig:bg-cnn-toy} follows the tight toy crop through the first stages of a
 convolutional neural network (CNN). A CNN computes a stack of feature maps, each from
 the maps before it, and ends in a small number of scores, one per
-class~\cite[Sec.~9.3]{goodfellow2016deep}.
+class~\cite[Ch.~9]{goodfellow2016deep}.
 
 \paragraph{Convolution}
 Let $X \in \mathbb{R}^{C \times N \times N}$ be an input with $C$ channels, e.g., the
@@ -241,8 +240,8 @@ whether it belongs to the workpiece or not. Here this is the case at both factor
 whose neighbourhoods at the corners of the crop are completed by the repeated border,
 and they reach the same 0.50 as the centre of the workpiece. The feature map says where
 something dark is, not whether it belongs to the workpiece. This is the situation of
-black plastic among the many black parts of the learning factory, with which the 2025
-study, with a hedge, explained the difficulty of its detector with this workpiece
+black plastic among the many black parts of the learning factory, which the 2025 study
+named, with a hedge, as the likely reason why its detector found this workpiece hardest
 (Section~\ref{sec:related-work-fischertechnik}).
 
 \paragraph{Max pooling}
@@ -358,8 +357,11 @@ ImageNet~\cite{deng2009imagenet}. A network without such priors cannot bring hab
 learned on another domain into its decision, e.g., a reliance on typical backgrounds or
 the preference for texture over shape that Geirhos et al.~\cite{geirhos2019texture}
 found in ImageNet-trained CNNs (Section~\ref{sec:related-work-o2i}). Whatever the models
-use, they have learned from the learning factory itself. The price is a small network trained on few images, at most 116 training
-photographs per material.
+use, they have learned from the learning factory itself. The price is a small network, with 1,437,762 parameters, 73\% of them in fc1, trained
+on few images, at most 116 training photographs per material. Four convolutional layers
+are few enough to train from scratch on these data, enough for a unit of c4 to see
+$38 \times 38$ pixels, and they leave a $32 \times 32$ map for Grad-CAM; no other depth
+was tried.
 
 % ============================================================================
 \subsection{Training and Evaluating a Binary Classifier}
@@ -481,7 +483,7 @@ F_1 = \frac{2PR}{P + R},
 
 where $P, R, F_1 \in [0,1]$, and a value whose denominator is zero is set to 0. In
 Eq.~\eqref{eq:bg-prf}, precision is the part of the crops called positive that are
-positive, recall is the part of the positive crops that are found, and $F_1$, their
+positive, recall is the part of the positive crops that are found, and F1, their
 harmonic mean, is high only if both are. Accuracy is $(\mathrm{TP} + \mathrm{TN})$ divided
 by the number of crops. The receiver operating
 characteristic (ROC) curve plots the recall against the false positive rate
@@ -501,18 +503,18 @@ $\mathrm{AUC} \in [0,1]$. On a finite split, the probabilities in Eq.~\eqref{eq:
 are the fractions of positive--negative pairs that are ordered correctly or tied. A
 value of 0.5 corresponds to a random order or a constant score, and 1 to a perfect
 ranking. The ROC-AUC thus measures how well the scores rank the crops, independent of a
-threshold, while $F_1$ measures the decisions made at the threshold.
+threshold, while F1 measures the decisions made at the threshold.
 
 Tab.~\ref{tab:bg-toy-metrics} shows why accuracy is not used under the imbalance of this
 thesis. Its 30 toy crops have the imbalance 1:14 of the one-vs-rest tasks. The first classifier
 always answers ``not X''. The toy model gives the two positive crops the scores 0.9 and 0.7 and the negative crops 0.8, 0.6 and
 26 values below 0.5, and calls a crop positive above 0.5. Both reach an accuracy of
-$28/30 = 0.933$. The first never finds a positive crop, so its recall and $F_1$ are 0,
+$28/30 = 0.933$. The first never finds a positive crop, so its recall and F1 are 0,
 and its precision, with a zero denominator, is set to 0. The toy model finds both
 positive crops at the cost of two false alarms and reaches $F_1 = 0.667$. Accuracy
 cannot tell the two apart, and at 90\% in the real data the ``not X'' answer reaches the
 same $1{,}624/1{,}740 = 0.933$ on the training split (Section~\ref{sec:methodology-ovr}).
-The thesis therefore reports $F_1$ and ROC-AUC and never accuracy. Of the
+The thesis therefore reports F1 and ROC-AUC and never accuracy. Of the
 $2 \cdot 28 = 56$ positive--negative pairs of the toy model, only one is ordered wrongly, the positive crop at
 0.7 below the negative crop at 0.8, so $\mathrm{AUC} = 55/56 = 0.982$. The constant
 answer of the first classifier ties every pair and gives 0.5.
@@ -540,8 +542,8 @@ Toy model & 2 & 2 & 0 & 26 & 0.933 & 0.500 & 1.000 & 0.667 & 0.982 \\
 \end{table}
 
 \paragraph{What the metrics leave open}
-$F_1$ and ROC-AUC say how well a model separates its material from the others, but not
-which pixels it uses to do so. A model can reach a high $F_1$ by looking at the
+F1 and ROC-AUC say how well a model separates its material from the others, but not
+which pixels it uses to do so. A model can reach a high F1 by looking at the
 workpiece, at the background around it, or at both. The methods of
 Sections~\ref{sec:background-occlusion} and~\ref{sec:background-gradcam} ask where the
 evidence lies.
@@ -606,13 +608,9 @@ toy network still responds to the grey workpiece, since 0.5 lies below the thres
 patches over the two factory parts, 0.25 where a patch covers a part entirely and 0.04
 where it covers it partly, so occlusion places all positive evidence outside the
 workpiece, and the measure of Section~\ref{sec:background-comparison} becomes 0.00. This
-is the grey-fill question raised for steel in Section~\ref{sec:related-work-o2i}, in
-miniature. The surface of a steel workpiece is grey or reflects grey surroundings, so a
-grey patch may remove little of its evidence. For the real steel models, the fill-colour
-test of Section~\ref{sec:results-fill} confirms this at 50\%, 30\% and 10\%: with a
-black or blurred patch instead of a grey one, occlusion favours the workpiece for
-steel, so its grey-patch result is an artefact of the fill rather than a sign of
-background reliance (Section~\ref{sec:discussion-material}).
+is the grey-fill question for steel in miniature: the surface of a steel workpiece is
+grey or reflects grey surroundings, so a grey patch may remove little of its evidence.
+Section~\ref{sec:results-fill} tests this with other fills.
 
 \paragraph{What occlusion measures}
 Occlusion measures what replacing one region alone changes, with everything else left in
@@ -705,7 +703,7 @@ the full $8 \times 8$ resolution of the input.
 Grad-CAM shows where channels with a positive weight are active, not what kind of
 feature these channels respond to. A channel that responds to dark regions and one that
 responds to a surface texture can look the same in $G$. For aluminium, Grad-CAM favours
-the workpiece at every ratio (Section~\ref{sec:related-work-o2i}), but
+the workpiece at every ratio (Section~\ref{sec:results-qualitative}), but
 the map cannot tell whether the model uses the shape of the workpiece or the texture of
 its reflecting surface, the distinction that Geirhos et al.~\cite{geirhos2019texture}
 draw for ImageNet-trained CNNs.
@@ -773,8 +771,8 @@ the reverse.
 The toy maps of panels (c) and (d) both favour the workpiece. For occlusion, only the
 positive drops are kept, each pixel receives the mean of the positive drops of the
 patches that cover it, and the map is divided by its maximum. This gives $c = 0.83$. The Grad-CAM map divided by its
-maximum gives $c = 0.84$. A pixel inside the square is thus about 4.9 and 5.2 times as
-important as a pixel outside it. The shares of 0.62 and 0.64 are lower, because the
+maximum gives $c = 0.84$. A pixel inside the square is thus about five times as
+important as a pixel outside it in both maps. The shares of 0.62 and 0.64 are lower, because the
 square covers only a quarter of the crop. For the real crop of
 Fig.~\ref{fig:bg-methods-real}, $c$ is 0.87 for the positive occlusion drops and 0.82 for
 Grad-CAM. The slightly lower Grad-CAM value seems to come from its weak response along

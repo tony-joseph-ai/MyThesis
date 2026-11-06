@@ -77,30 +77,12 @@ glass and light wood were learned very well. Besides colour and contour, the ref
 characteristic of a workpiece is named as relevant. The copy of this dataset used here
 is described in Section~\ref{sec:background-dataset}.
 
-Set against the material ranking of this thesis (Tab.~\ref{tab:ovr-full-results},
-Section~\ref{sec:results-primary-table}), these findings agree in part, although task
-and metric differ. Aluminium and steel, the two metals the 2025 study found problematic,
-are the two weakest materials here at every O2I ratio. Brass, which was chosen for its
-resemblance to the yellow workpieces, was difficult in neither study. The two red
-materials, both problematic there, are among the weaker materials here as well. Two differences remain. Grey plastic, which
-did better than black and red there, is also among the weaker materials here, and black
-plastic, the hardest workpiece there, is here one of the strongest materials and the most
-stable across ratios. Part of the black-plastic difference may come from task and
-metric. A whole-scene detector has to find the black workpiece among many black parts
-and box it tightly, and mAP@[.5:.95] rewards that localisation, whereas the crops here
-are centred on the annotated workpiece and F1 scores only the material decision. The
-heatmaps of this thesis come from two methods: occlusion
-sensitivity~\cite{zeilerFergus2014}, which the thesis topic prescribes, and
-Gradient-weighted Class Activation Mapping (Grad-CAM)~\cite{selvaraju2017gradcam}, a
-gradient-based method that reads the whole feature map at once. For black plastic, the
-Grad-CAM evidence spreads into the background at 30\% and 10\%, in an example crop into
-the dark structure above the workpiece, while the classification stays strong
-(Section~\ref{sec:results-qualitative}). The black parts of the learning factory thus
-seem salient for a black-plastic model, as the 2025 study proposed, although here they
-do not lower the classification. The heatmaps of the 2025 study come from LRP, which is
-not compared here, so the explanations of the two studies are not directly comparable.
-Section~\ref{sec:discussion-material} returns to the comparison with the per-material
-values.
+Set against the material ranking of this thesis (Tab.~\ref{tab:ovr-full-results}),
+these findings agree in part, although task and metric differ. Aluminium and steel are
+the two weakest materials here as well, while black plastic, the hardest workpiece
+there, has the highest mean test F1 here. The heatmaps of the 2025 study come from LRP,
+which is not compared here, so the explanations of the two studies are not directly
+comparable. Section~\ref{sec:discussion-material} compares the materials in detail.
 
 % ============================================================================
 \subsection{The Object-to-Image Ratio and Background Reliance in the Wider Literature}
@@ -138,16 +120,12 @@ saliency fails where the classifier fails, whereas here the Grad-CAM centre meas
 falls while the classification declines only moderately and the occlusion centre
 measure does not fall at all. Their measure is also the average precision of the
 saliency maximum, not a per-pixel concentration such as the centre measure $c$. The
-setups differ as well. In nMNIST the object keeps its pixel size, whereas here the crop
-grows around the workpiece and is resized to $256 \times 256$ pixels, so the workpiece
-covers fewer pixels as the ratio falls, and the O2I ratio and the scale of the workpiece
-change together. The nCAMELYON ranges (100--50)\% and (50--10)\% cover the ratios of this
-thesis, and there the models of Pawlowski et al.\ still reached reasonable accuracy. A
-fall to chance level is therefore not expected at the ratios studied here, although
-their limit depends on the dataset size, and each model here is trained on at most 116
-positive crops, all showing the same physical workpiece. The mean test F1 over the 15
-materials does decline, but gradually, from 0.813 at 90\% to 0.720 at 10\%
-(Section~\ref{sec:results-primary-table}).
+setups differ as well: in nMNIST the digit keeps its pixel size, whereas here the
+workpiece is rescaled with the crop, so the ratio and the scale of the workpiece change
+together (Section~\ref{sec:background-o2i}). The nCAMELYON ranges (100--50)\% and
+(50--10)\% cover the ratios of this thesis, and there their models still reached
+reasonable accuracy, so no fall to chance is expected here, although each model here
+sees at most 116 positive crops of one physical workpiece.
 
 Xiao et al.~\cite{xiao2021noise} approach background reliance from the other direction.
 Instead of shrinking the object, they keep the foreground and manipulate the background
@@ -160,18 +138,9 @@ find that more accurate models both exploit background correlations more and are
 robust to changed backgrounds, a finding at the level of whole models. This thesis looks
 at a finer
 level. Since a separate model is trained for every material and ratio, 75 models in
-total, background reliance can be compared between materials and between ratios. Steel
-shows why such a comparison needs more than one method. For steel, occlusion with the
-grey patch assigns more importance per pixel to the region outside the reference square
-than to the square itself at every ratio. The fill-colour test shows that at 50\%, 30\%
-and 10\% this is an artefact of the fill, most likely because the grey patch resembles
-the metal and removes little of its evidence; at 90\% and 70\% the black and the blurred
-patch disagree, so no reading is possible there (Section~\ref{sec:results-fill}). Grad-CAM gives a different picture: for steel
-its centre measure is higher at 10\% than at 90\% but stays below the value of a map on
-the box at every ratio, and in an example crop it concentrates on the bright rim of the workpiece and moves partly to the
-background only at 10\% (Section~\ref{sec:results-qualitative}). Whether steel relies
-on the background therefore remains open. The evidence rests on ten analysed crops per
-model and is indicative only, and Section~\ref{sec:discussion-material} returns to it.
+total, background reliance can be compared between materials and between ratios.
+Section~\ref{sec:discussion-material} makes this comparison for steel, aluminium and
+black plastic.
 
 Geirhos et al.~\cite{geirhos2019texture} report a bias of a different kind. CNNs trained
 on ImageNet classify images mainly by local texture rather than by global shape, whereas
@@ -181,18 +150,10 @@ networks towards shape and, according to the authors, also improves their robust
 several types of image distortion. Texture bias concerns the type of feature a network
 uses, not where in the image that feature lies, so it can occur even when the evidence
 lies on the object. Among the papers reviewed here, it is the closest analogue to the
-behaviour of aluminium in this thesis. For aluminium, Grad-CAM favours the workpiece at
-every ratio, most strongly at 90\% and 70\%, while occlusion with the grey patch shows
-no clear preference for workpiece or background
-(Section~\ref{sec:results-qualitative}). Classification is weak at every ratio. A
-texture-related reading is possible: a polished surface reflects its surroundings and
-may offer an unstable texture even when the workpiece is located correctly. This fits
-the conclusion of the 2025 study that the reflecting characteristic of a workpiece
-matters~\cite{schneidereitYOLOv8}, which this thesis keeps as a hypothesis for both
-aluminium and steel. A simpler explanation competes with it, because aluminium is partly
-undertrained at 100 epochs (Section~\ref{sec:results-200epoch}). The analogy is also
-loose, since the networks studied by Geirhos et al.\ were trained on ImageNet, whereas
-the networks here are trained from scratch on a small industrial dataset.
+behaviour of aluminium, whose Grad-CAM evidence favours the workpiece at every ratio
+while its classification is weak (Section~\ref{sec:discussion-material}). The analogy
+is loose, since the networks of Geirhos et al.\ learned from about 1.3~million ImageNet
+images, whereas each model here learns from about 1,700 crops.
 
 % ============================================================================
 \subsection{Explainability Methods and Context Attribution}
@@ -203,7 +164,7 @@ affects feature attribution methods, not only accuracy. Using segmentation masks
 separate object and context regions in feature maps, they introduce a quantitative
 measure of object-versus-context attribution. They report that replacing the context of
 an image altogether harms performance more than perturbing the existing context. One
-reading of this result is that a network encodes which background it expects with a
+possible reading, not tested by the authors, is that a network encodes which background it expects with a
 given object, beyond how much background is present. In control images without
 informative context, attribution methods still assign more than 30\% of their importance
 to the uninformative background. They also find that object size alone does not predict
@@ -250,8 +211,10 @@ what could follow it. Singh et al.~\cite{singh2020dontjudge} propose two trainin
 interventions against contextual bias. The first minimises the spatial overlap between
 the class activation maps~\cite{zhou2016cam} of categories that frequently occur
 together. The second splits the learned features into separate subspaces for the
-category and for its context. They report accuracy gains of up to 24.2 percentage points on their most
-context-biased categories when objects appear outside their usual surroundings. The
+category and for its context. On images in which their most
+context-biased categories appear without their usual context, they report a gain of
+4.3 points of mean average precision on COCO-Stuff, and up to 24.2 points for a single
+category. The
 first intervention acts on class activation maps, the family of maps to which Grad-CAM
 belongs, so a Grad-CAM diagnosis such as the one in this thesis could in principle feed
 into such a training objective.
@@ -281,14 +244,9 @@ spurious feature does not match the class. The distribution of the scores, howev
 stays the same. The authors read this as a change in how the
 neurons are combined rather than a removal of the spurious features, and they
 hypothesise that last-layer re-weighting would fail when a model has under-learned the
-relevant information. In this thesis, the caveat may apply mainly to aluminium. Its
-Grad-CAM evidence favours the workpiece at every ratio, and it is partly undertrained,
-so a method that steers evidence towards the object may not be what it needs. Its weak
-classification could reflect a weak object signal, which would be related to the
-under-learning that Le et al.\ describe, although there it concerns the representation
-and here partly the training length. Steel
-would be a candidate for background suppression only if it relies on the background,
-which remains open (Section~\ref{sec:discussion-material}).
+relevant information. In this thesis, the caveat may apply mainly to aluminium, which is partly
+undertrained and whose Grad-CAM evidence favours the workpiece
+(Section~\ref{sec:discussion-material}).
 
 % ============================================================================
 \subsection{Industrial Material Classification and Small-Object Recognition}
@@ -359,8 +317,8 @@ crops as a function of a controlled O2I ratio, against a complex industrial back
 and with a per-pixel measure of whether the evidence concentrates on the object or on
 the background. In this
 thesis, occlusion sensitivity and Grad-CAM are applied to the same validation crops of
-each of the 75 models. The two methods diverge as the workpiece shrinks, most clearly at
-10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
+each of the 75 models. The difference between the two methods grows as the workpiece
+shrinks and is clear at 10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
 (Section~\ref{sec:results-divergence}).
 A possible mechanism is that occluding a single patch cannot reveal reliance on a large,
 repetitive background, because the rest of that background stays visible. This
