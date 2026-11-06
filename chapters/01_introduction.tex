@@ -20,17 +20,16 @@ pixels belong to the workpiece. It can therefore reach a correct decision from t
 surroundings rather than from the workpiece itself, and its accuracy in the setting it
 was trained in does not reveal this. A model that has learned a background cue may fail
 as soon as the background changes~\cite{xiao2021noise}, e.g., when the workpiece appears
-at another station. Whether a decision rests on the workpiece or on the background is
-thus a question about the model that accuracy alone does not answer. If the evidence
-behind a decision can be made visible, a model that relies on the background can be
-recognised, provided the method used to show the evidence does not itself miss it.
+at another station. Accuracy alone therefore cannot show whether a decision rests on the
+workpiece or on the background. A heatmap of the evidence can show it, as long as the
+method that computes the heatmap does not itself miss the evidence.
 
 Studying this question in a running factory is difficult, since its scenes cannot be
 repeated at will. Learning factories, i.e., scaled-down production environments built
-for teaching and research, offer a controlled alternative. They contain the machines of
-a production line and a simpler version of its visual complexity, but the
-workpieces, their positions and the lighting can be chosen and recorded
-systematically~\cite{kemeny2016complementary, schneidereitYOLOv8}.
+for teaching and research~\cite{kemeny2016complementary}, offer a controlled
+alternative. They contain the machines of a production line and a simpler version of its
+visual complexity, but the workpieces, their positions and the lighting can be chosen
+and recorded systematically~\cite{schneidereitYOLOv8}.
 
 \paragraph{The learning factory and its dataset}
 This thesis works with the Fischertechnik Industry~4.0 learning factory, a model
@@ -49,8 +48,8 @@ contains 15 cylindrical workpieces that differ only in material and colour, name
 plastics, four workpieces of acrylic glass (AG), three metals and two woods. Each
 workpiece was photographed at the same 33 positions in each of the five stations of the
 learning factory. Lighting and camera position changed between positions, but at a given
-position they are the same for all 15 workpieces, so that there only the workpiece
-changes. The resemblance to the background is intended. Several workpieces were chosen
+position they are the same for all 15 workpieces, so that at one position only the
+workpiece changes. The resemblance to the background is intended. Several workpieces were chosen
 because they resemble parts of the learning factory, e.g., the black workpiece because
 it matches the many black factory parts. With YOLOv8 detectors and heatmaps computed by
 layer-wise relevance propagation (LRP)~\cite{bach2015lrp, montavon2019lrp}, the 2025
@@ -112,7 +111,8 @@ the workpiece would give.
 
 To compare heatmaps across ratios, each map has to be reduced to a number that says
 whether its importance lies on the workpiece or on the background. This thesis uses the
-centre measure $c$ (Eq.~\eqref{eq:center-frac}). It compares the mean heatmap importance
+centre measure $c$ (Eq.~\eqref{eq:center-frac}; Fig.~\ref{fig:bg-centre-toy} shows it on
+a toy map). It compares the mean heatmap importance
 per pixel inside a centred reference square, whose area is $r\%$ of the crop at an O2I
 ratio of $r\%$, with the mean importance per pixel outside it. A flat map gives $c =
 0.5$ at every ratio. A value above 0.5 means that a pixel of the square carries more
@@ -155,7 +155,8 @@ together, so the effect of the ratio found here is their combined effect
 (Section~\ref{sec:discussion-limitations}). For each of the 15 materials and each ratio,
 a binary one-vs-rest CNN that separates one material from the other 14 was trained from
 scratch, without a pre-trained model, which gives 75 models trained with identical
-settings and the same seed (Section~\ref{sec:methodology-ovr}). Classification is
+settings and the same seed (Sections~\ref{sec:methodology-ovr}
+and~\ref{sec:methodology-training}). Classification is
 measured with the F1 score of the target material on a held-out test split. Occlusion
 sensitivity and Grad-CAM were applied to the same 10 validation crops of each model,
 i.e., 750 analyses per method. Besides the level 0.5, each centre measure is read
@@ -185,20 +186,16 @@ on a large and repetitive background, since the rest of that background stays vi
 These results hold on average over the 15 materials. Per material, no link between the
 loss of F1 and the change of the Grad-CAM centre measure is shown. On average, the
 evidence shifts as the background grows, but the results do not show that this shift is
-why a given material is misclassified. The materials also differ in ways that are not
-only an effect of the ratio. Steel and aluminium are the two weakest materials at every
-ratio, including 90\%, where little of the crop is background, and at the level of the
-model neither has a Grad-CAM centre measure below 0.5, so a low F1 does not coincide
-with a heatmap on the background. Black plastic, which the 2025 study detected worst, is
-here the material with the highest mean test F1 (0.956), although the two studies differ
-in task, metric and training.
+why a given material is misclassified. The materials also differ beyond the effect of
+the ratio. Steel and aluminium are the weakest at every ratio, already at 90\%, yet
+neither has a model-level Grad-CAM centre measure below 0.5. Black plastic, which the
+2025 study detected worst, has the highest mean test F1 here (0.956); the two studies
+differ in task, metric and training.
 
 \paragraph{Structure of the thesis}
-Section~\ref{sec:related-work} reviews the earlier work on the learning factory, the
-literature on the O2I ratio and on background reliance, explainability methods that
-attribute a decision to an object or to its context, methods that reduce such reliance,
-and work on industrial material classification and small objects, and it states the gap
-this thesis fills. Section~\ref{sec:background} introduces the dataset, the O2I ratio,
+Section~\ref{sec:related-work} reviews the earlier work on the learning factory and the
+literature on the O2I ratio, background reliance, explainability and small objects, and
+states the gap this thesis fills. Section~\ref{sec:background} introduces the dataset, the O2I ratio,
 the CNN and its training, the two explainability methods and the comparison of object
 and background in a heatmap, on a toy example and on one real crop.
 Section~\ref{sec:methodology} describes the crops and their split, the one-vs-rest

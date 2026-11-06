@@ -7,7 +7,7 @@
 %Spracheinstellung / language setting / replace "english" if needed
 \usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
 \usepackage[absolute,overlay]{textpos}
-\usepackage[giveninits=true,sorting=none,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
+\usepackage[giveninits=true,sorting=none,sortcites=true,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
 % Line breaks in URLs and DOIs: allowed after letters (penalty 100), but
 % inside a number only as a last resort (9000), so a DOI is not split
 % mid-number. The bibliography is set ragged right with little stretch at
@@ -142,23 +142,24 @@ occlusion sensitivity, Grad-CAM, explainability, learning factory
 Convolutional Neural Networks (CNNs) für die automatisierte Sichtprüfung in der
 Industrie~4.0 können ihre Entscheidungen auf den Hintergrund statt auf das Werkstück
 stützen. In der gesichteten Literatur wird bei variiertem Hintergrundanteil höchstens
-eine Saliency-Methode eingesetzt, und kein Vergleich von Erklärbarkeitsmethoden vor
-einem komplexen industriellen Hintergrund bei wachsendem Anteil liegt vor. Diese Arbeit
+eine Saliency-Methode eingesetzt, und es liegt kein Vergleich von
+Erklärbarkeitsmethoden vor einem komplexen industriellen Hintergrund bei wachsendem
+Anteil vor. Diese Arbeit
 vergleicht zwei solche Methoden an 15 Werkstücken, die sich nur in Material und Farbe
 unterscheiden und in der Fischertechnik-Industrie-4.0-Lernfabrik aufgenommen wurden.
 Ausschnitte mit fünf Objekt-Bild-Verhältnissen (object-to-image, O2I) von 90\,\% bis
 10\,\% wurden mit 75 von Grund auf trainierten One-vs-Rest-CNNs klassifiziert;
 Okklusionssensitivität und Gradient-weighted Class Activation Mapping (Grad-CAM) wurden
 auf denselben Ausschnitten über ein pixelbezogenes Zentrumsmaß verglichen, gemessen am Wert einer auf dem Werkstück liegenden Heatmap, dem Referenzwert. Mit sinkendem Verhältnis fällt der
-mittlere Test-F1-Wert von 0,813 auf 0,720, wobei der Rückgang großteils unterhalb von
+mittlere Test-F1-Wert von 0,813 auf 0,720, wobei der Rückgang größtenteils unterhalb von
 50\,\% liegt. Stahl und Aluminium sind bei jedem Verhältnis die schwächsten Materialien,
 schon bei 90\,\%. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, während sein
 Referenzwert steigt; die für die Entscheidung relevanten Bildbereiche verschieben sich
 also allmählich zum Hintergrund, doch bei keinem Verhältnis liegt das Maß eindeutig
 unter dem neutralen Wert 0,5. Grad-CAM erkennt die Verschiebung, die
 Okklusionssensitivität nicht, da ihr Zentrumsmaß steigt, wenn auch weniger als ihr
-Referenzwert. Dies gilt im Mittel; je Material zeigt sich kein Zusammenhang zwischen
-F1-Verlust und Grad-CAM-Änderung. Eine einzelne Erklärbarkeitsmethode kann also eine
+Referenzwert. Dies gilt im Mittel; je Material lässt sich kein Zusammenhang zwischen
+F1-Verlust und Grad-CAM-Änderung nachweisen. Eine einzelne Erklärbarkeitsmethode kann also eine
 Verschiebung übersehen, die eine andere zeigt.
 
 \medskip\noindent
@@ -175,25 +176,25 @@ Hintergrund, Okklusionssensitivität, Grad-CAM, Erklärbarkeit, Lernfabrik
 % completely reflects how you actually used AI tools over the course of the
 % thesis. This is a signed declaration -- it must be accurate and complete,
 % not understated or overstated. Update it again right before submission.
-\begin{itemize}
-\item Claude (Anthropic) was used as a coding assistant: explaining PyTorch
-      concepts (Dataset/DataLoader, CNN architecture design, training loops),
-      helping debug errors during implementation, and helping design the
-      crop-extraction, one-vs-rest training, and occlusion sensitivity /
-      Grad-CAM explainability scripts. All code was reviewed, run, and
-      understood by the author; results were independently verified against
-      the model outputs.
-\item Claude (Anthropic) was used for planning and organisational support:
-      structuring the day-by-day project timeline, discussing experimental
-      design trade-offs (e.g. the one-vs-rest reformulation, epoch count
-      investigation), and tracking open questions/decisions across working
-      sessions.
-\item Claude (Anthropic) was used as a writing aid: helping structure chapter
-      drafts, checking bibliography entries against primary sources, and
-      reviewing/tightening text drafted by the author. All substantive
-      scientific content, analysis, and conclusions are the author's own;
-      AI-suggested phrasing was reviewed and edited by the author before use.
-\end{itemize}
+% Review 6 Nov 2026 (B1): rewritten so that it matches the project record.
+% Still to be confirmed by Tony before submission: (1) the start month,
+% (2) whether any scripts were written without Claude, (3) which sources
+% were read in full by Tony himself.
+\par\smallskip\noindent
+One AI tool was used during the preparation of this thesis: Claude (Anthropic),
+through claude.ai, from July to November 2026. During the implementation, Claude
+wrote or co-wrote the Python scripts for crop extraction, data splitting, training
+and evaluation, occlusion sensitivity, Grad-CAM, the centre measure, the
+statistical tests and the figures, explained the PyTorch concepts involved and
+helped to debug them. I ran all scripts at the AI-Lab, on Google Colab and on my
+own computer and checked the results against the model outputs. During the
+writing, I used Claude to turn my notes, results and outlines into draft text,
+which I then reviewed, revised and checked against my analysis outputs. Claude
+was also used for grammar, spelling and LaTeX typesetting, to find and summarise
+sources, to check the bibliography and to manage the thesis repository. The research question, the experimental design and the
+interpretation of the results were decided by me, in discussion with my advisers
+and with Claude. I have checked everything produced with AI assistance and take
+full responsibility for the content of this thesis.
 }
 \begin{document}
 
