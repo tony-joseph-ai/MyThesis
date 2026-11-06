@@ -39,16 +39,32 @@
 \setcounter{topnumber}{3}
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
-% Space between a float and the text above/below it (about one extra line
-% compared with the LaTeX default), and between two stacked floats.
-\setlength{\intextsep}{1.8\baselineskip plus 0.3\baselineskip minus 0.2\baselineskip}
-\setlength{\textfloatsep}{1.8\baselineskip plus 0.3\baselineskip minus 0.2\baselineskip}
+% Space between a float and the text above/below it, and between two stacked
+% floats: one fixed value (no stretch or shrink) so the gap above and below
+% every table and figure is the same.
+\setlength{\intextsep}{1.8\baselineskip}
+\setlength{\textfloatsep}{1.8\baselineskip}
 % A page holding only floats starts at the top instead of centring them.
 \makeatletter
 \setlength{\@fptop}{0pt}
 \setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@fpsep}{1.8\baselineskip}% same gap between floats on such pages
 \makeatother
-\setlength{\floatsep}{1.3\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+\setlength{\floatsep}{1.8\baselineskip}
+% Equal space above and below in-text tables/figures. By default, when a
+% table is followed by a heading, LaTeX adds the heading's space on top of the
+% table's own space, so the gap under the table was larger than above it.
+% Here, a heading that comes straight after an in-text table/figure adds no
+% extra space; the next normal paragraph resets this.
+\usepackage{etoolbox}
+\makeatletter
+\newif\if@afterintextfloat
+\patchcmd{\@addtocurcol}{\@inserttrue}{\@inserttrue\global\@afterintextfloattrue}{}
+  {\PackageWarning{main}{float spacing patch 1 failed}}
+\patchcmd{\@startsection}{\addvspace\@tempskipa}{\if@afterintextfloat\else\addvspace\@tempskipa\fi}{}
+  {\PackageWarning{main}{float spacing patch 2 failed}}
+\AddToHook{para/begin}{\global\@afterintextfloatfalse}
+\makeatother
 % Table captions are above the table: put the gap between caption and table.
 \usepackage{caption}
 \captionsetup[table]{position=top,skip=8pt}
@@ -226,10 +242,7 @@ Electrical Engineering and Information Technology}\\[0.9em]
 \restoregeometry
 
 
-~
-\begin{textblock*}{\textwidth}(2.45cm,5cm) % {block width} (coords)
 \section*{\underline{Declaration of independence}}
-\vspace{1cm}
 I hereby declare that I have written this thesis independently, without unauthorised help and exclusively using the sources indicated. The ideas taken directly or indirectly from external sources (including electronic sources) are labelled as such without exception. The sources used verbatim and in terms of content have been cited in accordance with the recognised rules of scientific work. This work has not yet been submitted for any other review or published elsewhere.\\[0.5cm]
 \noindent
 I agree that the thesis will be checked for plagiarism with the help of a plagiarism detection service. I also hereby confirm that I comply with the \href{https://www-docs.b-tu.de/youngacademics/public/Statute_for_Safeguarding_Good_Research_Practice_BTU_2024.pdf}{“Statutes for Ensuring Good Scientific Practice and Dealing with Suspected Cases of Scientific Misconduct at the Brandenburg University of
@@ -241,7 +254,32 @@ All applications of generative AI methods which are not part of the Thesis proje
 \noindent
 {Cottbus, \SUBMISSIONDATE}{\hspace*{2.725cm}\underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}} \\
 {\hspace*{7.75cm} Signature of the author}
-\end{textblock*}
+
+%------------Task description------------%
+% Wording copied exactly from the official task description
+% (final_TaskDescription_ObjectToImageRatio_LearningFactory_1.pdf);
+% the Student and Adviser lines are left out.
+\newpage
+\section*{\underline{Task description}}
+\vspace{0.5cm}
+\noindent\textbf{Title:} Object to image ratio and occlusion sensitivity for Material
+Classification in a Learning Factory\\[0.4cm]
+\noindent\textbf{Motivation:} Learning factory environments offer opportunities to simulate
+a real-world factory in a smaller and ideal way for teaching and research purposes. The
+Fischertechnik learning factory simulates a throughput of cylindrical-shaped work pieces. To
+that extend, an image dataset with bounding box labels for object detection has previously
+been created. The purpose of this dataset was to investigate the impact of background
+elements on the object detection accuracy. That is, the dataset consists of 15 individual
+sets of images with the exact same parameters, only varying colour/material. In image
+classification, small objects are usually a challenge as a lot of possible complex
+background is present in the entire image.\\[0.4cm]
+\noindent\textbf{Problem statement:} This Thesis aims to systematically investigate the
+differences in object to image ratios for the classification of different materials with
+the complex background of the Fischertechnik learning factory. Prior to this, image
+classification datasets have to be extracted from the learning factory dataset, which is
+labelled for object detection. Afterwards, the research starts with implementing a CNN and
+occlusion sensitivity approaches, finding baseline results and to conduct a systematic
+study on the object to image ratio.
 
 \newpage
 \section*{\underline{Abstract}}
