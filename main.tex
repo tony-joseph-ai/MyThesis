@@ -39,16 +39,18 @@
 \setcounter{topnumber}{3}
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
-% Space between a float and the text above/below it (about one extra line
-% compared with the LaTeX default), and between two stacked floats.
-\setlength{\intextsep}{1.8\baselineskip plus 0.3\baselineskip minus 0.2\baselineskip}
-\setlength{\textfloatsep}{1.8\baselineskip plus 0.3\baselineskip minus 0.2\baselineskip}
+% Space between a float and the text above/below it, and between two stacked
+% floats: one fixed value (no stretch or shrink) so the gap above and below
+% every table and figure is the same.
+\setlength{\intextsep}{1.8\baselineskip}
+\setlength{\textfloatsep}{1.8\baselineskip}
 % A page holding only floats starts at the top instead of centring them.
 \makeatletter
 \setlength{\@fptop}{0pt}
 \setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@fpsep}{1.8\baselineskip}% same gap between floats on such pages
 \makeatother
-\setlength{\floatsep}{1.3\baselineskip plus 0.2\baselineskip minus 0.2\baselineskip}
+\setlength{\floatsep}{1.8\baselineskip}
 % Equal space above and below in-text tables/figures. By default, when a
 % table is followed by a heading, LaTeX adds the heading's space on top of the
 % table's own space, so the gap under the table was larger than above it.
