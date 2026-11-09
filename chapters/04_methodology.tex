@@ -216,7 +216,9 @@ finished, and no test result was used for any decision. For the 27 models that w
 retrained (paragraph \emph{Training platforms} in
 Section~\ref{sec:methodology-training}), this evaluation took place after the
 retraining. Their earlier test results are not reported; the retraining was decided
-because of the batch size, not because of a test result.
+because of the batch size, not because of a test result. The direct tests of
+Section~\ref{sec:methodology-intervention} score the test split again with the same
+fixed models; no setting was chosen from them.
 
 % ============================================================================
 \subsection{Experimental Design: One-vs-Rest Binary Classification}
@@ -248,7 +250,8 @@ $15 \times 5 = 75$ models. They are built from only five crop sets, one per rati
 models see the same images with different labels. With one model per material, the
 effect of the ratio on each material can be read off directly. In a shared 15-class
 model it would be mixed with the shifting decision boundaries between the other 14
-materials.
+materials. The price is fewer positives per model, at most 116, and an imbalance of
+about 1:14.
 
 \paragraph{Class imbalance}
 Each binary task is strongly imbalanced. At 90\%, a model is trained on $n^+ = 116$
@@ -294,7 +297,7 @@ Model selection & Epoch with the highest validation F1 \\
 Seed & 42, reset before every model; deterministic cuDNN, benchmark mode off \\
 Hardware & NVIDIA RTX A6000 GPU (48\,GB) at the AI-Lab \\
 Software & Python 3.9.25, PyTorch 2.8.0~\cite{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
-cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
+cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2~\cite{harris2020numpy}, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
 at the time of the retraining \\
 \hline
 \end{tabular}
@@ -1219,6 +1222,9 @@ models only if the direct tests show the same trend; a method that shows a trend
 direct tests do not show is taken to report a shift that is not there.
 
 Per-pixel concentration is used instead of the fraction of the total importance inside
-the square, because that fraction depends on the area of the square. A flat map gives a
-fraction of about $r/100$, which falls from 0.9 to 0.1 over the five ratios without any
-change in where the evidence lies, while it gives $c = 0.5$ at every ratio.
+the square. Both tell whether the square is preferred, since $c > 0.5$ holds exactly when
+that fraction exceeds the area share $r/100$, but only $c$ has the same level of no
+preference at every ratio: a flat map gives a fraction of about $r/100$, which falls from
+0.9 to 0.1 over the five ratios without any change in where the evidence lies, while it
+gives $c = 0.5$ at every ratio. Taking dominance to mean the per-pixel preference is a
+definition (Section~\ref{sec:background-comparison}).

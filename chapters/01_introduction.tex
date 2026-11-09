@@ -15,9 +15,8 @@ designed by hand~\cite{lecun2015deep}.
 A camera in a production cell, however, rarely sees the workpiece alone. Around it lie
 conveyor belts, grippers, cables and other machine parts, and some of them share the
 colour or the surface of the workpiece. A CNN trained on such images is not told which
-pixels belong to the workpiece. It can therefore reach a correct decision from the
-surroundings rather than from the workpiece itself, and its accuracy in the setting it
-was trained in does not reveal this. A model that has learned a background cue may fail
+pixels belong to the workpiece. It may therefore draw on the surroundings as well as on
+the workpiece, and its accuracy in the setting it was trained in does not reveal this. A model that has learned a background cue may fail
 as soon as the background changes~\cite{xiao2021noise}, e.g., when the workpiece appears
 at another station. Accuracy alone therefore cannot show whether a decision rests on the
 workpiece or on the background. A heatmap can indicate it, but a heatmap is an
@@ -47,8 +46,9 @@ their colour with the background.
 
 The dataset of this thesis was created in the later study by T.~Schneidereit, Gohrenz
 and Breu{\ss}~\cite{schneidereitYOLOv8}, referred to below as the 2025 study. It
-contains 15 cylindrical workpieces that differ only in material and colour, namely six
-plastics, four workpieces of acrylic glass (AG), three metals and two woods. Each
+contains 15 cylindrical workpieces of different materials and colours, one physical piece
+each, namely six plastics, four workpieces of acrylic glass (AG), three metals and two
+woods; the wooden ones are simple dowels (Section~\ref{sec:background-dataset}). Each
 workpiece was photographed at the same 33 positions in each of the five stations of the
 learning factory (34 at station five in the copy used here,
 Section~\ref{sec:background-dataset}). Lighting and camera position changed between positions, but at a given
@@ -58,7 +58,7 @@ parts of the learning factory, e.g., the black workpiece because it matches the 
 black factory parts. With YOLOv8 detectors and heatmaps computed by
 layer-wise relevance propagation (LRP)~\cite{bach2015lrp, montavon2019lrp}, the 2025
 study found that some background parts influenced the detection, and black plastic was the
-workpiece detected worst. Section~\ref{sec:related-work-fischertechnik} reviews both
+workpiece that its YOLOv8n models detected least accurately. Section~\ref{sec:related-work-fischertechnik} reviews both
 studies, and Section~\ref{sec:background-dataset} describes the copy of the dataset used
 here.
 
@@ -84,9 +84,9 @@ carry enough information for a non-trivial accuracy, and that, with adversariall
 backgrounds, models can be made to predict the class of the background for up to 87.5\%
 of the foregrounds. Background
 evidence can thus outweigh the object. In the learning factory, whose workpieces were
-chosen to resemble their background, this raises a concrete question. As the crop
+several were chosen to resemble the background, this raises a concrete question. As the crop
 around a workpiece is loosened and the learning factory takes up more of it, at which
-point does the background begin to carry the decision instead of the workpiece? The
+point does the background begin to dominate the decision instead of the workpiece? The
 classification score alone cannot answer it. It can show that the classification gets
 worse as the ratio falls, but not whether the background is the reason.
 
@@ -151,8 +151,9 @@ reviewed literature covers the parts of this question separately
 (Section~\ref{sec:related-work-gap}). Pawlowski et al.\ vary the O2I ratio but use a
 single saliency method, as a localisation check. The two studies on the learning factory
 detect workpieces against its complex background, and only the later one computes
-heatmaps, with one method. Studies of background reliance change the background or the
-context of an image rather than the share of the image that the object covers. The
+heatmaps, with one method. The studies of background reliance reviewed here change the
+background or the context of an image rather than the share of the image that the object
+covers. The
 contribution of this thesis is a comparison of two explainability methods on the same
 crops as a function of the O2I ratio, against a complex industrial background, with a
 per-pixel measure of whether the evidence concentrates on the workpiece or on the
@@ -169,7 +170,8 @@ configuration and seed, hence from the same initial weights (Sections~\ref{sec:m
 and~\ref{sec:methodology-training}). Classification is
 measured with the F1 score of the target material on a held-out test split. Occlusion
 sensitivity and Grad-CAM were applied to the same 10 validation crops of each model,
-i.e., 750 analyses per method. Besides the level 0.5, each centre measure is read
+drawn separately for each model from its target material, i.e., 750 analyses per
+method. Besides the level 0.5, each centre measure is read
 against a reference value, introduced during the analysis
 (Section~\ref{sec:methodology-reference}), the value that a map lying uniformly on the bounding box of
 the workpiece would give at the resolution of each method. Five robustness checks test

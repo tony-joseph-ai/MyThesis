@@ -159,7 +159,10 @@ split attribution maps into object and context regions, they measure which share
 total attribution falls on each. They report that replacing the context of
 an image altogether harms performance more than perturbing the existing context. In control images without
 informative context, attribution methods still assign more than 30\% of their importance
-to the uninformative background. They also find that object size alone does not predict
+to the uninformative background. Since the background in this thesis carries no
+information about the material by design, heatmap importance on it need not indicate
+reliance either; Section~\ref{sec:results-intervention} tests this directly. They also
+find that object size alone does not predict
 how much a model relies on context. This is consistent with an observation in this
 thesis, where the materials that suffer most at low ratios are not those whose heatmaps
 change most (Section~\ref{sec:discussion-material}).
@@ -203,11 +206,12 @@ interventions against contextual bias. The first minimises the spatial overlap b
 the class activation maps~\cite{zhou2016cam} of categories that frequently occur
 together. The second splits the learned features into separate subspaces for the
 category and for its context. On images in which their most
-context-biased categories appear without their usual context, they report a gain of
-4.3 points of mean average precision on COCO-Stuff, and up to 24.2 points for a single
-category. The
-first intervention acts on class activation maps, the family of maps to which Grad-CAM
-belongs, so a diagnosis with such maps could in principle feed into such a training
+context-biased categories appear without their usual context, the feature-split method
+gains 4.3 points of mean average precision on COCO-Stuff, up to 24.2 points for a single
+category, and the CAM-based method 1.9 points. The
+CAM-based intervention acts on class activation maps, the family of maps to which Grad-CAM
+belongs, although its objective assumes a global average pooling, unlike the network of
+this thesis, so a diagnosis with such maps could in principle feed into such a training
 objective, provided the maps reflect the model (Section~\ref{sec:discussion-answer}).
 
 Bassi et al.~\cite{bassi2024isnet} propose ISNet, which optimises LRP heatmaps during
@@ -279,8 +283,10 @@ imbalance in the survey means that small objects are underrepresented in dataset
 imbalance in this thesis is of a different kind. It follows from the one-vs-rest
 design, in which each binary model sees about 14 negative crops for every positive one,
 and it is handled by weighting the loss by class and by selecting models by F1
-(Section~\ref{sec:methodology-training}). Background interference, in turn, is the
-subject of the explainability pipeline (Section~\ref{sec:methodology-explainability}).
+(Section~\ref{sec:methodology-training}). Background interference, in turn, is
+examined here through attribution and through the removal of the background
+(Sections~\ref{sec:methodology-explainability} and~\ref{sec:methodology-intervention}),
+a related but not identical notion.
 
 % ============================================================================
 \subsection{The Gap This Thesis Fills}

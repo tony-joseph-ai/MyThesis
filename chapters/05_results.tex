@@ -217,7 +217,7 @@ value of a flat map.}
 \label{fig:centerfrac-ratio}
 \end{figure}
 
-\paragraph{Agreement at 90\%}
+\paragraph{No difference shown at 90\%}
 At 90\% the two methods give almost the same value, 0.728 for occlusion and 0.737 for
 Grad-CAM. Their method difference of $-0.008 \pm 0.059$ ($t(14) = -0.14$, $p = 0.89$)
 shows no difference, and occlusion lies above Grad-CAM in 5 of the 15 materials. This
@@ -813,7 +813,9 @@ depends strongly on the material: yellow plastic has 40 flat maps out of 50, lig
 23, orange AG 19, dark wood and grey plastic 12 each, blue plastic 11, white plastic 7,
 red AG 4, yellow AG and aluminium 3 each, blue AG 2, brass 1, and black plastic, steel
 and red plastic none. For four models all ten maps are flat, so their mean is exactly
-0.5, namely yellow plastic at 90\%, 70\% and 50\% and light wood at 70\%.
+0.5, namely yellow plastic at 90\%, 70\% and 50\% and light wood at 70\%. With
+HiResCAM, which does not average the gradients, the maps of these materials are not flat
+(Section~\ref{sec:results-camvariants}).
 
 Flat maps pull $c$ towards 0.5, which makes a decline from values above 0.5 look
 smaller, not larger. Without them, the Grad-CAM centre measure is $0.798 \pm 0.039$
@@ -897,8 +899,8 @@ Section~\ref{sec:methodology-200epoch}, gains of a single cell up to about 0.04,
 effect of one positive validation crop on the recall, are not read as an improvement. The fall
 with the ratio remains after 200 epochs, from 0.884 at 90\% to 0.841 at 10\%, but it is
 smaller than at 100 epochs (0.854 to 0.794), since the gain is largest at 10\%.
-Training length thus explains a small part of the decline on the validation split, not
-the decline itself.
+Training length thus accounts for about a quarter of the decline on the validation
+split (0.060 against 0.043), not for the decline itself.
 
 \paragraph{Materials}
 Per material, the mean gain over the five ratios is largest for aluminium ($+0.131$),
@@ -924,7 +926,9 @@ standard deviation of the difference of 0.028, i.e., $0.028/\sqrt{2} \approx 0.0
 difference is 0.089 (brass at 70\%), and the two runs give the same value in 3 of the
 27 cells. This variation concerns a single cell: a change as large as the mean change of
 the test F1 from 90\% to 50\% ($-0.017$) would lie within it, whereas the mean over the
-15 materials is judged by the paired tests of Section~\ref{sec:results-primary-table}. This is a partial estimate from 27 cells, not a study over several seeds
+15 materials is judged by the paired tests of Section~\ref{sec:results-primary-table}. This is a partial estimate from 27 cells, and probably a lower bound, since both runs
+share the seed, the initial weights and the order of the data; it is not a study over
+several seeds
 (Section~\ref{sec:methodology-training}).
 
 \paragraph{All 15 materials}

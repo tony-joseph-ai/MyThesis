@@ -95,8 +95,11 @@ several workpieces for them, e.g., the black workpiece because it matches the ma
 parts of the learning factory. For black plastic, the
 workpiece of the real example, the overlap is with the dark parts of the learning
 factory rather than with the plate. Since every material was photographed at the same
-positions, the models of different materials see the same scenes, and a difference
-between them cannot come from a different set of backgrounds. The single box per
+positions, all models are trained on the same set of scenes, and a difference between
+them cannot come from a different set of backgrounds; because the split is drawn per
+material (Section~\ref{sec:methodology-split}), the test and analysed crops of different
+materials come from different positions. By design, the background carries no
+information about which material is present. The single box per
 photograph allows a crop with a prescribed share of workpiece, which is the variable of
 the experiment. Finally, the per-material results of the 2025 study give a reference
 point for the material ranking found here, although task and metric differ
@@ -106,7 +109,9 @@ point for the material ranking found here, although task and metric differ
 Each material is represented by one physical workpiece that was photographed 166 times.
 A model can therefore learn properties of that particular piece, e.g., a scratch or the
 grain pattern of one piece of wood, together with properties of its material, and the
-data cannot separate the two. The results of this thesis describe these 15 workpieces.
+data cannot separate the two. The task is therefore closer to recognising one object
+per material than to material classification in general, and the results of this thesis
+describe these 15 workpieces.
 Whether they carry over to other workpieces of the same materials is not tested.
 
 % ============================================================================
@@ -220,7 +225,9 @@ every position, so a pattern is detected wherever it occurs. Strictly,
 Eq.~\eqref{eq:bg-conv} is a cross-correlation, since the kernel is not flipped, but
 deep learning calls it a convolution~\cite[Sec.~9.1]{goodfellow2016deep}. At the border, the sum
 reaches beyond the input. Padding with one row and column of zeros on each side keeps
-the output at $N \times N$, which is what the network of this thesis does. The toy
+the output at $N \times N$, which is what the network of this thesis does. Since its
+inputs are not normalised, a border of zeros is black, and a filter that responds to dark
+regions can respond along the border of the input. The toy
 instead repeats the edge pixels, because a border of zeros would look dark to a
 detector of dark regions.
 
@@ -561,7 +568,7 @@ evidence lies.
 
 A heatmap, or attribution map, assigns to each region of the input a value for how much
 it contributed to a chosen output of the network, here the logit of the positive
-class. Methods to compute such maps fall into three families. Perturbation methods
+class. Among the main families of methods to compute such maps are three. Perturbation methods
 change the input and observe the output. Gradient-based methods read derivatives of the
 output inside the network. Relevance propagation passes the output backwards through the
 layers and distributes it over the input pixels, as layer-wise relevance propagation
@@ -713,9 +720,8 @@ the full $8 \times 8$ resolution of the input.
 \paragraph{Where, not what}
 Grad-CAM shows where channels with a positive weight are active, not what kind of
 feature these channels respond to. A channel that responds to dark regions and one that
-responds to a surface texture can look the same in $G$. For aluminium, Grad-CAM favours
-the workpiece at every ratio (Section~\ref{sec:results-qualitative}), but
-the map cannot tell whether the model uses the shape of the workpiece or the texture of
+responds to a surface texture can look the same in $G$. For a reflecting workpiece such
+as aluminium, a Grad-CAM map on the workpiece cannot tell whether the model uses the shape of the workpiece or the texture of
 its reflecting surface, the distinction that Geirhos et al.~\cite{geirhos2019texture}
 draw for ImageNet-trained CNNs.
 
@@ -772,9 +778,14 @@ value everywhere, has no preference for either region. Its share inside the squa
 equals the area of the square, 0.25 for the tight crop and 0.06 for the loose one
 (panels (a) and (b)), so the share of a map without any preference changes with the
 ratio. Its mean per pixel is the same inside and outside, and the per-pixel comparison
-gives 0.50 for any square. Only the per-pixel version thus has a fixed level for ``no
-preference''. This thesis therefore uses the per-pixel comparison and calls it the
-centre measure $c$. It is defined exactly in Eq.~\eqref{eq:center-frac}
+gives 0.50 for any square. The two summaries agree on whether the square is preferred:
+a pixel inside is on average more important than a pixel outside exactly when the share
+of the total exceeds the share of the area. They differ in their level of no preference,
+which is 0.5 at every ratio per pixel but the area share $r/100$ for the total, and in
+what it means for the background to dominate. This thesis takes dominance to mean that a
+background pixel is on average more important than a workpiece pixel, uses the per-pixel
+comparison, whose level is the same at every ratio, and calls it the centre measure
+$c$. It is defined exactly in Eq.~\eqref{eq:center-frac}
 (Section~\ref{sec:methodology-centerfrac}). Values above 0.5 mean that a pixel inside the
 square carries more importance on average than a pixel outside it, and values below 0.5
 the reverse.

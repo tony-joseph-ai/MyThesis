@@ -137,7 +137,9 @@ plastic (0.688, 12th) and red AG (0.684, 13th), both problematic there, are the 
 materials apart from the metals here, and they are confused mainly with each other
 (Section~\ref{sec:results-primary-table}). Of the four materials learned very well
 there, yellow plastic (0.910, 3rd) and white plastic (0.878, 5th) are strong here, and
-orange AG (0.794, 9th) and light wood (0.760, 10th) lie in the middle. Two materials
+orange AG (0.794, 9th) and light wood (0.760, 10th) lie in the middle. Each cell rests
+on at most 25 positive test crops and one training run, so only the separation of the two
+metals from the rest is robust; neighbouring ranks are not. Two materials
 differ. Black plastic, the hardest workpiece there, has the highest mean here (0.956),
 which may partly come from task and training: mAP@[.5:.95] rewards boxing the workpiece
 among the black parts of the learning factory, F1 on centred crops scores only the
@@ -271,6 +273,9 @@ trained on. The direct tests therefore rest on the agreement of three fills and 
 removal on the test split, not on one of them alone. HiResCAM is used as a second
 gradient method, not as ground truth, since its guarantee covers networks with one fully
 connected layer and this network has two (Section~\ref{sec:methodology-camvariants}).
+The convolutions pad with zeros, which on inputs that are not normalised form a black
+border (Section~\ref{sec:background-cnn}); whether this affects the maps along the border
+was not examined.
 
 \paragraph{Interpretation}
 Neither heatmap is ground truth for what a model uses. Both methods explain the
@@ -340,7 +345,7 @@ that remove the workpiece or the background.
 
 Classification degrades as the workpiece takes up less of the crop: the mean test F1
 falls from 0.813 at 90\% to 0.720 at 10\%, mostly below 50\%, so crops in which the
-workpiece fills at least half of the area lose little F1 on average. The background,
+bounding box covers at least half of the area lose little F1 on average. The background,
 however, does not take over the decision at any of these ratios. Without the workpiece,
 the models cannot tell the materials apart; without the background, they rank the crops
 as well as with it; and the intervention centre measure stays well above 0.5 at every
