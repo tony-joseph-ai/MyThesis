@@ -9,9 +9,7 @@ $32 \times 32$ patch with stride 16 on a $256 \times 256$ input, the maps of bot
 must be brought to the pixel grid by interpolation, and the exact square of the toy
 becomes the reference square $B_r$ of Eq.~\eqref{eq:box-bounds}, which only approximates
 a bounding box that itself encloses some background. Each setting is stated below
-together with the reason for it, in the order of the experiment, from the crops and their
-split through the one-vs-rest design, the training and the two explainability methods
-to the reduction of a heatmap to the centre measure $c$ and its aggregation over models.
+with the reason for it.
 
 % ============================================================================
 \subsection{Dataset Preparation and Crop Extraction}
@@ -175,7 +173,10 @@ procedure reproduces the split of all 2,490 photographs exactly. All crops of
 one photograph inherit its split at every ratio. If the crops were split independently
 per ratio, the same workpiece in the same position could be a test image at 90\% and a
 training image at 10\%, and a comparison across ratios would mix the effect of the
-ratio with a change in the tested photographs. Tab.~\ref{tab:crop-counts} lists the
+ratio with a change in the tested photographs. The split is drawn independently for each
+material, so a scene in the validation or test split of one material appears in the
+training split of others, as a negative. The test therefore measures new photographs of a
+workpiece in scenes that the model has seen. Tab.~\ref{tab:crop-counts} lists the
 resulting crop counts.
 
 \begin{table}[htbp]
@@ -356,16 +357,15 @@ cuDNN was set to deterministic mode with benchmark mode switched off. Because th
 is reset before the network is created, all 75 models start from the same initial
 weights. The training crops were shuffled in every epoch by the seeded generator and
 loaded by two worker processes. Bit-exact repetition of GPU training can in general be
-expected only on the same hardware and software \cite{pytorch2025reproducibility}. Training was
-deterministic within a fixed software environment: two repeated runs gave the same
-losses to six decimal places, and the 48 models trained in August reproduce the first 100 epochs of their
-September 200-epoch runs exactly. The 27 models retrained in October, after a maintenance
-of the lab machine, differ from the September runs from the first epoch on, with
-first-epoch training losses within 0.003 of each other, most likely because the GPU
-software environment had changed. A setup error such as a different batch size would
-change the first-epoch loss by about 0.05. Each of the 75 cells is a single
-training run with a single seed, so the variation between runs with different seeds is
-not estimated in this thesis.
+expected only on the same hardware and software \cite{pytorch2025reproducibility}. Within one
+software environment, training was deterministic: repeated runs gave the same losses to
+six decimal places, and the 48 models trained in August reproduce the first 100 epochs
+of their September 200-epoch runs exactly. The 27 models retrained in October, after a
+maintenance of the lab machine, differ from the September runs from the first epoch on,
+most likely because the GPU software environment changed, but only by up to 0.003 in
+first-epoch training loss, about a tenth of the change that a different batch size
+causes (footnote~\ref{fn:batchsize}). Each of the 75 cells is a single run with a single
+seed, so the variation between seeds is not estimated.
 
 \paragraph{Training platforms}
 \label{sec:methodology-platforms}
@@ -375,9 +375,9 @@ All 75 models were trained at the AI-Lab on one NVIDIA RTX A6000 GPU with batch 
 first been trained on Google Colab, namely those at an O2I ratio of 90\% for all
 materials except white plastic and aluminium (13 models) and at 70\% for all materials
 except dark wood (14 models). Those runs used the default batch size of the training
-script, 16.\footnote{The batch size of the Colab runs was not
+script, 16.\footnote{\label{fn:batchsize}The batch size of the Colab runs was not
 logged. Re-running the first epoch of two of them on a CPU
-reproduces the recorded training loss at batch size 16 but not at 32: 0.6101 against
+comes much closer to the recorded training loss at batch size 16 than at 32: 0.6101 against
 the recorded 0.6106 for brass at 90\% and 0.4614 against 0.4688 for red plastic at 70\%,
 while batch size 32 gives 0.6569 and 0.5026.} Batch size and hardware would then have
 differed between the ratios, since most models at 90\% and 70\% but none at the lower
@@ -425,7 +425,8 @@ is not used again. Since $F_{1,200}^{\mathrm{val}}$ is a maximum over a superset
 epochs of $F_{1,100}^{\mathrm{val}}$, $\Delta_{t,r} \ge 0$ by construction, with equality
 when the run selects an epoch within its first 100. A positive $\Delta_{t,r}$ is therefore
 partly built in, since the maximum of a noisy validation F1 tends to grow with the number
-of epochs searched. One validation crop changes the recall by about 0.04, so values of
+of epochs searched. One misclassified positive validation crop changes the recall by about 0.04 and
+the F1 by less, so values of
 $\Delta_{t,r}$ in Eq.~\eqref{eq:delta-f1} up to about this size are not read as an improvement. For the 48 models trained in August,
 the first 100 epochs of the 200-epoch run are identical to the 100-epoch model
 (paragraph \emph{Optimisation and determinism}), so $\Delta_{t,r}$ equals the difference
@@ -629,8 +630,8 @@ receives the value $-\min D / (\max D - \min D + \varepsilon) > 0$. Averaged ove
 and 0.28 to 0.19 at 10\%. Patches that changed nothing
 thus still carry importance. On every patch with $D_{ij} \ge 0$, the min-max map equals
 $D^+_{ij}$ divided by $\max D - \min D + \varepsilon$ plus this floor, while patches with
-$D_{ij} < 0$ receive values between 0 and the floor, so by Eq.~\eqref{eq:c-invariance}
-the floor pulls $c$ towards 0.5. If all drops were positive, min-max scaling would instead subtract the
+$D_{ij} < 0$ receive values between 0 and the floor, so the floor acts like the constant
+$\kappa$ of Eq.~\eqref{eq:c-invariance} and pulls $c$ towards 0.5. If all drops were positive, min-max scaling would instead subtract the
 smallest drop and move $c$ away from 0.5; this case does not occur among the 750 maps.
 The min-max rule was the original computation of this thesis. The positive-drops rule
 was introduced as a correction during the analysis, when the floor was found to make
@@ -811,7 +812,9 @@ the area of the square, while its $c$ is 0.5 at every ratio.
 \paragraph{Reference values of $c$}
 \label{sec:methodology-reference}
 The value of $c$ that a heatmap reaches when it lies exactly on the bounding box
-depends on $r$. Consider a map that is 1 on the box and 0 elsewhere, for a box with the
+depends on $r$. A part of the box that spills over the reference square falls into the
+6,972 pixels outside $B_{90}$ but into the 59,136 pixels outside $B_{10}$, so it lowers
+$c$ strongly at 90\% and hardly at all at 10\%. Consider a map that is 1 on the box and 0 elsewhere, for a box with the
 area of $B_r$ of which a fraction $f$ lies inside $B_r$. Then $m_{\mathrm{in}} = f$ and
 $m_{\mathrm{out}} = (1 - f)\,|B_r| / (256^2 - |B_r|)$, and Eq.~\eqref{eq:center-frac}
 gives
@@ -827,12 +830,11 @@ Tab.~\ref{tab:reference-square}. For $f = 0.94$, Eq.~\eqref{eq:c-ref-approx} giv
 0.65 at 90\%, 0.87 at 70\%, 0.94 at 50\%, 0.97 at 30\% and 0.99 at 10\%. The share of 0.94
 counts the whole box. A box cut by the crop (Eq.~\eqref{eq:box-contained}) loses the
 part that overflows, which lies outside $B_r$, so in the input the share at 90\% is
-0.96 on average. Since $c_{\mathrm{box}}$ changes fastest with $f$ at 90\%, the value
-computed for the analysed crops is 0.76 there, while at the other ratios it agrees with
-Eq.~\eqref{eq:c-ref-approx} to within 0.01 (Section~\ref{sec:results-reference}). The same
-spill of 6\% of the box falls into the 6,972 pixels outside $B_{90}$ but into the
-59,136 pixels outside $B_{10}$, so it lowers $c$ strongly at 90\% and hardly at all at
-10\%. A flat map still gives 0.5 at every ratio; what depends on $r$ is the value of
+0.961 on average, for which Eq.~\eqref{eq:c-ref-approx} gives 0.75. Applied crop by crop
+and averaged, Eq.~\eqref{eq:c-ref-approx} gives the computed 0.76, because
+$c_{\mathrm{box}}$ is convex in $f$ at 90\% and the cut boxes have $f$ close to 1; at
+the other ratios the computed value agrees with Eq.~\eqref{eq:c-ref-approx} to within
+0.01 (Section~\ref{sec:results-reference}). A flat map still gives 0.5 at every ratio; what depends on $r$ is the value of
 a map that is fully focused on the box. The coarse resolution of both methods spreads
 such a map further across the border of the square (paragraph \emph{Resolution limits
 at 90\% and 70\%}), which lowers this value at the large ratios even more. Reference
@@ -881,7 +883,8 @@ uniform map would place there. Because the workpiece shrinks from about 6.4 to 2
 receptive-field widths over the five ratios, how peaked the importance is inside the
 box can change with scale alone, so a trend in the reference gap need not come only
 from a move to the background. The reference gap is therefore reported as context for
-reading $c$ (Section~\ref{sec:methodology-rq}) and is not tested as a trend. For min-max
+reading $c$ (Section~\ref{sec:methodology-rq}; dashed lines in
+Fig.~\ref{fig:centerfrac-ratio}) and is not tested as a trend. For min-max
 occlusion the reference lacks the floor of Eq.~\eqref{eq:norm-minmax}, since $\chi$ has
 no negative entries, so the min-max reference gap is not interpreted.
 
@@ -906,9 +909,7 @@ $|\mathcal{C}_{uv}| \in \{1, 2, 4\}$, and $H^{\mathrm{blk}} \in
 \mathbb{R}^{256 \times 256}$ is constant on blocks of $16 \times 16$ pixels. The block
 map is then normalised with the positive-drops rule of Eq.~\eqref{eq:norm-positive},
 without the 8-bit step. The averaging comes before the clipping, so positive and
-negative drops of overlapping patches can cancel. This order differs from the toy map
-of Fig.~\ref{fig:bg-centre-toy}\,(c), which clips first and averages afterwards, so the
-two block maps are not the same construction. The check over all 750 analyses uses
+negative drops of overlapping patches can cancel. The check over all 750 analyses uses
 this rule only. For Grad-CAM, $\hat{H}^{\mathrm{cam}}$ is enlarged by
 nearest-neighbour repetition into blocks of $8 \times 8$ pixels, also without the
 8-bit step. Fig.~\ref{fig:resolution-display} places the measured grids, the block
@@ -945,9 +946,9 @@ outside the square, and the outermost Grad-CAM cells straddle its border. At 70\
 margin of 21 pixels holds Grad-CAM cells but still no occlusion patch, since every
 patch position overlaps the square. Patches that cover only the region outside the
 square first appear at 50\%, and there only in the outermost rows and columns of
-positions. Values of $c$ at 90\%, and for occlusion also at 70\%, therefore depend on
-how the interpolation spreads values across the border of the square, and they are
-read with this limitation in mind.
+positions. At 90\%, and for occlusion also at 70\%, a map can therefore hardly place
+importance entirely outside the square, so agreement between the methods there is
+partly built in, and these values are read with this limitation in mind.
 % keep this paragraph directly after "Computed versus displayed resolution": Ch. 3 cites that label for the 21-px margin
 
 % ============================================================================
@@ -999,8 +1000,10 @@ $\phi$ falls as the ratio falls.
 \paragraph{Comparisons and how they are read}
 \label{sec:methodology-tests}
 Each comparison is a two-sided one-sample Student's $t$ test on 15 per-model values,
-with 14 degrees of freedom \cite{student1908probable, virtanen2020scipy}: a difference or a slope is
-tested against 0, and $c$ against 0.5. The tests were computed with SciPy 1.18.1
+with 14 degrees of freedom \cite{student1908probable, virtanen2020scipy}: a mean difference
+or slope $\bar{d}$ is tested against 0 with $t = \bar{d}/\mathrm{SE}$
+(Eq.~\eqref{eq:ratio-se}), and a mean $\bar{c}$ against 0.5 with
+$t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests were computed with SciPy 1.18.1
 under Python 3.13, outside the training environment of Tab.~\ref{tab:training-config}.
 Writing $c_{\mathrm{occ}}$ for $c$ of
 positive-drops occlusion and $c_{\mathrm{cam}}$ for $c$ of Grad-CAM, the comparisons
@@ -1019,6 +1022,11 @@ These comparisons were chosen after an exploratory analysis of the same data, no
 fixed in advance, and no correction for the number of tests is applied. A $p$-value is
 therefore not read as a decision. A result is called clear only if $p < 0.01$; a value
 between 0.01 and 0.1 is reported with its numbers but not read as evidence on its own.
+With a threshold of 0.05 instead, neither answer to the research question would change;
+only some of the secondary comparisons and checks would. A Holm correction over the five
+comparisons that answer the research question would leave its four clear results clear.
+The number of materials with the stated sign, given with each result, is a
+distribution-free check: 13 of 15 corresponds to a two-sided sign-test $p$ of 0.007.
 Even the 15 models of one ratio are not fully independent, since they are trained on
 the same crops with different labels and start from the same weights; the test treats
 them as independent. The SE also contains no variation between training runs, because
