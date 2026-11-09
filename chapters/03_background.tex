@@ -3,7 +3,7 @@
 \label{sec:background}
 
 Section~\ref{sec:related-work-gap} ended with a gap: none of the reviewed studies
-compares two explainability methods on the same crops as a function of a controlled
+compares two explainability methods on the same crops as a function of the
 object-to-image (O2I) ratio, against a complex industrial background, with a per-pixel
 measure of whether the evidence lies on the object or on the background. The concepts
 needed to close it follow the order of the experiment, namely the data
@@ -124,8 +124,9 @@ where $A_{\mathrm{obj}}$ is the area of the object and $A_{\mathrm{img}}$ the ar
 the image, both in pixels, and $r$ is the ratio in percent. This thesis uses the same
 definition, with a square crop centred on the box as the image and the area of the
 bounding box as the object area. The box also encloses some background around the
-cylindrical workpiece, so the workpiece itself covers somewhat less of the crop than
-$r$ states. The crop equations and the rule for crops that would extend beyond the
+cylindrical workpiece, so the workpiece itself covers less of the crop than $r$ states,
+roughly between $0.79\,r$ when it is seen from above, a circle in its box, and $r$ when
+it is seen from the side. The crop equations and the rule for crops that would extend beyond the
 photograph are given in Section~\ref{sec:methodology-crops}.
 
 \paragraph{Area and side length}
@@ -281,7 +282,8 @@ Each value of a feature map depends only on a limited region of the input, its r
 field~\cite{araujo2019computing}. In the toy, one value of $A^1$ sees $3 \times 3$
 pixels. Through the four
 convolutional layers of the network of this thesis and the three poolings between them,
-its width grows as $1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$ pixels, and the
+the width of this theoretical receptive field grows as
+$1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$ pixels, and the
 derivation is given in Section~\ref{sec:methodology-patch}. A unit of the fourth
 convolutional layer therefore sees $38 \times 38$ input pixels. The square with the area
 of the box spans about 6.4 such widths at 90\% and about 2.1 at 10\%. A pattern detector
@@ -289,8 +291,8 @@ of fixed size thus meets a smaller workpiece in a looser crop.
 
 Fig.~\ref{fig:bg-cnn-toy}\,(f) shows what this does to the toy. In the loose crop, the
 workpiece covers $2 \times 2$ pixels and no longer fills a $3 \times 3$ neighbourhood.
-The dark detector gives only 0.06 on the workpiece itself, and at most 0.14 where a
-factory part, now a single pixel, lies diagonally next to it, instead of 0.50 in the
+The dark detector gives only 0.06 or 0.14 on the workpiece, the higher value in the two
+cells that a factory part, now a single pixel, touches diagonally, instead of 0.50 in the
 tight crop. The global averages become $g = (0.025, 0.100)$, and the logit falls from
 1.39 to $-0.25$. The toy network fails at the small ratio, although the workpiece has not changed. The
 toy was built to make this visible, and how strongly the real network is affected cannot
@@ -318,7 +320,8 @@ average instead of a $4 \times 4$ grid, and one logit instead of two. Grad-CAM
 ReLU and before the fourth pooling, i.e., to 256 maps of $32 \times 32$ cells, in the
 same place as the toy's maps $A^1$ and $A^2$. Since the adaptive pooling fixes the size
 of the vector that enters the fully connected layers, the network accepts inputs of
-other sizes, e.g., 128 or 256 pixels, without changes.
+other sizes, e.g., 128 or 256 pixels, without a change of architecture, although it would
+have to be retrained for them.
 
 \begin{table}[htbp]
 \centering
@@ -358,10 +361,10 @@ learned on another domain into its decision, e.g., a reliance on typical backgro
 the preference for texture over shape that Geirhos et al.~\cite{geirhos2019texture}
 found in ImageNet-trained CNNs (Section~\ref{sec:related-work-o2i}). Whatever the models
 use, they have learned from the learning factory itself. The price is a small network, with 1,437,762 parameters, 73\% of them in fc1, trained
-on few images, at most 116 training photographs per material. Four convolutional layers
-are few enough to train from scratch on these data, enough for a unit of c4 to see
-$38 \times 38$ pixels, and they leave a $32 \times 32$ map for Grad-CAM; no other depth
-was tried.
+on few images, at most 116 training photographs per material. The four convolutional
+layers were chosen so that a unit of c4 sees $38 \times 38$ pixels and leaves a
+$32 \times 32$ map for Grad-CAM, with few enough parameters to train from scratch;
+whether this depth suits the data best was not tested, and no other depth was tried.
 
 % ============================================================================
 \subsection{Training and Evaluating a Binary Classifier}
@@ -452,8 +455,9 @@ derivatives over the map.
 Adam is a variant of the step of Eq.~\eqref{eq:bg-gd} that scales the step of each
 parameter by running averages of its past gradients and squared
 gradients~\cite{kingma2015adam}. Dropout sets each output of a layer to zero with a
-fixed probability during training and rescales the remaining outputs so that their
-expected value is unchanged~\cite{srivastava2014dropout}. A network trained this way is
+fixed probability during training~\cite{srivastava2014dropout}; in the PyTorch
+implementation, the remaining outputs are rescaled during training so that their expected
+value is unchanged~\cite{paszke2019pytorch}. A network trained this way is
 discouraged from relying on any single unit. Dropout is switched off when the trained
 network is evaluated, including during the explainability analyses. The settings used
 here are listed in Tab.~\ref{tab:training-config}.
@@ -514,7 +518,10 @@ and its precision, with a zero denominator, is set to 0. The toy model finds bot
 positive crops at the cost of two false alarms and reaches $F_1 = 0.667$. Accuracy
 cannot tell the two apart, and at 90\% in the real data the ``not X'' answer reaches the
 same $1{,}624/1{,}740 = 0.933$ on the training split (Section~\ref{sec:methodology-ovr}).
-The thesis therefore reports F1 and ROC-AUC and never accuracy. Of the
+The thesis therefore reports F1, ROC-AUC and average precision and never accuracy.
+Since the loss weights the classes (Section~\ref{sec:background-training}), the threshold
+$p_1 = 0.5$ behind the F1 is a convention rather than a calibrated choice, which is one
+reason to report the two measures that do not depend on it. Of the
 $2 \cdot 28 = 56$ positive--negative pairs of the toy model, only one is ordered wrongly, the positive crop at
 0.7 below the negative crop at 0.8, so $\mathrm{AUC} = 55/56 = 0.982$. The constant
 answer of the first classifier ties every pair and gives 0.5.
@@ -737,12 +744,12 @@ Gradient-weighted Class Activation Mapping (Grad-CAM) for one crop of black plas
 an object-to-image (O2I) ratio of 70\% (photograph 2024-04-15-095336) and the 70\%
 black-plastic model. (a) Crop with one grey $32 \times 32$ patch and the stride-16 grid;
 (b) measured $15 \times 15$ map $D$ of drops of the positive-class logit $z_1$;
-(c) positive drops, normalised and bilinearly interpolated for display, with the
-reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
+(c) positive drops, normalised and bilinearly interpolated, as used both for $c$ and
+for display, with the reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
 of the fourth convolutional layer, $32 \times 32$, with their weights $\alpha$ (dark
 for high activation);
 (e) measured $32 \times 32$ Grad-CAM map after the rectified linear unit (ReLU),
-divided by its maximum; (f) Grad-CAM, interpolated for display, with $c$. The smooth
+divided by its maximum; (f) Grad-CAM, interpolated as for $c$ and for display, with $c$. The smooth
 appearance of (c) and (f) comes from the interpolation, not from the measurement.}
 \label{fig:bg-methods-real}
 \end{figure}
@@ -779,8 +786,7 @@ maximum gives $c = 0.84$. A pixel inside the square is thus about five times as
 important as a pixel outside it in both maps. The shares of 0.62 and 0.64 are lower, because the
 square covers only a quarter of the crop. For the real crop of
 Fig.~\ref{fig:bg-methods-real}, $c$ is 0.87 for the positive occlusion drops and 0.82 for
-Grad-CAM. The slightly lower Grad-CAM value seems to come from its weak response along
-the dark band at the top edge, which lies outside the square. At this ratio, however, no occlusion patch lies
+Grad-CAM. At this ratio, however, no occlusion patch lies
 entirely outside the square, so the two values are not fully comparable
 (Section~\ref{sec:methodology-resolution}).
 
@@ -824,4 +830,4 @@ real crops have none of these conveniences: 75 models at five ratios, patches on
 $256 \times 256$ input, coarse maps that must be brought to the pixel grid, and a
 square that only approximates a box that itself encloses some background. Before values
 of $c$ can be compared across materials and ratios, each of these needs a fixed and
-justified setting, and Section~\ref{sec:methodology} provides them.
+justified setting, and Chapter~\ref{sec:methodology} provides them.

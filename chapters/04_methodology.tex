@@ -2,7 +2,7 @@
 \section{Methodology}
 \label{sec:methodology}
 
-Section~\ref{sec:background} introduced the concepts of this thesis and their general
+Chapter~\ref{sec:background} introduced the concepts of this thesis and their general
 equations on a toy example. What the toy left open are the settings for the real
 crops. The $2 \times 2$ patch that fitted the toy workpiece becomes a
 $32 \times 32$ patch with stride 16 on a $256 \times 256$ input, the maps of both methods
@@ -146,9 +146,10 @@ so the compression artefacts of the JPEG crops are also magnified most at 90\%. 
 (Tab.~\ref{tab:crop-counts}), which may shift the mix of positions and stations at the
 lowest ratios.
 % TODO: appendix table of skipped crops by station and material
-The training itself does not change with the ratio, since all 75 models were trained
+The training settings do not change with the ratio, since all 75 models were trained
 with the same settings on the same hardware (paragraph \emph{Training platforms} in
-Section~\ref{sec:methodology-training}). The only difference is numerical: 27 of the 30
+Section~\ref{sec:methodology-training}); the training set, however, shrinks from 1,740
+to 1,609 crops at 10\% (Tab.~\ref{tab:crop-counts}). The only difference is numerical: 27 of the 30
 models at 90\% and 70\% were trained after a software maintenance of the lab machine
 (paragraph \emph{Optimisation and determinism}). The fixed input size of $256 \times 256$ pixels was set with the
 adviser. Since the network ends in adaptive average pooling
@@ -304,7 +305,8 @@ at the time of the retraining \\
 No data augmentation was used, unlike in the 2025 study, which applied 13
 augmentation operations~\cite{schneidereitYOLOv8}. Random crops, shifts or rescaling
 would change the O2I ratio and the centring of a crop, and changes of colour would
-alter a property that separates several of the materials. Without normalisation of the
+alter a property that separates several of the materials. Flips and rotations by
+90\textdegree, which would change neither, were not used either. Without normalisation of the
 input, the occlusion fill value keeps its meaning as mid-grey. The input size of
 $256 \times 256$ pixels was set with the adviser, the training length of 100
 epochs follows the advisers' guidance, and the learning rate was not tuned. Whether 100
@@ -450,7 +452,8 @@ so that a method that changes the input and a method that reads gradients inside
 network are compared on the same crops. LRP, the method of the 2025 study, belongs to
 the third family and was not used. It passes relevance backwards through a rule for
 each layer, and its heatmaps depend on which rules are chosen~\cite{montavon2019lrp},
-which would have added a further set of choices to the comparison. A direct comparison
+so LRP would have required a further set of choices, and given the scope of the
+thesis, the comparison was limited to two methods. A direct comparison
 with the LRP heatmaps of the 2025 study would also not be possible, since that study
 explains a detector rather than a binary classifier. Including LRP as a third method is
 left to future work (Section~\ref{sec:discussion-future}).
@@ -468,7 +471,8 @@ evidence for a material that is not shown. For each model, 10 crops were drawn w
 replacement from the at most 25 validation crops of its target material at its ratio
 (Tab.~\ref{tab:crop-counts}). The number 10 is a practical choice, fixed when the
 analysis script was first run: one occlusion map needs 226 forward passes, and using
-all validation crops of the target material would have cost about 2.4 times as much.
+all validation crops of the target material would have cost about 2.4 times as much,
+which would also have been feasible.
 The analysed crops are therefore a subset, which is one reason why the model rather
 than the crop is the unit of analysis (Section~\ref{sec:methodology-aggregation}). All
 draws come from one random stream with seed 42, shared by the 75 models, which were
@@ -550,7 +554,8 @@ Section~\ref{sec:results-fill}.
 
 \paragraph{Grad-CAM}
 \label{sec:methodology-gradcam-impl}
-Grad-CAM follows Eqs.~\eqref{eq:bg-gradcam-weights} and~\eqref{eq:bg-gradcam-map} and
+Grad-CAM was implemented directly in PyTorch, without an explainability library. It
+follows Eqs.~\eqref{eq:bg-gradcam-weights} and~\eqref{eq:bg-gradcam-map} and
 is attached to the fourth convolutional layer, c4 in Tab.~\ref{tab:cnn-architecture}.
 Its $K = 256$ feature maps $A^k$ are taken after the layer's rectified linear unit
 (ReLU) and before the fourth max pooling. With padding 1, the convolutions keep the
@@ -1139,7 +1144,7 @@ $t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests were computed with SciPy 1.18.1
 under Python 3.13, outside the training environment of Tab.~\ref{tab:training-config}.
 Writing $c_{\mathrm{occ}}$ for $c$ of
 positive-drops occlusion and $c_{\mathrm{cam}}$ for $c$ of Grad-CAM, the comparisons
-reported in Section~\ref{sec:results} are
+reported in Chapter~\ref{sec:results} are
 \begin{itemize}
 \item the paired change from 90\% to 10\% of the test F1, of $c_{\mathrm{occ}}$ and of
   $c_{\mathrm{cam}}$, and the slope of Eq.~\eqref{eq:slope} of the test F1;
@@ -1157,12 +1162,15 @@ reported in Section~\ref{sec:results} are
 \end{itemize}
 These comparisons were chosen after an exploratory analysis of the same data, not
 fixed in advance, and no correction for the number of tests is applied. A $p$-value is
-therefore not read as a decision. A result is called clear only if $p < 0.01$; a value
+therefore not read as confirmatory evidence. As a working threshold, a result is called
+clear only if $p < 0.01$; a value
 between 0.01 and 0.1 is reported with its numbers but not read as evidence on its own.
 With a threshold of 0.05 instead, neither answer to the research question would change;
 only some of the secondary comparisons and checks would. A Holm correction over the five
-comparisons of Section~\ref{sec:results-divergence} that bear on the research question
-would leave its four clear results clear.
+comparisons of Section~\ref{sec:results-divergence} that bear on the research question,
+namely the paired changes from 90\% to 10\% of the test F1, of $c_{\mathrm{cam}}$ and of
+$c_{\mathrm{occ}}$, the method difference at 10\% and $c_{\mathrm{cam}}$ against 0.5
+at 10\%, would leave its four clear results clear.
 The number of materials with the stated sign, given with each result, is a
 distribution-free check: 13 of 15 corresponds to a two-sided sign-test $p$ of 0.007.
 Even the 15 models of one ratio are not fully independent, since they are trained on
