@@ -657,7 +657,11 @@ maps are globally averaged and fed into a single linear layer. The map of a clas
 then the sum of the feature maps, each weighted by its weight in that linear layer, and
 shows where the channels that favour the class are active. Gradient-weighted Class
 Activation Mapping (Grad-CAM)~\cite{selvaraju2017gradcam} drops this restriction on the
-architecture by taking the weights from the gradient. For feature maps
+architecture by taking the weights from the gradient. For a network of the CAM type,
+the gradient of the logit is the same at every position of a map, and Grad-CAM gives
+the CAM map; for other networks it averages gradients that can differ between
+positions, which can mark locations the model does not use~\cite{draelos2021hirescam}.
+For feature maps
 $A^k \in \mathbb{R}_{\ge 0}^{U \times V}$, $k = 1, \dots, K$, of a chosen layer and the
 target logit $z$, the weight of channel $k$ is the mean gradient over its map,
 
@@ -720,7 +724,7 @@ opposite directions. The measured $32 \times 32$ map of
 Fig.~\ref{fig:bg-methods-real}\,(e) covers the centre and the lower front of the
 workpiece, and it marks the dark band along the top edge of the crop, outside the
 reference square, only weakly. This is
-one image and is meant as an illustration. How the Grad-CAM evidence spreads at 30\% and
+one image and is meant as an illustration. How the Grad-CAM map spreads at 30\% and
 10\% is shown in Section~\ref{sec:results-qualitative}. In contrast to occlusion, which
 needed 225 separate local tests for the map of panel (b), Grad-CAM reads all feature
 maps at once in one forward and one backward pass.
@@ -798,11 +802,13 @@ Occlusion and Grad-CAM answer different questions. Occlusion asks what replacing
 patch with grey changes in the score while the rest of the image stays in place.
 Grad-CAM asks where the channels that push the score up are active. Both can be right
 about their own question and still point to different regions, and neither map is
-ground truth for what the model uses~\cite{adebayo2018sanity}. One way in which the
-two answers could separate is a hypothesis that this thesis cannot test directly. If the
-background contains many similar cues, like a room full of clocks, covering one of them
-leaves the others visible and changes the score little, while Grad-CAM marks all of
-them at once.
+ground truth for what the model uses~\cite{adebayo2018sanity}. The two answers can
+separate in two ways. If the background contains many similar cues, like a room full of
+clocks, covering one of them leaves the others visible and changes the score little,
+while Grad-CAM marks all of them at once. Grad-CAM can also mark regions the model does
+not use, because it averages gradients that differ between positions (paragraph
+\emph{From CAM to Grad-CAM}). Which of the two applies to the real models is decided by
+removing whole regions of the crop (Section~\ref{sec:methodology-intervention}).
 
 The toy does not show such a divergence. Its two maps agree, with $c = 0.83$ and 0.84.
 What it shows are the ingredients. Both methods mark the dark factory parts, but for

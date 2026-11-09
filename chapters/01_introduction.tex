@@ -106,8 +106,9 @@ uses~\cite{adebayo2018sanity}, and different methods can give different answers 
 the same decision (Section~\ref{sec:related-work-explainability}). A shift of the
 evidence that only one method shows, or that one method misses, could then be a property
 of that method rather than of the model. This is why both methods are applied to the
-same crops, and why each of their results is also read against the value that a map on
-the workpiece would give.
+same crops, why each of their results is also read against the value that a map on the
+workpiece would give, and why both are finally checked against direct tests that remove
+the workpiece or the background from the crop and measure how the decision changes.
 
 To compare heatmaps across ratios, each map has to be reduced to a number that says
 whether its importance lies on the workpiece or on the background. This thesis uses the
@@ -118,9 +119,11 @@ ratio of $r\%$, with the mean importance per pixel outside it. A flat map gives 
 0.5$ at every ratio. A value above 0.5 means that a pixel of the square carries more
 importance on average than a pixel outside it, and a value below 0.5 the opposite. The
 background is taken to dominate only where $c$ lies clearly below 0.5, i.e., where a
-test over the 15 materials places it below 0.5 with $p < 0.01$. A method is taken to
-detect the shift if its centre measure falls clearly from 90\% to 10\% while the test F1
-also falls clearly over the same range (Section~\ref{sec:methodology-rq}).
+test over the 15 materials places it below 0.5 with $p < 0.01$. The same measure,
+computed from the drop of the class score when the square or its outside is removed as a
+whole, gives an intervention centre measure that does not depend on any heatmap. A trend
+in the centre measure of a method is read as a property of the models only if this
+direct test shows it too (Section~\ref{sec:methodology-rq}).
 
 \paragraph{Research question}
 The thesis addresses the following research question:
@@ -131,12 +134,14 @@ this shift?}
 \end{quote}
 The first part asks whether, and from which ratio on, the background outweighs the
 workpiece in the evidence behind the decision. The second asks whether occlusion
-sensitivity and Grad-CAM register a shift of the evidence towards the background.
+sensitivity and Grad-CAM register such a shift, and whether what they register is a
+property of the models.
 
 \paragraph{Problem statement and contribution}
 The aim of this thesis is to measure how the share of complex background in the input
-affects the material classification of a CNN, and whether two explainability methods
-detect a resulting shift of the evidence from the workpiece to the background. The
+affects the material classification of a CNN, whether the decision moves from the
+workpiece to the background, and whether two explainability methods detect such a shift
+correctly. The
 reviewed literature covers the parts of this question separately
 (Section~\ref{sec:related-work-gap}). Pawlowski et al.\ vary the O2I ratio but use a
 single saliency method, as a localisation check. The two studies on the learning factory
@@ -144,9 +149,9 @@ detect workpieces against its complex background, and only the later one compute
 heatmaps, with one method. Studies of background reliance change the background or the
 context of an image rather than the share of the image that the object covers. The
 contribution of this thesis is a comparison of two explainability methods on the same
-crops as a function of a controlled O2I ratio, against a complex industrial background,
-with a per-pixel measure of whether the evidence concentrates on the workpiece or on the
-background.
+crops as a function of the O2I ratio, against a complex industrial background, with a
+per-pixel measure of whether the evidence concentrates on the workpiece or on the
+background, checked against direct tests that remove the workpiece or the background.
 
 For this comparison, crops centred on the workpiece were cut from the photographs of the
 dataset at five ratios, 90\%, 70\%, 50\%, 30\% and 10\%. Since all crops are resized to
@@ -164,33 +169,36 @@ against a reference value, the value that a map lying uniformly on the bounding 
 the workpiece would give at the resolution of each method. Five robustness checks test
 how far the results depend on the occlusion normalisation, the fill of the occluding
 patch, the interpolation of the maps, the flat Grad-CAM maps and the centring of the
-crops, and an extension to 200 epochs tests the training length.
+crops, and an extension to 200 epochs tests the training length. Finally, the workpiece
+or the background is removed from the crops to test the heatmaps directly, Grad-CAM is
+recomputed in three variants, among them HiResCAM~\cite{draelos2021hirescam}, which
+avoids its averaging of gradients, and the untrained network serves as a control.
 
 The results answer the two parts of the question as follows. As the ratio falls from
 90\% to 10\%, the mean test F1 over the 15 materials drops from 0.813 to 0.720, and most
-of this loss occurs below 50\%. Over the same range, the mean Grad-CAM centre measure
-drops from 0.737 to 0.407, but at no ratio is it clearly below 0.5. By the per-pixel
-criterion above, there is therefore no ratio at which the background clearly dominates.
-What the data show instead is a gradual shift of the evidence towards the background
-over the five ratios. For the second part, Grad-CAM detects this shift and occlusion
-sensitivity does not. The two readings are not equally strong. The fall of the Grad-CAM
-centre measure runs against its reference value, which rises as the ratio falls, so
-neither the geometry of the square nor the resolution of the method can produce it. The
-occlusion centre measure rises from 0.728 to 0.884, but less than its own reference
-value, so the rise does not show that the occlusion evidence stays on the workpiece. The
-difference between the two methods grows as the workpiece shrinks, is clear at 10\%, and
-appears with all three fills of the occluding patch. A possible reason, offered as a
-hypothesis and not tested, is that covering one patch at a time cannot reveal reliance
-on a large and repetitive background, since the rest of that background stays visible.
+of this loss occurs below 50\%. The background, however, does not take over the
+decision at any of these ratios. With the workpiece filled in, the models can no longer
+tell the materials apart (mean ROC-AUC 0.44 to 0.50); with the background filled in,
+they rank the crops as well as before (0.98 at every ratio); and the intervention centre
+measure lies well above 0.5 at every ratio without falling. The errors are mostly
+confusions between workpieces of similar colour, above all among aluminium, steel and
+grey plastic.
 
-These results hold on average over the 15 materials. Per material, no link between the
-loss of F1 and the change of the Grad-CAM centre measure is shown. On average, the
-evidence shifts as the background grows, but the results do not show that this shift is
-why a given material is misclassified. The materials also differ beyond the effect of
-the ratio. Steel and aluminium are the weakest at every ratio, already at 90\%, yet
-neither has a model-level Grad-CAM centre measure below 0.5. Black plastic, which the
-2025 study detected worst, has the highest mean test F1 here (0.956); the two studies
-differ in task, metric and training.
+For the second part, the two methods disagree. The Grad-CAM centre measure falls from
+0.737 to 0.407, against a reference value that rises as the ratio falls, so neither the
+geometry of the square nor the resolution of the method produces the fall. The occlusion
+centre measure rises from 0.728 to 0.884. The direct tests side with occlusion
+sensitivity, the method specified for this thesis. The fall of Grad-CAM comes from the
+method itself: it averages gradients over a map whose positions the network weights
+differently, and as the workpiece shrinks, the average is formed more and more over the
+background. HiResCAM, which uses the same gradients without averaging them, rises like
+occlusion. In this network and over these ratios, Grad-CAM therefore reports a shift of
+the evidence that the models do not show.
+
+The materials also differ beyond the effect of the ratio. Steel and aluminium are the
+weakest at every ratio, already at 90\%, and fail mainly on look-alike workpieces rather
+than on the background. Black plastic, which the 2025 study detected worst, has the
+highest mean test F1 here (0.956); the two studies differ in task, metric and training.
 
 \paragraph{Structure of the thesis}
 Section~\ref{sec:related-work} reviews the earlier work on the learning factory and the
@@ -201,8 +209,9 @@ and background in a heatmap, on a toy example and on one real crop.
 Section~\ref{sec:methodology} describes the crops and their split, the one-vs-rest
 design, the training, the explainability pipeline, the reduction of a heatmap to the
 centre measure and how the results are aggregated and read.
+Section~\ref{sec:methodology} also defines the direct tests of the heatmaps.
 Section~\ref{sec:results} reports the classification results, the centre measures of
-both methods with their reference values, the robustness checks and the 200-epoch
-extension. Finally, Section~\ref{sec:discussion} answers the research question,
+both methods with their reference values, the direct tests, the robustness checks and
+the 200-epoch extension. Finally, Section~\ref{sec:discussion} answers the research question,
 discusses the materials that depart from the average and closes with the limitations,
 future work and a conclusion.

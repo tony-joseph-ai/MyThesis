@@ -117,8 +117,9 @@ Their saliency result is a related precedent for the decline of the Grad-CAM cen
 measure found in this thesis as the workpiece shrinks
 (Section~\ref{sec:results-divergence}), with two differences. In their case, the
 saliency fails where the classifier fails, whereas here the Grad-CAM centre measure
-falls while the classification declines only moderately and the occlusion centre
-measure does not fall at all. Their measure is also the average precision of the
+falls while the classification declines only moderately, the occlusion centre measure
+does not fall at all, and direct tests show no move of the decision towards the
+background (Section~\ref{sec:results-intervention}). Their measure is also the average precision of the
 saliency maximum, not a per-pixel concentration such as the centre measure $c$. The
 setups differ as well: in nMNIST the digit keeps its pixel size, whereas here the
 workpiece is rescaled with the crop, so the ratio and the scale of the workpiece change
@@ -169,9 +170,8 @@ given object, beyond how much background is present. In control images without
 informative context, attribution methods still assign more than 30\% of their importance
 to the uninformative background. They also find that object size alone does not predict
 how much a model relies on context. This is consistent with an observation in this
-thesis, where the placement of heatmap evidence seems to depend on the material as well
-as on the ratio, e.g., for steel compared with black plastic
-(Section~\ref{sec:discussion-material}).
+thesis, where the materials that suffer most at low ratios are not those whose heatmaps
+change most (Section~\ref{sec:discussion-material}).
 
 Dreyer et al.~\cite{dreyer2023revealing} introduce L-CRP, an extension of Concept
 Relevance Propagation (CRP)~\cite{achtibat2023crp} to localisation models, which computes a context score for
@@ -216,8 +216,8 @@ context-biased categories appear without their usual context, they report a gain
 4.3 points of mean average precision on COCO-Stuff, and up to 24.2 points for a single
 category. The
 first intervention acts on class activation maps, the family of maps to which Grad-CAM
-belongs, so a Grad-CAM diagnosis such as the one in this thesis could in principle feed
-into such a training objective.
+belongs, so a diagnosis with such maps could in principle feed into such a training
+objective, provided the maps reflect the model (Section~\ref{sec:discussion-answer}).
 
 Bassi et al.~\cite{bassi2024isnet} propose ISNet, which optimises LRP heatmaps during
 training. Ground-truth segmentation masks are used to penalise relevance that falls
@@ -310,16 +310,16 @@ al.~\cite{adhikari2024lostincontext} measure how attribution is divided between 
 and context, but they change the context of an image rather than the share of the image
 that the object covers. Ennab and Mcheick~\cite{ennab2025interpretability} compare two
 explainability methods directly, but in images where the share of background is not
-varied.
+varied. Draelos and Carin~\cite{draelos2021hirescam} show that the averaging of
+gradients in Grad-CAM can mark locations the model did not use, unless the network ends
+in a global average pooling and one linear layer, and propose HiResCAM, which weights
+every location with its own gradient; they do not vary the share of background either.
 
 What none of these papers does is to compare two explainability methods on the same
-crops as a function of a controlled O2I ratio, against a complex industrial background
-and with a per-pixel measure of whether the evidence concentrates on the object or on
-the background. In this
-thesis, occlusion sensitivity and Grad-CAM are applied to the same validation crops of
-each of the 75 models. The difference between the two methods grows as the workpiece
-shrinks and is clear at 10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
-(Section~\ref{sec:results-divergence}).
-A possible mechanism is that occluding a single patch cannot reveal reliance on a large,
-repetitive background, because the rest of that background stays visible. This
-explanation is offered as a hypothesis, not as a measured cause.
+crops as a function of the O2I ratio, against a complex industrial background, with a
+per-pixel measure of whether the evidence concentrates on the object or on the
+background, and to check both against direct tests that remove the object or the
+background. In this thesis, occlusion sensitivity and Grad-CAM are applied to the same
+validation crops of each of the 75 models, and both are compared with the effect of
+removing the workpiece or the background from the crop
+(Sections~\ref{sec:results-divergence} and~\ref{sec:results-intervention}).
