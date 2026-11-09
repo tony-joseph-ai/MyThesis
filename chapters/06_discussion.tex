@@ -28,11 +28,10 @@ not the decline itself.
 \paragraph{Two caveats}
 The mean ROC-AUC stays between 0.970 and 0.982 at every ratio, so the models still rank
 most positive crops above most negative ones while the F1 at the threshold $p_1 = 0.5$
-falls. The decline of the F1 also does not isolate the background. With a fixed input
-of $256 \times 256$ pixels, the side of a square with the area of the box shrinks from
-about 243 pixels at 90\% to about 81 pixels at 10\%, i.e., from about 6.4 to about 2.1
-times the 38-pixel receptive field of the fourth convolutional layer (paragraph
-\emph{What changes with the ratio} in Section~\ref{sec:methodology-crops}). The F1
+falls. The decline of the F1 also does not isolate the background. As the ratio falls,
+the workpiece also shrinks in the fixed $256 \times 256$ input, from about 6.4 to about
+2.1 times the receptive field of the fourth convolutional layer (paragraph \emph{What
+changes with the ratio} in Section~\ref{sec:methodology-crops}). The F1
 decline fits a growing influence of the background, but it cannot separate that
 influence from the smaller scale of the workpiece.
 
@@ -49,8 +48,9 @@ curves, not a tested result (Section~\ref{sec:methodology-tests}).
 Under the rule of Section~\ref{sec:methodology-rq}, the background outweighs the
 workpiece only where $c$ lies clearly below 0.5, and this holds at no ratio for either
 method. At 10\%, Grad-CAM is below 0.5 on average and in 9 of the 15 materials, but not
-clearly ($t(14) = -1.36$), and the same holds without the flat maps (0.363,
-$t(14) = -1.64$). The criterion is strict by design. At 10\% the region outside the
+clearly ($t(14) = -1.36$; 99\% interval 0.20 to 0.61, which includes 0.5), and the
+same holds without the flat maps (0.363, $t(14) = -1.64$). The data therefore neither
+show nor exclude dominance at 10\%. The criterion is strict by design. At 10\% the region outside the
 reference square has about nine times its area, so the background holds more of the
 total importance whenever $c$ is below about 0.9. By that total, even occlusion would
 show the background dominating at 10\% on average, since its mean centre measure of
@@ -74,9 +74,12 @@ reference gaps are not tested as trends (Section~\ref{sec:methodology-refgap}).
 The two methods agree at 90\% and then move apart. The method difference is clear at
 10\% (0.477) and as a slope over the five ratios, and at 10\% the difference beyond the
 reference is 0.509, so the different resolutions of the two methods do not produce it
-(Section~\ref{sec:results-reference}). Grad-CAM thus detects the shift and occlusion
-sensitivity, the method specified for this thesis, does not, and whether a shift of the
-evidence is visible depends on the method used to look for it. None of the five checks of
+(Section~\ref{sec:results-reference}). Grad-CAM detects the shift; occlusion
+sensitivity, the method specified for this thesis, does not. Whether a shift is visible
+thus depends on the method used to look for it. The shift itself is measured with
+Grad-CAM. That it is a property of the models, not of the method, rests on the
+reference argument and on the F1 decline over the same range, not on an independent
+test such as replacing the whole background (Section~\ref{sec:discussion-future}). None of the five checks of
 Section~\ref{sec:results-robustness} changes this result. The agreement at 90\% does
 not hold under all of them: it holds only for positive drops with the grey fill, while
 with min-max normalisation or a blurred patch occlusion lies clearly below Grad-CAM at
@@ -89,8 +92,8 @@ covering one of them with a patch changes the score little, while Grad-CAM marks
 them at once. The results add two points to this. At 10\% the workpiece fits into a
 reference square of about 81 pixels, and one $32 \times 32$ patch covers about 40\% of
 its width, so a few patches remove most of the workpiece and the drops concentrate
-there. Together with the rising reference value, this would explain why the occlusion
-centre measure even rises as the ratio falls. The fill of the patch, in contrast, cannot
+there. Together with the rising reference value, this may explain, though it was not tested
+(Section~\ref{sec:discussion-future}), why the occlusion centre measure even rises as the ratio falls. The fill of the patch, in contrast, cannot
 explain the average divergence, since the divergence appears with the grey, the black
 and the blurred patch alike (Section~\ref{sec:results-fill}); the fill matters for
 single workpieces (Section~\ref{sec:discussion-material}). The redundancy explanation
@@ -105,8 +108,9 @@ the mean Grad-CAM centre measure fall together, not that the materials whose
 classification suffers most are those whose evidence moves most, and per material no
 such link is shown. Over the 15 materials, the change from 90\% to 10\% of the test F1
 (Tab.~\ref{tab:ovr-full-results}) and that of the per-model Grad-CAM centre measures
-behind Tab.~\ref{tab:centerfrac} give a Pearson correlation of $r = -0.20$
-($p = 0.47$) and a Spearman rank correlation of $\rho = -0.14$ ($p = 0.63$). Steel
+behind Tab.~\ref{tab:centerfrac} give a Pearson correlation coefficient of
+$-0.20$ ($p = 0.47$) and a Spearman rank correlation coefficient of $-0.14$
+($p = 0.63$). Steel
 loses most F1, 0.230, while its Grad-CAM centre measure rises by 0.148, aluminium loses
 0.224 while its centre measure falls by only 0.074, and blue AG has the largest
 Grad-CAM fall, 0.827, with almost no loss of F1 (0.028). Grad-CAM thus shows that the
@@ -223,7 +227,7 @@ The flat Grad-CAM maps are concentrated in a few materials, above all yellow pla
 light wood, and four models have only flat maps (Section~\ref{sec:results-degeneracy}),
 so the Grad-CAM values of these two materials say little. Yellow plastic enters the
 correlation of Section~\ref{sec:discussion-answer} with such a value at 90\%. Without
-it, the correlation is $r = -0.28$ ($p = 0.34$, $n = 14$), so still no link is shown.
+it, the correlation coefficient is $-0.28$ ($p = 0.34$, $n = 14$), so still no link is shown.
 Why some materials produce flat maps more often was not examined.
 
 % ============================================================================
@@ -238,7 +242,9 @@ The 2025 study names the limited number of original images as a limitation of it
 The share of background also changes together with the scale of the workpiece, the
 interpolation factor and the population of photographs (paragraph \emph{What changes
 with the ratio} in Section~\ref{sec:methodology-crops}), so the effect of the ratio
-found here is their combined effect (Section~\ref{sec:discussion-answer}).
+found here is their combined effect (Section~\ref{sec:discussion-answer}). Since the
+split is drawn per material, the scenes of the test photographs were seen in training
+with other materials (paragraph \emph{Data split} in Section~\ref{sec:methodology-crops}).
 
 \paragraph{Training and statistics}
 Each of the 75 cells is a single training run with a single seed, so the standard
@@ -272,7 +278,11 @@ Grad-CAM gives flat maps in 18.3\% of the analyses, concentrated in a few materi
 (Section~\ref{sec:results-degeneracy}).
 
 \paragraph{Interpretation}
-Neither heatmap is ground truth for what a model uses. The two explanations offered
+Neither heatmap is ground truth for what a model uses. Both methods explain the
+positive-class logit $z_1$, while the decision depends on $z_1 - z_0$, and importance in
+the background can raise both. Since every scene was photographed with all 15
+materials, the background carries little information about the material by design, so
+evidence there need not separate the classes. The two explanations offered
 here, the room full of clocks for the divergence of the methods and the reflecting
 surface for the metals, are hypotheses that were not tested, and which negative crops
 the models misclassify was not analysed. Finally, the detection rule shows that the
@@ -349,7 +359,7 @@ workpiece fills at least half of the area lose little F1 on average. The Grad-CA
 centre measure falls from 0.737 to 0.407 while its reference value rises, so its
 evidence moves away from the workpiece, but it never lies clearly below the
 no-preference level of 0.5. By the per-pixel criterion of this thesis, there is
-therefore no ratio at which the background takes over, only a gradual shift. Grad-CAM
+therefore no ratio at which the background clearly takes over, only a gradual shift. Grad-CAM
 detects this shift; occlusion sensitivity, the method specified for this thesis, does
 not, since its centre measure rises from 0.728 to 0.884, partly because of the
 geometry. Whether a shift of the evidence becomes visible thus depends on the method
@@ -358,13 +368,12 @@ used to look for it.
 The materials add a second layer. Steel and aluminium, the two weakest, are weak
 already at 90\%, and neither has a model-level Grad-CAM centre measure below 0.5.
 Whether steel relies on the background remains open; aluminium is partly undertrained,
-and at 90\% its evidence lies on the box although its F1 is already low. Black plastic,
+and at 90\% its evidence is about as central as a map on the box although its F1 is already low. Black plastic,
 the hardest workpiece of the 2025 study, has the highest mean test F1 here. The
 Grad-CAM evidence and the F1 fall together on average, but per material no link is
 shown.
 
-Whether a model relies on the workpiece or on the background therefore has an answer
-that depends on the material and on the explainability method, and a single method can
-miss a shift that another one shows. For work with the learning factory, this argues for
+In this dataset, whether a model relies on the workpiece or on the background depends
+on the material as well as on the explainability method. For work with the learning factory, this argues for
 checking a heatmap result with a second method, and against the value a map on the
 workpiece would give, before reading it as evidence about the model.
