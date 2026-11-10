@@ -139,8 +139,7 @@ are resized to the same input size, three further quantities change with it, nam
 the scale of the workpiece in the input, the interpolation factor and the population of
 photographs. The side of a square with the area of the box shrinks from about 243
 pixels at 90\% to about 81 pixels at 10\%, i.e., from about 6.4 to about 2.1 times the
-38-pixel receptive field of one unit of the fourth convolutional layer (paragraph
-\emph{Choice of patch size and stride} in Section~\ref{sec:methodology-explainability}).
+38-pixel receptive field of one unit of the fourth convolutional layer (Section~\ref{sec:methodology-explainability}).
 Tight crops are enlarged about fivefold and loose crops about 1.7-fold, as given above,
 so the compression artefacts of the JPEG crops are also magnified most at 90\%. From
 50\% downwards, photographs with the workpiece near the image border yield no crop
@@ -149,8 +148,7 @@ lowest ratios. At 10\%, the 207 discarded crops are spread almost evenly over th
 materials, between 11 and 16 of the 166 photographs of each; their distribution over the
 stations was not counted.
 The training settings do not change with the ratio, since all 75 models were trained
-with the same settings on the same hardware (paragraph \emph{Training platforms} in
-Section~\ref{sec:methodology-training}); the training set, however, shrinks from 1,740
+with the same settings on the same hardware (Section~\ref{sec:methodology-training}); the training set, however, shrinks from 1,740
 to 1,609 crops at 10\% (Tab.~\ref{tab:crop-counts}). The only difference is numerical: 27 of the 30
 models at 90\% and 70\% were trained after a software maintenance of the lab machine
 (paragraph \emph{Optimisation and determinism}). The fixed input size of $256 \times 256$ pixels was set with the
@@ -208,15 +206,12 @@ No crop is lost at 90\% and 70\%. From 50\% downwards the number of skipped crop
 grows, and at 10\% 207 of the 2,490 photographs (8.3\%) yield no crop. The split is
 fixed per photograph before cropping, so a skipped crop is simply missing from its
 photograph's split, and the proportions at the lower ratios deviate slightly from
-70/15/15. The validation split was used for model selection (paragraph \emph{Model
-selection and metrics} in Section~\ref{sec:methodology-metrics}) and for all
-explainability analyses (paragraph \emph{Image sampling} in
-Section~\ref{sec:methodology-sampling}). The 2025 study calls its held-out images the
+70/15/15. The validation split was used for model selection (Section~\ref{sec:methodology-metrics}) and for all
+explainability analyses (Section~\ref{sec:methodology-sampling}). The 2025 study calls its held-out images the
 evaluation set~\cite{schneidereitYOLOv8}. The test split was evaluated once per model,
 with the checkpoint selected in its 100-epoch run, after all training and model selection had
 finished, and no test result was used for any decision. For the 27 models that were
-retrained (paragraph \emph{Training platforms} in
-Section~\ref{sec:methodology-training}), this evaluation took place after the
+retrained (Section~\ref{sec:methodology-training}), this evaluation took place after the
 retraining. Their earlier test results are not reported; the retraining was decided
 because of the batch size, not because of a test result. The direct tests of
 Section~\ref{sec:methodology-intervention} score the test split again with the same
@@ -261,9 +256,8 @@ positive and $n^- = 1{,}624$ negative crops, a ratio of about 1:14. At the lower
 ratios the counts shift slightly because of skipped crops (Tab.~\ref{tab:crop-counts}).
 Under this imbalance, accuracy cannot tell a useful model from one that never finds a
 positive crop (Tab.~\ref{tab:bg-toy-metrics}). The loss was therefore weighted by class
-(paragraph \emph{Output and loss} in Section~\ref{sec:methodology-training}), and models
-were selected and evaluated by F1 and ROC-AUC instead of accuracy (paragraph
-\emph{Model selection and metrics} in Section~\ref{sec:methodology-metrics}).
+(Section~\ref{sec:methodology-training}), and models
+were selected and evaluated by F1 and ROC-AUC instead of accuracy (Section~\ref{sec:methodology-metrics}).
 
 % ============================================================================
 \subsection{Training and Evaluation}
@@ -398,7 +392,7 @@ earlier models are archived and not reported.
 After every epoch the model was evaluated on the validation split, and the checkpoint
 of the epoch with the highest validation F1 was kept. A later epoch replaces it only
 if its F1 is strictly higher, so on ties the earlier epoch is kept. The reported test
-result is thus that of the best-validation checkpoint, as in Pawlowski
+result is that of the best-validation checkpoint, as in Pawlowski
 et al.~\cite{pawlowski2019needles}. Precision, recall and F1 follow Eq.~\eqref{eq:bg-prf} for
 the positive class, with the prediction $\hat{y}$ of the paragraph \emph{Output and
 loss}, and a value whose denominator is zero is set to 0. The ROC-AUC follows
@@ -467,8 +461,7 @@ left to future work (Section~\ref{sec:discussion-future}).
 \label{sec:methodology-sampling}
 The analyses use the 100-epoch checkpoints in evaluation mode, so dropout is switched
 off. They were computed on the validation split, which keeps the test split
-untouched; the same split was also used to select the checkpoints (paragraph
-\emph{Model selection and metrics} in Section~\ref{sec:methodology-metrics}). Only
+untouched; the same split was also used to select the checkpoints (Section~\ref{sec:methodology-metrics}). Only
 crops of the model's target material are explained, whether or not they are
 classified correctly. The question is which regions a model uses as evidence for its
 material, and for a crop of another material the positive-class logit would measure
@@ -477,9 +470,6 @@ replacement from the at most 25 validation crops of its target material at its r
 (Tab.~\ref{tab:crop-counts}). The number 10 is a practical choice, fixed when the
 analysis script was first run: one occlusion map needs 226 forward passes, and using
 all validation crops of the target material would have cost about 2.4 times as much.
-The crops are drawn separately for each model, so the crops of one ratio are not the
-same photographs as those of another. The removal tests on the test split
-(Section~\ref{sec:methodology-removal}) use every test crop instead.
 The analysed crops are therefore a subset, which is one reason why the model rather
 than the crop is the unit of analysis (Section~\ref{sec:methodology-aggregation}). All
 draws come from one random stream with seed 42, shared by the 75 models, which were
@@ -492,7 +482,9 @@ earlier values of $c$ to within 0.0003. Each model draws its own sample, so the
 photographs of one material at 90\% are in general not the same as those at 10\%. The
 comparison across ratios is therefore made on averages over different photographs; a
 paired comparison on the same photograph at all five ratios is shown in
-Section~\ref{sec:results-qualitative}.
+Section~\ref{sec:results-qualitative}, and the removal tests on the test split
+(Section~\ref{sec:methodology-removal}) use every test crop, the same photographs at every
+ratio apart from the discarded edge crops.
 
 \paragraph{Occlusion sensitivity}
 \label{sec:methodology-occlusion-impl}
@@ -1246,8 +1238,7 @@ centre measure $c_{\mathrm{int}}$ of Eq.~\eqref{eq:cint}. If this holds at no ra
 first part of the research question is a decline without a ratio at which the
 background clearly dominates, and no threshold is read into the curve.
 
-The second level is the reference value of the respective method (paragraph
-\emph{Reference values of $c$} in Section~\ref{sec:methodology-reference}), the value
+The second level is the reference value of the respective method (Section~\ref{sec:methodology-reference}), the value
 of a map that stays uniformly on the box, which rises as $r$ falls. This rise decides
 how a trend in $c$ is read. A $c$ that falls while its reference rises cannot be
 explained by the geometry of the square or by the resolution of the method, but it can

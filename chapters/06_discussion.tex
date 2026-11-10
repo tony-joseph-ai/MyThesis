@@ -58,17 +58,15 @@ Tab.~\ref{tab:reference-square}, its mean value of 0.884 corresponds to a share 
 do not depend on this choice. Taken as a whole, removing the square lowers the mean
 $z_1$ at 10\% from 1.98 to $-6.98$, while removing its whole outside leaves it at 2.29
 (Section~\ref{sec:results-cint}). By total effect as well as per pixel, the decision
-therefore rests on the workpiece.
+rests on the workpiece.
 
 \paragraph{What the decline of the F1 reflects}
 The decline of the F1 is therefore not caused by a background that takes over the
 decision. Two other things change with the ratio. As the ratio falls, the workpiece
 shrinks in the fixed $256 \times 256$ input, from about 6.4 to about 2.1 times the
-receptive field of the fourth convolutional layer (paragraph \emph{What changes with
-the ratio} in Section~\ref{sec:methodology-crops}), so fewer features of the workpiece
+receptive field of the fourth convolutional layer (Section~\ref{sec:methodology-crops}), so fewer features of the workpiece
 itself remain. And the errors are mostly confusions between workpieces of the same
-colour family (paragraph \emph{False positives} in
-Section~\ref{sec:results-primary-table}): the false-positive rate rises from 0.021 at
+colour family (Section~\ref{sec:results-primary-table}): the false-positive rate rises from 0.021 at
 90\% to 0.035 at 10\%, and the recall falls from 0.867 to 0.804. Since the models rely
 mainly on colour, as the blur fill shows (Section~\ref{sec:results-cint}), a smaller
 workpiece leaves less to separate look-alike materials. Which of these two, the
@@ -99,7 +97,7 @@ different regions of the map. As the workpiece shrinks, the mean is formed more 
 over background positions: the share of the weights that comes from outside the square
 rises from 0.10 at 90\% to 0.79 at 10\%, and the share of channels whose weight has the
 opposite sign to their gradient on the workpiece from 0.04 to 0.34
-(Section~\ref{sec:results-camvariants}). At 10\%, Grad-CAM thus counts the activity on the
+(Section~\ref{sec:results-camvariants}). At 10\%, Grad-CAM counts the activity on the
 workpiece of about a third of the channels with the wrong sign, which lowers the map on
 the workpiece and, after the ReLU, moves its importance towards the background. This is the failure that Draelos and
 Carin~\cite{draelos2021hirescam} describe in general, that the gradient averaging of
@@ -124,7 +122,7 @@ specified for this thesis, shows none, in agreement with the direct tests on ave
 the materials; per model, the agreement depends on the fill of the removed region
 (Section~\ref{sec:results-camvariants}). Grad-CAM
 shows a clear shift that the direct tests do not find, so for this network and these
-ratios it reports a shift that is not there. Whether a heatmap trend reflects the model can therefore not be
+ratios it reports a shift that is not there. Whether a heatmap trend reflects the model cannot be
 read from one method, nor from the agreement or disagreement of two; it needs a test
 that intervenes on the input. The reference values of this thesis rule out the geometry
 of the square and the resolution of a method as causes, but, as the Grad-CAM result
@@ -145,7 +143,7 @@ uninformative for Grad-CAM here, because the untrained network, the common start
 of all 75 models, gives no Grad-CAM map at all, so any trained map differs from it.
 HiResCAM passes it (0.54 to 0.58 for the untrained network, flat across the ratios) and
 still only supports, rather than proves, the reading of the direct tests. A sanity check
-of this kind is therefore not enough to trust a heatmap trend.
+of this kind is not enough to trust a heatmap trend.
 
 % ============================================================================
 \subsection{Material-Dependent Effects}
@@ -260,11 +258,9 @@ Each material is represented by one physical workpiece photographed 166 times
 and whether they carry over to other workpieces of the same materials is not tested.
 The 2025 study names the limited number of original images as a limitation of its own.
 The share of background also changes together with the scale of the workpiece, the
-interpolation factor and the population of photographs (paragraph \emph{What changes
-with the ratio} in Section~\ref{sec:methodology-crops}), so the effect of the ratio
+interpolation factor and the population of photographs (Section~\ref{sec:methodology-crops}), so the effect of the ratio
 on the F1 found here is their combined effect. Since the split is drawn per material, the
-scenes of the test photographs were seen in training with other materials (paragraph
-\emph{Data split} in Section~\ref{sec:methodology-crops}). The ratios end at 10\%; at
+scenes of the test photographs were seen in training with other materials (Section~\ref{sec:methodology-crops}). The ratios end at 10\%; at
 smaller ratios, the background may still come to dominate.
 
 \paragraph{Training and statistics}
@@ -348,8 +344,7 @@ dataset.
 Feeding the crops at native size, so that the workpiece keeps its pixel size on a
 growing canvas as in the nMNIST data of Pawlowski et al.~\cite{pawlowski2019needles},
 would separate the share of background from the scale of the workpiece. The adaptive
-average pooling of the network allows this without a change of architecture (paragraph
-\emph{What changes with the ratio} in Section~\ref{sec:methodology-crops}).
+average pooling of the network allows this without a change of architecture (Section~\ref{sec:methodology-crops}).
 
 \paragraph{Statistics and coverage}
 Several seeds per cell would give the run-to-run variation that the standard errors now

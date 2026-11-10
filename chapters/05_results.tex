@@ -118,7 +118,7 @@ A change of $-0.017$ in a single cell would also lie within the run-to-run varia
 the validation F1, about 0.020 per run, that Section~\ref{sec:results-200epoch}
 estimates from the 27 cells trained twice.
 Most of the decline therefore lies below 50\%. The mean ROC-AUC stays between 0.970 and
-0.982 at every ratio. The models thus continue to rank most positive crops above most
+0.982 at every ratio. The models continue to rank most positive crops above most
 negative ones, while the F1 at the decision threshold $p_1 = 0.5$ falls. The average
 precision, which does not depend on that threshold either, falls from 0.876 to 0.792,
 in all 15 materials (Section~\ref{sec:results-removal}), so the decline is not only a
@@ -147,7 +147,7 @@ the grey-plastic models accept 33, of which 16 are aluminium and 16 steel. Red p
 and red AG accept mainly each other (78 and 44 crops), yellow AG mainly yellow plastic
 (29) and orange AG (13), light and dark wood mainly each other (17 and 26), brass
 mainly light wood (23), and blue AG and blue plastic each other (12 and 11). The weakest
-materials thus fail mainly on look-alike workpieces of the same colour family.
+materials fail mainly on look-alike workpieces of the same colour family.
 
 \FloatBarrier
 % ============================================================================
@@ -271,8 +271,7 @@ Section~\ref{sec:results-intervention}.
 \label{sec:results-reference}
 
 The centre measure of a map that lies uniformly on the bounding box is not the same at
-every ratio (paragraph \emph{Reference values of $c$} in
-Section~\ref{sec:methodology-reference}). Tab.~\ref{tab:reference} lists these
+every ratio (Section~\ref{sec:methodology-reference}). Tab.~\ref{tab:reference} lists these
 reference values for the box itself and at the resolution of each method, together
 with the reference gaps $c - c^{\mathrm{ref}}$ of both methods.
 
@@ -357,7 +356,7 @@ The slope of $c_{\mathrm{occ}}$, $-0.0248$ ($p = 0.021$), is not evidence on its
 own.
 
 \paragraph{The two methods}
-The two methods thus answer differently. As the ratio falls, the Grad-CAM centre measure
+The two methods answer differently. As the ratio falls, the Grad-CAM centre measure
 falls clearly ($-0.330$, $t(14) = -4.17$), against every reference value, while the test
 F1 also falls ($-0.093$, $t(14) = -4.76$); the occlusion centre measure rises
 ($+0.155$). From the heatmaps alone it cannot be decided which of the two reflects the
@@ -381,8 +380,7 @@ of the same material are given, which rest on 10 crops per model and are indicat
 only. At 90\% the background ring around $B_{90}$ is 7 pixels wide, narrower
 than one Grad-CAM cell and one occlusion step, so a map at 90\% cannot place a measurement
 entirely outside the square, although interpolated values in the 7-pixel ring can still
-lower $c$ (paragraph \emph{Resolution limits at 90\% and 70\%} in
-Section~\ref{sec:methodology-resolution}).
+lower $c$ (Section~\ref{sec:methodology-resolution}).
 \paragraph{Black plastic}
 Fig.~\ref{fig:same-black} shows the photograph that is also the real example of
 Fig.~\ref{fig:bg-methods-real} and of the worked example in
@@ -553,7 +551,7 @@ ratio. The F1 lies between 0.015 and 0.025, and the share of target crops called
 positive (0.09 to 0.18) equals the share of other crops called positive (0.10 to 0.18),
 so a model that still answers positive does so for any crop. The ROC-AUC lies at or
 below the level of 0.5 that a score without information gives, from 0.495 at 90\% to
-0.444 at 10\%, and no model at 70\% or below exceeds 0.59. The background alone thus
+0.444 at 10\%, and no model at 70\% or below exceeds 0.59. The background alone
 carries no information about the material at any ratio. Its ROC-AUC is even clearly
 below 0.5 at 30\% and 10\% ($t(14) = -3.85$ and $-2.98$, $p = 0.002$ and $0.010$). One
 possible reason, not tested, is the scene overlap of Section~\ref{sec:methodology-split}:
@@ -687,7 +685,7 @@ share of the Grad-CAM weights that comes from cells outside the square is $0.101
 10\%, close to the share of cells outside the square (0.12 to 0.90). The share of
 channels whose weight has the opposite sign to their gradient on the workpiece rises
 from $0.038 \pm 0.004$ at 90\% through 0.092, 0.184 and 0.253 to $0.344 \pm 0.031$ at
-10\%. As the workpiece shrinks, the Grad-CAM weights are thus set more and more by what
+10\%. As the workpiece shrinks, the Grad-CAM weights are set more and more by what
 the layers after c4 do with features at background positions, and at 10\% about a third
 of the channels count their activity on the workpiece with the wrong sign.
 
@@ -712,12 +710,10 @@ architecture alone.
 
 \paragraph{Summary of the section}
 Removing the workpiece removes the models' ability to recognise their material at every
-ratio; removing the background does not change how well they rank the crops. The
-intervention centre measure stays above 0.5 at every ratio and with every fill and does
-not fall as the workpiece shrinks. HiResCAM, which uses the same gradients as Grad-CAM
-without averaging them, rises from 90\% to 10\%, like occlusion. The fall of the Grad-CAM centre measure is
-not found in any direct test; it arises from the averaging of gradients that differ
-between the workpiece and the background positions of the map.
+ratio; removing the background does not change how well they rank the crops, and the
+intervention centre measure stays above 0.5 with every fill without falling. The fall of
+the Grad-CAM centre measure is not found in any direct test; it arises from the averaging
+of gradients, which HiResCAM avoids.
 
 \FloatBarrier
 
@@ -765,7 +761,7 @@ a property of the occlusion maps themselves.
 \label{sec:results-fill}
 
 A uniform patch removes little evidence from a region that already looks like the
-patch (paragraph \emph{Fill colour} in Section~\ref{sec:methodology-explainability}).
+patch (Section~\ref{sec:methodology-explainability}).
 Occlusion was therefore repeated with a black and a blurred patch in place of the grey
 fill of the main analysis, for all 750 analyses.
 \paragraph{Model level}
@@ -802,7 +798,7 @@ and 0.34, blur 0.39 and 0.74), so no statement about steel is possible there. Fo
 aluminium, the black and the blurred patch give values above 0.5 at every ratio, from
 0.56 to 0.95 and from 0.57 to 0.97.
 
-The headline of Section~\ref{sec:results-divergence} thus does not depend on the fill,
+The headline of Section~\ref{sec:results-divergence} does not depend on the fill,
 whereas the occlusion value of a single workpiece has to be read with the fill in mind.
 
 \subsubsection{Interpolation}
@@ -857,16 +853,12 @@ resizing. At 90\%, 991 of the 2,490 boxes
 cut box and by at most 12.8\%, and from 50\% downwards for none.
 
 The reference square and the box overlap by about 94\% at every ratio
-(paragraph \emph{Reference square} in Section~\ref{sec:methodology-reduction}).
+(Section~\ref{sec:methodology-reduction}).
 Counting only the part of the box inside the crop, the share $f$ of the box inside
 $B_r$ is 0.961, 0.941, 0.942, 0.939 and 0.930 from 90\% to 10\%, and with the ellipse
 in place of the box (Section~\ref{sec:results-reference}), the difference beyond the
 reference remains clear at 10\% and as a slope. The square is therefore a fair stand-in for the box at every
 ratio, and its small mismatch is accounted for by the reference values.
-
-\paragraph{Summary of the section}
-None of the five checks changes the two observations; the agreement of the
-two methods at 90\% holds only for positive drops with the grey fill.
 
 \FloatBarrier
 % ============================================================================
@@ -912,7 +904,7 @@ Section~\ref{sec:methodology-200epoch}, gains of a single cell up to about 0.04,
 effect of one positive validation crop on the recall, are not read as an improvement. The fall
 with the ratio remains after 200 epochs, from 0.884 at 90\% to 0.841 at 10\%, but it is
 smaller than at 100 epochs (0.854 to 0.794), since the gain is largest at 10\%.
-Training length thus accounts for about a quarter of the decline on the validation
+Training length accounts for about a quarter of the decline on the validation
 split (0.060 against 0.043), not for the decline itself.
 
 \paragraph{Materials}
@@ -932,8 +924,7 @@ For the 27 models retrained in October there are two runs with batch size 32, th
 final 100-epoch model of October and the first 100 epochs of the 200-epoch run of
 September. They use the same
 seed and settings and differ only in the GPU software environment, which changed with
-the maintenance of the lab machine (paragraph \emph{Optimisation and determinism} in
-Section~\ref{sec:methodology-training}). Their best validation F1 differs by $+0.003$ on average,
+the maintenance of the lab machine (Section~\ref{sec:methodology-training}). Their best validation F1 differs by $+0.003$ on average,
 so there is no systematic shift, with a mean absolute difference of 0.018 and a
 standard deviation of the difference of 0.028, i.e., $0.028/\sqrt{2} \approx 0.020$ per run. The largest
 difference is 0.089 (brass at 70\%), and the two runs give the same value in 3 of the
