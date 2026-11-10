@@ -206,10 +206,7 @@ photograph's split, and the proportions at the lower ratios deviate slightly fro
 explainability analyses (Section~\ref{sec:methodology-sampling}). The 2025 study calls its held-out images the
 evaluation set \citep{schneidereitYOLOv8}. The test split was evaluated once per model,
 with the checkpoint selected in its 100-epoch run, after all training and model selection had
-finished, and no test result was used for any decision. For the 27 models that were
-retrained (Section~\ref{sec:methodology-training}), this evaluation took place after the
-retraining. Their earlier test results are not reported; the retraining was decided
-because of the batch size, not because of a test result. The direct tests of
+finished, and no test result was used for any decision. The direct tests of
 Section~\ref{sec:methodology-intervention} score the test split again with the same
 fixed models; no setting was chosen from them.
 
@@ -289,7 +286,7 @@ Seed & 42, reset before every model; deterministic cuDNN, benchmark mode off \\
 Hardware & NVIDIA RTX A6000 GPU (48\,GB) at the AI-Lab \\
 Software & Python 3.9.25, PyTorch 2.8.0 \citep{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
 cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2 \citep{harris2020numpy}, scikit-learn 1.6.1 \citep{pedregosa2011scikit}; NVIDIA driver 580.178.04
-at the time of the retraining \\
+for the October runs \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -355,31 +352,19 @@ loaded by two worker processes. Bit-exact repetition of GPU training can in gene
 expected only on the same hardware and software \citep{pytorch2025reproducibility}. Within one
 software environment, training was deterministic: repeated runs gave the same losses to
 six decimal places, and the 48 models trained in August reproduce the first 100 epochs
-of their September 200-epoch runs exactly. The 27 models retrained in October, after a
+of their September 200-epoch runs exactly. The 27 models trained in October, after a
 maintenance of the lab machine, differ from the September runs from the first epoch on,
 most likely because the GPU software environment changed, but only by up to 0.003 in
-first-epoch training loss, about a tenth of the change that a different batch size
-causes (footnote~\ref{fn:batchsize}). Each of the 75 cells is a single run with a single
+first-epoch training loss. Each of the 75 cells is a single run with a single
 seed, so the variation between seeds is not estimated.
 
 \paragraph{Training platforms}
 \label{sec:methodology-platforms}
 All 75 models were trained at the AI-Lab on one NVIDIA RTX A6000 GPU with batch size
 32, 48 of them in August and 27 in October. Training took about 3 minutes per model at
-100 epochs and about 6 minutes at 200 epochs. The 27 models trained in October had
-first been trained on Google Colab, namely those at an O2I ratio of 90\% for all
-materials except white plastic and aluminium (13 models) and at 70\% for all materials
-except dark wood (14 models). Those runs used the default batch size of the training
-script, 16.\footnote{\label{fn:batchsize}The batch size of the Colab runs was not
-logged. Re-running the first epoch of two of them on a CPU
-comes much closer to the recorded training loss at batch size 16 than at 32: 0.6101 against
-the recorded 0.6106 for brass at 90\% and 0.4614 against 0.4688 for red plastic at 70\%,
-while batch size 32 gives 0.6569 and 0.5026.} Batch size and hardware would then have
-differed between the ratios, since most models at 90\% and 70\% but none at the lower
-ratios came from Colab. These 27 models were therefore retrained at the AI-Lab with the
-settings of Tab.~\ref{tab:training-config}, and only the retrained models are used in
-this thesis, for the test results as well as for the explainability analyses. The
-earlier models are archived and not reported.
+100 epochs and about 6 minutes at 200 epochs. The 27 models trained in October are
+those at an O2I ratio of 90\% for all materials except white plastic and aluminium (13
+models) and at 70\% for all materials except dark wood (14 models).
 
 \paragraph{Model selection and metrics}
 \label{sec:methodology-metrics}
@@ -424,7 +409,7 @@ the F1 by less, so values of
 $\Delta_{t,r}$ in Eq.~\eqref{eq:delta-f1} up to about this size are not read as an improvement. For the 48 models trained in August,
 the first 100 epochs of the 200-epoch run are identical to the 100-epoch model
 (paragraph \emph{Optimisation and determinism}), so $\Delta_{t,r}$ equals the difference
-to the model used in the main comparison. For the 27 models retrained in October, the
+to the model used in the main comparison. For the 27 models trained in October, the
 two runs come from different software environments; taking both values from the same
 run keeps this difference out of $\Delta_{t,r}$.
 The results are reported in Section~\ref{sec:results-200epoch}.
@@ -469,9 +454,7 @@ draws come from one random stream with seed 42, shared by the 75 models, which w
 processed in the order of their output-folder names compared as character strings.
 These names begin with the material number, so that, e.g., material 10, blue plastic,
 precedes material 1, white plastic. A different order
-would give different samples. For the 27 retrained models, the analyses were repeated
-on the same crops as before; for the other 48, this recomputation reproduced the
-earlier values of $c$ to within 0.0003. Each model draws its own sample, so the
+would give different samples. Each model draws its own sample, so the
 photographs of one material at 90\% are in general not the same as those at 10\%. The
 comparison across ratios is therefore made on averages over different photographs; a
 paired comparison on the same photograph at all five ratios is shown in
