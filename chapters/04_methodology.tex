@@ -82,8 +82,9 @@ and a maximum of 1.88. Every box therefore fits at 50\% and below, where the bou
 beyond the crop, and at 90\% (bound 1.11), 991 (39.8\%) do. For these boxes, part of the long side is cut off; at
 90\%, this is 4.7\% of the long side for the median cut box, 11.5\% for a box at the
 95th percentile of the aspect ratio and 23\% for the most elongated box. Such a box covers less than $r$ percent of the crop. The crops were stored as
-JPEG (Joint Photographic Experts Group) files.
-% TODO: JPEG quality setting of the crop script
+JPEG (Joint Photographic Experts Group) files with quality 75, the default of
+Pillow~\cite{pillow2025docs}; the quantisation tables of the stored crops match the
+standard tables for that quality.
 
 \paragraph{Choice of ratios}
 The five ratios were agreed with the adviser before any crop was made. They are
@@ -128,8 +129,8 @@ normalisation, such as subtracting a channel mean, was applied, so the occlusion
 value 0.5 of Section~\ref{sec:methodology-explainability} is exactly mid-grey. The
 rounding of Eq.~\eqref{eq:crop-window} can make a window one pixel wider than high or
 vice versa; otherwise the crop is scaled by the same factor in both directions, and
-the share of the box in the input equals that in the crop.
-% TODO: confirm that all 12,170 crops load (the training loader silently replaces unreadable files)
+the share of the box in the input equals that in the crop. All 12,170 crops load
+without error as colour images.
 
 \paragraph{What changes with the ratio}
 \label{sec:methodology-covariates}
@@ -144,8 +145,9 @@ Tight crops are enlarged about fivefold and loose crops about 1.7-fold, as given
 so the compression artefacts of the JPEG crops are also magnified most at 90\%. From
 50\% downwards, photographs with the workpiece near the image border yield no crop
 (Tab.~\ref{tab:crop-counts}), which may shift the mix of positions and stations at the
-lowest ratios.
-% TODO: appendix table of skipped crops by station and material
+lowest ratios. At 10\%, the 207 discarded crops are spread almost evenly over the
+materials, between 11 and 16 of the 166 photographs of each; their distribution over the
+stations was not counted.
 The training settings do not change with the ratio, since all 75 models were trained
 with the same settings on the same hardware (paragraph \emph{Training platforms} in
 Section~\ref{sec:methodology-training}); the training set, however, shrinks from 1,740
