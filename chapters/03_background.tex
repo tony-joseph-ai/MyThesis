@@ -3,7 +3,7 @@
 \label{sec:background}
 
 Section~\ref{sec:related-work-gap} ended with a gap: none of the reviewed studies
-compares two explainability methods on the same crops as a function of a controlled
+compares two explainability methods on the same crops as a function of the
 object-to-image (O2I) ratio, against a complex industrial background, with a per-pixel
 measure of whether the evidence lies on the object or on the background. The concepts
 needed to close it follow the order of the experiment, namely the data
@@ -95,8 +95,11 @@ several workpieces for them, e.g., the black workpiece because it matches the ma
 parts of the learning factory. For black plastic, the
 workpiece of the real example, the overlap is with the dark parts of the learning
 factory rather than with the plate. Since every material was photographed at the same
-positions, the models of different materials see the same scenes, and a difference
-between them cannot come from a different set of backgrounds. The single box per
+positions, all models are trained on the same set of scenes, and a difference between
+them cannot come from a different set of backgrounds; because the split is drawn per
+material (Section~\ref{sec:methodology-split}), the test and analysed crops of different
+materials come from different positions. By design, the background carries no
+information about which material is present. The single box per
 photograph allows a crop with a prescribed share of workpiece, which is the variable of
 the experiment. Finally, the per-material results of the 2025 study give a reference
 point for the material ranking found here, although task and metric differ
@@ -106,7 +109,9 @@ point for the material ranking found here, although task and metric differ
 Each material is represented by one physical workpiece that was photographed 166 times.
 A model can therefore learn properties of that particular piece, e.g., a scratch or the
 grain pattern of one piece of wood, together with properties of its material, and the
-data cannot separate the two. The results of this thesis describe these 15 workpieces.
+data cannot separate the two. The task is therefore closer to recognising one object
+per material than to material classification in general, and the results of this thesis
+describe these 15 workpieces.
 Whether they carry over to other workpieces of the same materials is not tested.
 
 % ============================================================================
@@ -124,8 +129,9 @@ where $A_{\mathrm{obj}}$ is the area of the object and $A_{\mathrm{img}}$ the ar
 the image, both in pixels, and $r$ is the ratio in percent. This thesis uses the same
 definition, with a square crop centred on the box as the image and the area of the
 bounding box as the object area. The box also encloses some background around the
-cylindrical workpiece, so the workpiece itself covers somewhat less of the crop than
-$r$ states. The crop equations and the rule for crops that would extend beyond the
+cylindrical workpiece, so the workpiece itself covers less of the crop than $r$ states,
+roughly between $0.79\,r$ when it is seen from above, a circle in its box, and $r$ when
+it is seen from the side. The crop equations and the rule for crops that would extend beyond the
 photograph are given in Section~\ref{sec:methodology-crops}.
 
 \paragraph{Area and side length}
@@ -219,7 +225,9 @@ every position, so a pattern is detected wherever it occurs. Strictly,
 Eq.~\eqref{eq:bg-conv} is a cross-correlation, since the kernel is not flipped, but
 deep learning calls it a convolution~\cite[Sec.~9.1]{goodfellow2016deep}. At the border, the sum
 reaches beyond the input. Padding with one row and column of zeros on each side keeps
-the output at $N \times N$, which is what the network of this thesis does. The toy
+the output at $N \times N$, which is what the network of this thesis does. Since its
+inputs are not normalised, a border of zeros is black, and a filter that responds to dark
+regions can respond along the border of the input. The toy
 instead repeats the edge pixels, because a border of zeros would look dark to a
 detector of dark regions.
 
@@ -281,7 +289,8 @@ Each value of a feature map depends only on a limited region of the input, its r
 field~\cite{araujo2019computing}. In the toy, one value of $A^1$ sees $3 \times 3$
 pixels. Through the four
 convolutional layers of the network of this thesis and the three poolings between them,
-its width grows as $1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$ pixels, and the
+the width of this theoretical receptive field grows as
+$1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$ pixels, and the
 derivation is given in Section~\ref{sec:methodology-patch}. A unit of the fourth
 convolutional layer therefore sees $38 \times 38$ input pixels. The square with the area
 of the box spans about 6.4 such widths at 90\% and about 2.1 at 10\%. A pattern detector
@@ -289,8 +298,8 @@ of fixed size thus meets a smaller workpiece in a looser crop.
 
 Fig.~\ref{fig:bg-cnn-toy}\,(f) shows what this does to the toy. In the loose crop, the
 workpiece covers $2 \times 2$ pixels and no longer fills a $3 \times 3$ neighbourhood.
-The dark detector gives only 0.06 on the workpiece itself, and at most 0.14 where a
-factory part, now a single pixel, lies diagonally next to it, instead of 0.50 in the
+The dark detector gives only 0.06 or 0.14 on the workpiece, the higher value in the two
+cells that a factory part, now a single pixel, touches diagonally, instead of 0.50 in the
 tight crop. The global averages become $g = (0.025, 0.100)$, and the logit falls from
 1.39 to $-0.25$. The toy network fails at the small ratio, although the workpiece has not changed. The
 toy was built to make this visible, and how strongly the real network is affected cannot
@@ -318,7 +327,8 @@ average instead of a $4 \times 4$ grid, and one logit instead of two. Grad-CAM
 ReLU and before the fourth pooling, i.e., to 256 maps of $32 \times 32$ cells, in the
 same place as the toy's maps $A^1$ and $A^2$. Since the adaptive pooling fixes the size
 of the vector that enters the fully connected layers, the network accepts inputs of
-other sizes, e.g., 128 or 256 pixels, without changes.
+other sizes, e.g., 128 or 256 pixels, without a change of architecture, although it would
+have to be retrained for them.
 
 \begin{table}[htbp]
 \centering
@@ -358,10 +368,10 @@ learned on another domain into its decision, e.g., a reliance on typical backgro
 the preference for texture over shape that Geirhos et al.~\cite{geirhos2019texture}
 found in ImageNet-trained CNNs (Section~\ref{sec:related-work-o2i}). Whatever the models
 use, they have learned from the learning factory itself. The price is a small network, with 1,437,762 parameters, 73\% of them in fc1, trained
-on few images, at most 116 training photographs per material. Four convolutional layers
-are few enough to train from scratch on these data, enough for a unit of c4 to see
-$38 \times 38$ pixels, and they leave a $32 \times 32$ map for Grad-CAM; no other depth
-was tried.
+on few images, at most 116 training photographs per material. The four convolutional
+layers were chosen so that a unit of c4 sees $38 \times 38$ pixels and leaves a
+$32 \times 32$ map for Grad-CAM, with few enough parameters to train from scratch;
+whether this depth suits the data best was not tested, and no other depth was tried.
 
 % ============================================================================
 \subsection{Training and Evaluating a Binary Classifier}
@@ -452,8 +462,9 @@ derivatives over the map.
 Adam is a variant of the step of Eq.~\eqref{eq:bg-gd} that scales the step of each
 parameter by running averages of its past gradients and squared
 gradients~\cite{kingma2015adam}. Dropout sets each output of a layer to zero with a
-fixed probability during training and rescales the remaining outputs so that their
-expected value is unchanged~\cite{srivastava2014dropout}. A network trained this way is
+fixed probability during training~\cite{srivastava2014dropout}; in the PyTorch
+implementation, the remaining outputs are rescaled during training so that their expected
+value is unchanged~\cite{paszke2019pytorch}. A network trained this way is
 discouraged from relying on any single unit. Dropout is switched off when the trained
 network is evaluated, including during the explainability analyses. The settings used
 here are listed in Tab.~\ref{tab:training-config}.
@@ -514,7 +525,10 @@ and its precision, with a zero denominator, is set to 0. The toy model finds bot
 positive crops at the cost of two false alarms and reaches $F_1 = 0.667$. Accuracy
 cannot tell the two apart, and at 90\% in the real data the ``not X'' answer reaches the
 same $1{,}624/1{,}740 = 0.933$ on the training split (Section~\ref{sec:methodology-ovr}).
-The thesis therefore reports F1 and ROC-AUC and never accuracy. Of the
+The thesis therefore reports F1, ROC-AUC and average precision and never accuracy.
+Since the loss weights the classes (Section~\ref{sec:background-training}), the threshold
+$p_1 = 0.5$ behind the F1 is a convention rather than a calibrated choice, which is one
+reason to report the two measures that do not depend on it. Of the
 $2 \cdot 28 = 56$ positive--negative pairs of the toy model, only one is ordered wrongly, the positive crop at
 0.7 below the negative crop at 0.8, so $\mathrm{AUC} = 55/56 = 0.982$. The constant
 answer of the first classifier ties every pair and gives 0.5.
@@ -554,7 +568,7 @@ evidence lies.
 
 A heatmap, or attribution map, assigns to each region of the input a value for how much
 it contributed to a chosen output of the network, here the logit of the positive
-class. Methods to compute such maps fall into three families. Perturbation methods
+class. Among the main families of methods to compute such maps are three. Perturbation methods
 change the input and observe the output. Gradient-based methods read derivatives of the
 output inside the network. Relevance propagation passes the output backwards through the
 layers and distributes it over the input pixels, as layer-wise relevance propagation
@@ -657,7 +671,11 @@ maps are globally averaged and fed into a single linear layer. The map of a clas
 then the sum of the feature maps, each weighted by its weight in that linear layer, and
 shows where the channels that favour the class are active. Gradient-weighted Class
 Activation Mapping (Grad-CAM)~\cite{selvaraju2017gradcam} drops this restriction on the
-architecture by taking the weights from the gradient. For feature maps
+architecture by taking the weights from the gradient. For a network of the CAM type,
+the gradient of the logit is the same at every position of a map, and Grad-CAM gives
+the CAM map; for other networks it averages gradients that can differ between
+positions, which can mark locations the model does not use~\cite{draelos2021hirescam}.
+For feature maps
 $A^k \in \mathbb{R}_{\ge 0}^{U \times V}$, $k = 1, \dots, K$, of a chosen layer and the
 target logit $z$, the weight of channel $k$ is the mean gradient over its map,
 
@@ -702,9 +720,8 @@ the full $8 \times 8$ resolution of the input.
 \paragraph{Where, not what}
 Grad-CAM shows where channels with a positive weight are active, not what kind of
 feature these channels respond to. A channel that responds to dark regions and one that
-responds to a surface texture can look the same in $G$. For aluminium, Grad-CAM favours
-the workpiece at every ratio (Section~\ref{sec:results-qualitative}), but
-the map cannot tell whether the model uses the shape of the workpiece or the texture of
+responds to a surface texture can look the same in $G$. For a reflecting workpiece such
+as aluminium, a Grad-CAM map on the workpiece cannot tell whether the model uses the shape of the workpiece or the texture of
 its reflecting surface, the distinction that Geirhos et al.~\cite{geirhos2019texture}
 draw for ImageNet-trained CNNs.
 
@@ -720,7 +737,7 @@ opposite directions. The measured $32 \times 32$ map of
 Fig.~\ref{fig:bg-methods-real}\,(e) covers the centre and the lower front of the
 workpiece, and it marks the dark band along the top edge of the crop, outside the
 reference square, only weakly. This is
-one image and is meant as an illustration. How the Grad-CAM evidence spreads at 30\% and
+one image and is meant as an illustration. How the Grad-CAM map spreads at 30\% and
 10\% is shown in Section~\ref{sec:results-qualitative}. In contrast to occlusion, which
 needed 225 separate local tests for the map of panel (b), Grad-CAM reads all feature
 maps at once in one forward and one backward pass.
@@ -733,12 +750,12 @@ Gradient-weighted Class Activation Mapping (Grad-CAM) for one crop of black plas
 an object-to-image (O2I) ratio of 70\% (photograph 2024-04-15-095336) and the 70\%
 black-plastic model. (a) Crop with one grey $32 \times 32$ patch and the stride-16 grid;
 (b) measured $15 \times 15$ map $D$ of drops of the positive-class logit $z_1$;
-(c) positive drops, normalised and bilinearly interpolated for display, with the
-reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
+(c) positive drops, normalised and bilinearly interpolated, as used both for $c$ and
+for display, with the reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
 of the fourth convolutional layer, $32 \times 32$, with their weights $\alpha$ (dark
 for high activation);
 (e) measured $32 \times 32$ Grad-CAM map after the rectified linear unit (ReLU),
-divided by its maximum; (f) Grad-CAM, interpolated for display, with $c$. The smooth
+divided by its maximum; (f) Grad-CAM, interpolated as for $c$ and for display, with $c$. The smooth
 appearance of (c) and (f) comes from the interpolation, not from the measurement.}
 \label{fig:bg-methods-real}
 \end{figure}
@@ -761,9 +778,14 @@ value everywhere, has no preference for either region. Its share inside the squa
 equals the area of the square, 0.25 for the tight crop and 0.06 for the loose one
 (panels (a) and (b)), so the share of a map without any preference changes with the
 ratio. Its mean per pixel is the same inside and outside, and the per-pixel comparison
-gives 0.50 for any square. Only the per-pixel version thus has a fixed level for ``no
-preference''. This thesis therefore uses the per-pixel comparison and calls it the
-centre measure $c$. It is defined exactly in Eq.~\eqref{eq:center-frac}
+gives 0.50 for any square. The two summaries agree on whether the square is preferred:
+a pixel inside is on average more important than a pixel outside exactly when the share
+of the total exceeds the share of the area. They differ in their level of no preference,
+which is 0.5 at every ratio per pixel but the area share $r/100$ for the total, and in
+what it means for the background to dominate. This thesis takes dominance to mean that a
+background pixel is on average more important than a workpiece pixel, uses the per-pixel
+comparison, whose level is the same at every ratio, and calls it the centre measure
+$c$. It is defined exactly in Eq.~\eqref{eq:center-frac}
 (Section~\ref{sec:methodology-centerfrac}). Values above 0.5 mean that a pixel inside the
 square carries more importance on average than a pixel outside it, and values below 0.5
 the reverse.
@@ -775,8 +797,7 @@ maximum gives $c = 0.84$. A pixel inside the square is thus about five times as
 important as a pixel outside it in both maps. The shares of 0.62 and 0.64 are lower, because the
 square covers only a quarter of the crop. For the real crop of
 Fig.~\ref{fig:bg-methods-real}, $c$ is 0.87 for the positive occlusion drops and 0.82 for
-Grad-CAM. The slightly lower Grad-CAM value seems to come from its weak response along
-the dark band at the top edge, which lies outside the square. At this ratio, however, no occlusion patch lies
+Grad-CAM. At this ratio, however, no occlusion patch lies
 entirely outside the square, so the two values are not fully comparable
 (Section~\ref{sec:methodology-resolution}).
 
@@ -798,11 +819,13 @@ Occlusion and Grad-CAM answer different questions. Occlusion asks what replacing
 patch with grey changes in the score while the rest of the image stays in place.
 Grad-CAM asks where the channels that push the score up are active. Both can be right
 about their own question and still point to different regions, and neither map is
-ground truth for what the model uses~\cite{adebayo2018sanity}. One way in which the
-two answers could separate is a hypothesis that this thesis cannot test directly. If the
-background contains many similar cues, like a room full of clocks, covering one of them
-leaves the others visible and changes the score little, while Grad-CAM marks all of
-them at once.
+ground truth for what the model uses~\cite{adebayo2018sanity}. The two answers can
+separate in two ways. If the background contains many similar cues, like a room full of
+clocks, covering one of them leaves the others visible and changes the score little,
+while Grad-CAM marks all of them at once. Grad-CAM can also mark regions the model does
+not use, because it averages gradients that differ between positions (paragraph
+\emph{From CAM to Grad-CAM}). Which of the two applies to the real models is decided by
+removing whole regions of the crop (Section~\ref{sec:methodology-intervention}).
 
 The toy does not show such a divergence. Its two maps agree, with $c = 0.83$ and 0.84.
 What it shows are the ingredients. Both methods mark the dark factory parts, but for
@@ -818,4 +841,4 @@ real crops have none of these conveniences: 75 models at five ratios, patches on
 $256 \times 256$ input, coarse maps that must be brought to the pixel grid, and a
 square that only approximates a box that itself encloses some background. Before values
 of $c$ can be compared across materials and ratios, each of these needs a fixed and
-justified setting, and Section~\ref{sec:methodology} provides them.
+justified setting, and Chapter~\ref{sec:methodology} provides them.

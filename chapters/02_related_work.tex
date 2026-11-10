@@ -20,25 +20,16 @@ S.~Schneidereit et al.~\cite{schneidereitFischertechnik2023} applied YOLO (You O
 Once) object detection~\cite{redmon2016yolo} to the learning factory to monitor a
 simulated manufacturing process. The learning factory is a model production line with
 five modules, namely a sorting machine, an oven, a milling machine, a high-bay warehouse
-and a vacuum gripper. The dataset of that study is not the one used in this thesis. It
-consists of 700 webcam images in seven batches of 100 that show only white, blue and red
-workpieces, with 1,200 labelled workpieces in total. The batches were arranged so that
-each colour appears in four of them, to avoid a colour bias in training. Six pixel-wise
-augmentations, namely Gaussian blur, brightness, linear contrast, motion blur, noise and
-sharpness, enlarged the dataset to 4,900 images, which were split in the proportions
-80/10/10. The degrading augmentations account for environmental variation, while the
-enhancing ones are meant to compensate for the colour correlation between the workpieces
-and the learning factory, which the authors describe as inherent to the task. The
-experiments compare four detectors of different sizes, YOLOv3s, YOLOv3l, YOLOv5s and
-YOLOv5l, two training and validation strategies and the six augmentations; the abstract
-also names different prior-shape assignment strategies. Red workpieces had the lowest
-mean average precision at an intersection-over-union (IoU) threshold of 0.5 (mAP@[.5])
-in all cases, which the authors attribute to the strong colour correlation with
-the learning factory, whose parts are mostly red and blue. They preferred YOLOv3l over
-the two YOLOv5 models for detecting the red workpieces, and sharpness was the most
-effective augmentation against the colour correlation. In their conclusion, YOLOv3l and
-YOLOv5s are each best suited to a particular purpose: YOLOv3l when workpieces share
-their colour with the background, and YOLOv5s for strongly distorted images. The earlier
+and a vacuum gripper. Their dataset is not the one used in this thesis. It consists of
+700 webcam images that show only white, blue and red workpieces, which six pixel-wise
+augmentations enlarged to 4,900 images. Some of the augmentations degrade the images to
+imitate changing conditions in the factory; others enhance them to counter the
+similarity in colour between the workpieces and the mostly red and blue factory, which
+the authors regard as unavoidable for this task. Across four YOLOv3 and YOLOv5
+detectors, the red workpieces had the lowest mean average precision at an
+intersection-over-union (IoU) threshold of 0.5 (mAP@[.5]) in all cases, which the
+authors attribute to this colour correlation, and sharpening was the most effective
+augmentation against it. The earlier
 of the two studies thus already links detection errors in the learning factory to a
 workpiece sharing its colour with the background, which is the theme the later study and
 this thesis take up.
@@ -66,15 +57,16 @@ The authors found that workpieces with similar characteristics can behave quite
 differently, and that some background components influenced the detection while others
 with the same features did not. On the evaluation images, the YOLOv8n models detected
 the two yellow workpieces most accurately, which the authors relate to their colour not occurring in the
-background. Black plastic scored worst, most likely because of the many black parts of
-the learning factory, and this explanation partially holds for the two red workpieces.
+background. Black plastic scored worst, which the authors attribute, with the hedge
+``most likely'', to the many black parts of the learning factory; in their words, this
+explanation partially holds for the two red workpieces.
 Grey plastic, however, did better than black and red, although the base plate is grey,
 so the authors conclude that the relation between workpiece and background colour cannot
 be the only factor. Their LRP heatmap for red acrylic glass also marks red elements of
 the learning factory. In their conclusion, aluminium, steel, black plastic, red plastic
 and red acrylic glass were problematic, while white and yellow plastic, orange acrylic
-glass and light wood were learned very well. Besides colour and contour, the reflecting
-characteristic of a workpiece is named as relevant. The copy of this dataset used here
+glass and light wood were learned very well. Besides colour and contour, the authors also
+name the reflecting characteristic of a workpiece as relevant. The copy of this dataset used here
 is described in Section~\ref{sec:background-dataset}.
 
 Set against the material ranking of this thesis (Tab.~\ref{tab:ovr-full-results}),
@@ -88,8 +80,8 @@ comparable. Section~\ref{sec:discussion-material} compares the materials in deta
 \subsection{The Object-to-Image Ratio and Background Reliance in the Wider Literature}
 \label{sec:related-work-o2i}
 
-Pawlowski et al.~\cite{pawlowski2019needles} study the classification of tiny objects in
-large images, e.g., small lesions in medical images, and treat the O2I ratio as an
+Pawlowski et al.~\cite{pawlowski2019needles}, available as an arXiv preprint, study the
+classification of tiny objects in large images, e.g., small lesions in medical images, and treat the O2I ratio as an
 experimental variable. They define it by area, as the area of the object divided by the
 area of the image, which is also the definition used in this thesis. Their testbed
 consists of a digit-based dataset (nMNIST) and a histopathology dataset (nCAMELYON). In
@@ -101,12 +93,13 @@ crops of 128, 256 and 512 pixels are cut around real lesions so that the lesion 
 into one of the ratio ranges (100--50)\%, (50--10)\%, (10--1)\% and (1--0.1)\%, with real
 tissue as background and a lesion size that varies between crops. The tested CNNs reach
 reasonable test accuracy above a ratio of 0.3\% on nMNIST and above 1\% on nCAMELYON.
-For a fixed dataset size, there is an O2I limit below which no tested model performs
-better than chance, and the amount of training data a model needs to generalise grows
-rapidly with the inverse of the ratio. Adapting the receptive field to the known object
-size is beneficial, although on nCAMELYON the smallest receptive field performed best,
-and at very small ratios the choice of global pooling operation affects the
-optimisation. In their supplementary material, the authors also use absolute
+With a fixed amount of data, there is a ratio below which none of the tested models does
+better than chance, and the data needed to generalise increase steeply as the ratio
+becomes smaller. Matching the receptive field to a known object size helps, although on
+nCAMELYON the smallest receptive field performed best, and at very small ratios the kind
+of global pooling affects how easily the models train. Here the receptive field is
+fixed (38 pixels, Section~\ref{sec:background-cnn}), so this factor is not varied. In
+their supplementary material (Appendices C.4 and C.5), the authors also use absolute
 input-gradient saliency maps as a localisation check. On nMNIST, the average precision
 of locating the digit from these maps falls as the ratio falls, for every pooling
 method, which the authors note is in line with the classification accuracy, and for
@@ -117,27 +110,28 @@ Their saliency result is a related precedent for the decline of the Grad-CAM cen
 measure found in this thesis as the workpiece shrinks
 (Section~\ref{sec:results-divergence}), with two differences. In their case, the
 saliency fails where the classifier fails, whereas here the Grad-CAM centre measure
-falls while the classification declines only moderately and the occlusion centre
-measure does not fall at all. Their measure is also the average precision of the
+falls while the classification declines only moderately, the occlusion centre measure
+does not fall at all, and direct tests show no move of the decision towards the
+background (Section~\ref{sec:results-intervention}). Their measure is also the average precision of the
 saliency maximum, not a per-pixel concentration such as the centre measure $c$. The
 setups differ as well: in nMNIST the digit keeps its pixel size, whereas here the
 workpiece is rescaled with the crop, so the ratio and the scale of the workpiece change
 together (Section~\ref{sec:background-o2i}). The nCAMELYON ranges (100--50)\% and
 (50--10)\% cover the ratios of this thesis, and there their models still reached
-reasonable accuracy, so no fall to chance is expected here, although each model here
-sees at most 116 positive crops of one physical workpiece.
+reasonable accuracy, so a fall to chance is not expected at these ratios. With far less
+training data here, at most 116 positive crops of one physical workpiece per model, the
+comparison is only indicative.
 
 Xiao et al.~\cite{xiao2021noise} approach background reliance from the other direction.
 Instead of shrinking the object, they keep the foreground and manipulate the background
 of ImageNet~\cite{deng2009imagenet} images, separating the two with the ImageNet
 bounding-box annotations and, where the shape of the foreground is needed, with GrabCut
-segmentation. Models reach non-trivial accuracy from the background alone, and for
-87.5\% of foregrounds, some background of another class makes the model predict that
-class. Background information can thus outweigh the object in a decision. They also
+segmentation. Models reach non-trivial accuracy from the background alone, and adversarially chosen
+backgrounds make them predict the class of the background for up to 87.5\% of the
+foregrounds of their ImageNet-9 data. Background information can thus outweigh the object in a decision. They also
 find that more accurate models both exploit background correlations more and are more
-robust to changed backgrounds, a finding at the level of whole models. This thesis looks
-at a finer
-level. Since a separate model is trained for every material and ratio, 75 models in
+robust to changed backgrounds, a finding at the level of whole models. This thesis compares
+models of one architecture across materials and ratios instead. Since a separate model is trained for every material and ratio, 75 models in
 total, background reliance can be compared between materials and between ratios.
 Section~\ref{sec:discussion-material} makes this comparison for steel, aluminium and
 black plastic.
@@ -150,8 +144,8 @@ networks towards shape and, according to the authors, also improves their robust
 several types of image distortion. Texture bias concerns the type of feature a network
 uses, not where in the image that feature lies, so it can occur even when the evidence
 lies on the object. Among the papers reviewed here, it is the closest analogue to the
-behaviour of aluminium, whose Grad-CAM evidence favours the workpiece at every ratio
-while its classification is weak (Section~\ref{sec:discussion-material}). The analogy
+behaviour of aluminium, whose decision rests on the workpiece at every ratio while its
+classification is weak (Section~\ref{sec:discussion-material}). The analogy
 is loose, since the networks of Geirhos et al.\ learned from about 1.3~million ImageNet
 images, whereas each model here learns from about 1,700 crops.
 
@@ -161,24 +155,24 @@ images, whereas each model here learns from about 1,700 crops.
 
 Adhikari et al.~\cite{adhikari2024lostincontext} ask how the context of an object
 affects feature attribution methods, not only accuracy. Using segmentation masks to
-separate object and context regions in feature maps, they introduce a quantitative
-measure of object-versus-context attribution. They report that replacing the context of
-an image altogether harms performance more than perturbing the existing context. One
-possible reading, not tested by the authors, is that a network encodes which background it expects with a
-given object, beyond how much background is present. In control images without
+split attribution maps into object and context regions, they measure which share of the
+total attribution falls on each. They report that replacing the context of
+an image altogether harms performance more than perturbing the existing context. In control images without
 informative context, attribution methods still assign more than 30\% of their importance
-to the uninformative background. They also find that object size alone does not predict
+to the uninformative background. Since the background in this thesis carries no
+information about the material by design, heatmap importance on it need not indicate
+reliance either; Section~\ref{sec:results-intervention} tests this directly. They also
+find that object size alone does not predict
 how much a model relies on context. This is consistent with an observation in this
-thesis, where the placement of heatmap evidence seems to depend on the material as well
-as on the ratio, e.g., for steel compared with black plastic
-(Section~\ref{sec:discussion-material}).
+thesis, where the materials that suffer most at low ratios are not those whose heatmaps
+change most (Section~\ref{sec:discussion-material}).
 
 Dreyer et al.~\cite{dreyer2023revealing} introduce L-CRP, an extension of Concept
 Relevance Propagation (CRP)~\cite{achtibat2023crp} to localisation models, which computes a context score for
 each prediction of a segmentation or detection model. The score quantifies how much of
 the decision is attributable to background concepts rather than object concepts. With
 it, they reveal specific biases, e.g., a segmentation model that uses a hurdle as
-context for segmenting a horse. Since CRP extends LRP and L-CRP is also applied to YOLO
+context for segmenting a horse (their Fig.~1). Since CRP extends LRP and L-CRP is also applied to YOLO
 detectors, the method is related to the LRP heatmaps of the 2025
 study~\cite{schneidereitYOLOv8}. The centre
 measure $c$ of this thesis (Eq.~\eqref{eq:center-frac},
@@ -189,7 +183,7 @@ input, whereas L-CRP works with concepts learned inside the network. Extending t
 analysis towards concepts, i.e., asking what the network uses in the background and not
 only where its evidence lies, is a possible refinement that is not pursued here.
 
-Ennab and Mcheick~\cite{ennab2025interpretability} compare a pixel-level
+Ennab and Mcheick~\cite{ennab2025interpretability} compare their own pixel-level
 interpretability method with Grad-CAM for the detection of COVID-19 in chest
 images.\footnote{The paper describes its data both as chest radiographs and as chest
 computed tomography (CT) scans.} They report that the two methods differ in granularity.
@@ -212,12 +206,13 @@ interventions against contextual bias. The first minimises the spatial overlap b
 the class activation maps~\cite{zhou2016cam} of categories that frequently occur
 together. The second splits the learned features into separate subspaces for the
 category and for its context. On images in which their most
-context-biased categories appear without their usual context, they report a gain of
-4.3 points of mean average precision on COCO-Stuff, and up to 24.2 points for a single
-category. The
-first intervention acts on class activation maps, the family of maps to which Grad-CAM
-belongs, so a Grad-CAM diagnosis such as the one in this thesis could in principle feed
-into such a training objective.
+context-biased categories appear without their usual context, the feature-split method
+gains 4.3 points of mean average precision on COCO-Stuff, up to 24.2 points for a single
+category, and the CAM-based method 1.9 points. The
+CAM-based intervention acts on class activation maps, the family of maps to which Grad-CAM
+belongs, although its objective assumes a global average pooling, unlike the network of
+this thesis, so a diagnosis with such maps could in principle feed into such a training
+objective, provided the maps reflect the model (Section~\ref{sec:discussion-answer}).
 
 Bassi et al.~\cite{bassi2024isnet} propose ISNet, which optimises LRP heatmaps during
 training. Ground-truth segmentation masks are used to penalise relevance that falls
@@ -244,9 +239,9 @@ spurious feature does not match the class. The distribution of the scores, howev
 stays the same. The authors read this as a change in how the
 neurons are combined rather than a removal of the spurious features, and they
 hypothesise that last-layer re-weighting would fail when a model has under-learned the
-relevant information. In this thesis, the caveat may apply mainly to aluminium, which is partly
-undertrained and whose Grad-CAM evidence favours the workpiece
-(Section~\ref{sec:discussion-material}).
+relevant information. In this thesis, the caveat may concern mainly aluminium, the material that gains most
+from longer training, although too few epochs and under-learned features are not the
+same thing (Section~\ref{sec:discussion-material}).
 
 % ============================================================================
 \subsection{Industrial Material Classification and Small-Object Recognition}
@@ -288,8 +283,10 @@ imbalance in the survey means that small objects are underrepresented in dataset
 imbalance in this thesis is of a different kind. It follows from the one-vs-rest
 design, in which each binary model sees about 14 negative crops for every positive one,
 and it is handled by weighting the loss by class and by selecting models by F1
-(Section~\ref{sec:methodology-training}). Background interference, in turn, is the
-subject of the explainability pipeline (Section~\ref{sec:methodology-explainability}).
+(Section~\ref{sec:methodology-training}). Background interference, in turn, is
+examined here through attribution and through the removal of the background
+(Sections~\ref{sec:methodology-explainability} and~\ref{sec:methodology-intervention}),
+a related but not identical notion.
 
 % ============================================================================
 \subsection{The Gap This Thesis Fills}
@@ -310,16 +307,16 @@ al.~\cite{adhikari2024lostincontext} measure how attribution is divided between 
 and context, but they change the context of an image rather than the share of the image
 that the object covers. Ennab and Mcheick~\cite{ennab2025interpretability} compare two
 explainability methods directly, but in images where the share of background is not
-varied.
+varied. Draelos and Carin~\cite{draelos2021hirescam} show that the averaging of
+gradients in Grad-CAM can mark locations the model did not use, unless the network ends
+in a global average pooling and one linear layer, and propose HiResCAM, which weights
+every location with its own gradient; they do not vary the share of background either.
 
 What none of these papers does is to compare two explainability methods on the same
-crops as a function of a controlled O2I ratio, against a complex industrial background
-and with a per-pixel measure of whether the evidence concentrates on the object or on
-the background. In this
-thesis, occlusion sensitivity and Grad-CAM are applied to the same validation crops of
-each of the 75 models. The difference between the two methods grows as the workpiece
-shrinks and is clear at 10\%, where the Grad-CAM centre measure has fallen while that of occlusion has not
-(Section~\ref{sec:results-divergence}).
-A possible mechanism is that occluding a single patch cannot reveal reliance on a large,
-repetitive background, because the rest of that background stays visible. This
-explanation is offered as a hypothesis, not as a measured cause.
+crops as a function of the O2I ratio, against a complex industrial background, with a
+per-pixel measure of whether the evidence concentrates on the object or on the
+background, and to check both against direct tests that remove the object or the
+background. In this thesis, occlusion sensitivity and Grad-CAM are applied to the same
+validation crops of each of the 75 models, and both are compared with the effect of
+removing the workpiece or the background from the crop
+(Sections~\ref{sec:results-divergence} and~\ref{sec:results-intervention}).

@@ -2,7 +2,7 @@
 \section{Methodology}
 \label{sec:methodology}
 
-Section~\ref{sec:background} introduced the concepts of this thesis and their general
+Chapter~\ref{sec:background} introduced the concepts of this thesis and their general
 equations on a toy example. What the toy left open are the settings for the real
 crops. The $2 \times 2$ patch that fitted the toy workpiece becomes a
 $32 \times 32$ patch with stride 16 on a $256 \times 256$ input, the maps of both methods
@@ -146,9 +146,10 @@ so the compression artefacts of the JPEG crops are also magnified most at 90\%. 
 (Tab.~\ref{tab:crop-counts}), which may shift the mix of positions and stations at the
 lowest ratios.
 % TODO: appendix table of skipped crops by station and material
-The training itself does not change with the ratio, since all 75 models were trained
+The training settings do not change with the ratio, since all 75 models were trained
 with the same settings on the same hardware (paragraph \emph{Training platforms} in
-Section~\ref{sec:methodology-training}). The only difference is numerical: 27 of the 30
+Section~\ref{sec:methodology-training}); the training set, however, shrinks from 1,740
+to 1,609 crops at 10\% (Tab.~\ref{tab:crop-counts}). The only difference is numerical: 27 of the 30
 models at 90\% and 70\% were trained after a software maintenance of the lab machine
 (paragraph \emph{Optimisation and determinism}). The fixed input size of $256 \times 256$ pixels was set with the
 adviser. Since the network ends in adaptive average pooling
@@ -215,7 +216,9 @@ finished, and no test result was used for any decision. For the 27 models that w
 retrained (paragraph \emph{Training platforms} in
 Section~\ref{sec:methodology-training}), this evaluation took place after the
 retraining. Their earlier test results are not reported; the retraining was decided
-because of the batch size, not because of a test result.
+because of the batch size, not because of a test result. The direct tests of
+Section~\ref{sec:methodology-intervention} score the test split again with the same
+fixed models; no setting was chosen from them.
 
 % ============================================================================
 \subsection{Experimental Design: One-vs-Rest Binary Classification}
@@ -247,7 +250,8 @@ $15 \times 5 = 75$ models. They are built from only five crop sets, one per rati
 models see the same images with different labels. With one model per material, the
 effect of the ratio on each material can be read off directly. In a shared 15-class
 model it would be mixed with the shifting decision boundaries between the other 14
-materials.
+materials. The price is fewer positives per model, at most 116, and an imbalance of
+about 1:14.
 
 \paragraph{Class imbalance}
 Each binary task is strongly imbalanced. At 90\%, a model is trained on $n^+ = 116$
@@ -293,7 +297,7 @@ Model selection & Epoch with the highest validation F1 \\
 Seed & 42, reset before every model; deterministic cuDNN, benchmark mode off \\
 Hardware & NVIDIA RTX A6000 GPU (48\,GB) at the AI-Lab \\
 Software & Python 3.9.25, PyTorch 2.8.0~\cite{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
-cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
+cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2~\cite{harris2020numpy}, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
 at the time of the retraining \\
 \hline
 \end{tabular}
@@ -304,7 +308,8 @@ at the time of the retraining \\
 No data augmentation was used, unlike in the 2025 study, which applied 13
 augmentation operations~\cite{schneidereitYOLOv8}. Random crops, shifts or rescaling
 would change the O2I ratio and the centring of a crop, and changes of colour would
-alter a property that separates several of the materials. Without normalisation of the
+alter a property that separates several of the materials. Flips and rotations by
+90\textdegree, which would change neither, were not used either. Without normalisation of the
 input, the occlusion fill value keeps its meaning as mid-grey. The input size of
 $256 \times 256$ pixels was set with the adviser, the training length of 100
 epochs follows the advisers' guidance, and the learning rate was not tuned. Whether 100
@@ -450,7 +455,8 @@ so that a method that changes the input and a method that reads gradients inside
 network are compared on the same crops. LRP, the method of the 2025 study, belongs to
 the third family and was not used. It passes relevance backwards through a rule for
 each layer, and its heatmaps depend on which rules are chosen~\cite{montavon2019lrp},
-which would have added a further set of choices to the comparison. A direct comparison
+so LRP would have required a further set of choices, and given the scope of the
+thesis, the comparison was limited to two methods. A direct comparison
 with the LRP heatmaps of the 2025 study would also not be possible, since that study
 explains a detector rather than a binary classifier. Including LRP as a third method is
 left to future work (Section~\ref{sec:discussion-future}).
@@ -468,7 +474,8 @@ evidence for a material that is not shown. For each model, 10 crops were drawn w
 replacement from the at most 25 validation crops of its target material at its ratio
 (Tab.~\ref{tab:crop-counts}). The number 10 is a practical choice, fixed when the
 analysis script was first run: one occlusion map needs 226 forward passes, and using
-all validation crops of the target material would have cost about 2.4 times as much.
+all validation crops of the target material would have cost about 2.4 times as much,
+which would also have been feasible.
 The analysed crops are therefore a subset, which is one reason why the model rather
 than the crop is the unit of analysis (Section~\ref{sec:methodology-aggregation}). All
 draws come from one random stream with seed 42, shared by the 75 models, which were
@@ -550,7 +557,8 @@ Section~\ref{sec:results-fill}.
 
 \paragraph{Grad-CAM}
 \label{sec:methodology-gradcam-impl}
-Grad-CAM follows Eqs.~\eqref{eq:bg-gradcam-weights} and~\eqref{eq:bg-gradcam-map} and
+Grad-CAM was implemented directly in PyTorch, without an explainability library. It
+follows Eqs.~\eqref{eq:bg-gradcam-weights} and~\eqref{eq:bg-gradcam-map} and
 is attached to the fourth convolutional layer, c4 in Tab.~\ref{tab:cnn-architecture}.
 Its $K = 256$ feature maps $A^k$ are taken after the layer's rectified linear unit
 (ReLU) and before the fourth max pooling. With padding 1, the convolutions keep the
@@ -951,6 +959,138 @@ importance entirely outside the square, so agreement between the methods there i
 partly built in, and these values are read with this limitation in mind.
 % keep this paragraph directly after "Computed versus displayed resolution": Ch. 3 cites that label for the 21-px margin
 
+\subsection{Testing the Heatmaps Directly}
+\label{sec:methodology-intervention}
+
+A heatmap is not ground truth: it can miss evidence that a model uses and show
+importance where the model uses none~\cite{adebayo2018sanity}. The reference values of
+Section~\ref{sec:methodology-reference} rule out the geometry of the square and the
+resolution of a method as the cause of a trend in $c$, but not a cause inside the
+method itself. The checks of this section were added after the analysis of
+Section~\ref{sec:results-divergence} had shown that the two methods move in opposite
+directions, to decide which of them reflects the models. None of them trains or changes
+a model; all use the 75 checkpoints of Section~\ref{sec:methodology-metrics}.
+
+\paragraph{Removing the workpiece or the background}
+\label{sec:methodology-removal}
+For a set $S$ of pixels, let $I^{[S]}$ be the crop $I$ in which every pixel of $S$
+is replaced by a fill, with the three fills of the paragraph \emph{Fill colour}
+(grey, black and blur). Occlusion sensitivity removes one patch $\Omega_{ij}$ at a time;
+here a whole region is removed at once, so evidence that is spread over many places,
+none of which matters alone, is removed as well. Two regions are used. On the test
+split, the region is the bounding box, i.e., the pixels with $\chi_{uv} = 1$ (paragraph
+\emph{Reference values of $c$}). Every test crop of a ratio is scored by each of the 15
+models of that ratio in three versions: the crop itself, the crop with only the
+background left, $I^{[\chi = 1]}$, and the crop with only the workpiece left,
+$I^{[\chi = 0]}$, both with the grey fill. For each model and version, the F1, the
+recall, the false-positive rate, i.e., the share of crops of the other 14 materials
+called positive, and the ROC-AUC~\cite{fawcett2006roc} are computed; for the crop
+itself also the average precision, the precision averaged over the recall levels at
+which positive crops are found~\cite{pedregosa2011scikit}, which, like the ROC-AUC, does
+not depend on the threshold $p_1 = 0.5$. The test split is only scored here with fixed
+models, and no setting is chosen from it. The F1 of the unchanged crops reproduces
+Tab.~\ref{tab:ovr-full-results} exactly.
+
+\paragraph{Intervention centre measure}
+\label{sec:methodology-cint}
+On the 750 analysed crops, the region is the reference square $B_r$, so that the result
+can be compared with $c$. The drops of $z_1$ when the square or its outside is
+removed are
+
+\begin{equation}
+\Delta_{\mathrm{in}} = \max\big(0,\ z_1(I) - z_1(I^{[B_r]})\big), \qquad
+\Delta_{\mathrm{out}} = \max\big(0,\ z_1(I) - z_1(I^{[\bar{B}_r]})\big),
+\label{eq:cint-drops}
+\end{equation}
+
+where $\bar{B}_r$ is the set of pixels outside the square and both drops are in logit
+units; as for positive-drops occlusion, a removal that raises $z_1$ counts as no drop.
+Divided by the number of pixels removed, they enter the same ratio as $c$,
+
+\begin{equation}
+c_{\mathrm{int}} =
+\dfrac{\Delta_{\mathrm{in}} / |B_r|}{\Delta_{\mathrm{in}} / |B_r| +
+\Delta_{\mathrm{out}} / (256^2 - |B_r|)},
+\label{eq:cint}
+\end{equation}
+
+with $c_{\mathrm{int}} = 0.5$ if neither removal lowers $z_1$. Like $c$, it compares
+the mean effect per pixel inside and outside the square and is read against 0.5, but it
+is measured by intervening on the model's input rather than taken from a heatmap. It is
+computed with each of the three fills and, as a check, with the margin $z_1 - z_0$ in
+place of $z_1$. For each version, the share of the target's crops that the model still
+calls positive is also recorded.
+
+\paragraph{Variants of Grad-CAM}
+\label{sec:methodology-camvariants}
+Grad-CAM was recomputed on the same 750 crops in three variants. The first uses the
+margin $z_1 - z_0$, on which the decision depends, as the target instead of $z_1$. The
+second attaches Grad-CAM to the third convolutional layer, c3, whose 128 maps of
+$64 \times 64$ cells are taken after its ReLU and before the third pooling. The third
+replaces the averaged weights of Eq.~\eqref{eq:bg-gradcam-weights} by HiResCAM of
+Draelos and Carin~\cite{draelos2021hirescam},
+
+\begin{equation}
+G^{\mathrm{HR}} = \mathrm{ReLU}\Big( \sum_{k=1}^{K}
+\frac{\partial z}{\partial A^k} \odot A^k \Big),
+\label{eq:hirescam}
+\end{equation}
+
+where $\odot$ is the element-wise product and $G^{\mathrm{HR}} \in
+\mathbb{R}_{\ge 0}^{U \times V}$; every cell is weighted with its own gradient instead
+of the mean over the map. If the layers after the feature maps are a global average
+pooling and one linear layer, as for CAM~\cite{zhou2016cam}, the gradient is the same
+at every cell and $G^{\mathrm{HR}}$ equals the Grad-CAM map $G$, which was confirmed for
+the implementation on a test head. In the network of
+Tab.~\ref{tab:cnn-architecture}, the $4 \times 4$ adaptive pooling and fc1 give each of
+16 regions of the map its own weights, so the gradient varies across the map and the two
+maps differ. Draelos and Carin prove that HiResCAM shows only locations that the model
+used for networks that end in one fully connected layer~\cite{draelos2021hirescam}.
+This network ends in two (fc1 and fc2, with a ReLU between them), so the guarantee does
+not hold here, and HiResCAM is used as a second gradient method rather than as ground
+truth. All variants use the normalisation by the maximum, the upsampling of
+Eq.~\eqref{eq:upsample} and the centre measure of Eq.~\eqref{eq:center-frac}, written
+$c_{\mathrm{hr}}$ for HiResCAM.
+
+\paragraph{Where the Grad-CAM weights come from}
+\label{sec:methodology-weightsplit}
+Let $B'_r$ be the cells of the $32 \times 32$ map whose centre lies in $B_r$, and
+$\bar{g}^{\,\mathrm{in}}_k$ and $\bar{g}^{\,\mathrm{out}}_k$ the mean gradient of channel
+$k$ over the cells inside and outside $B'_r$. The weight of
+Eq.~\eqref{eq:bg-gradcam-weights} then splits into
+
+\begin{equation}
+\alpha_k = \frac{|B'_r|}{UV}\, \bar{g}^{\,\mathrm{in}}_k +
+\frac{UV - |B'_r|}{UV}\, \bar{g}^{\,\mathrm{out}}_k,
+\label{eq:weight-split}
+\end{equation}
+
+with $UV = 1024$. For each analysed crop, two quantities are recorded: the share of the
+weights that comes from outside the square,
+$\sum_k (UV - |B'_r|)\, |\bar{g}^{\,\mathrm{out}}_k| \,/\, \sum_k \big(|B'_r|\,
+|\bar{g}^{\,\mathrm{in}}_k| + (UV - |B'_r|)\, |\bar{g}^{\,\mathrm{out}}_k|\big)$, and the share
+of channels whose weight $\alpha_k$ has the opposite sign to $\bar{g}^{\,\mathrm{in}}_k$.
+For such a channel, Grad-CAM counts activity on the workpiece with the opposite sign
+to its effect there.
+
+\paragraph{Untrained network}
+\label{sec:methodology-untrained}
+All 75 models start from the same weights, drawn with seed 42 before the first epoch
+(Section~\ref{sec:methodology-training}). As a sanity check in the sense of Adebayo et
+al.~\cite{adebayo2018sanity}, Grad-CAM and HiResCAM were also computed for this
+untrained network on the 750 crops. A heatmap that looks the same for the untrained
+and the trained network would reflect the architecture or the input rather than what
+the model has learned.
+
+\paragraph{Computation and reading}
+These checks were computed on a CPU with PyTorch 2.15, outside the training environment
+of Tab.~\ref{tab:training-config}; the Grad-CAM values $c_{\mathrm{cam}}$ of the 750
+analyses are reproduced to within 0.0006 and the test F1 of all 75 models exactly. They
+are summarised and tested like all other results (Section~\ref{sec:methodology-tests}).
+In addition, the agreement of a heatmap with the intervention is measured over the 75
+models by the Pearson correlation coefficient between its per-model mean of $c$ and
+that of $c_{\mathrm{int}}$, and by their mean absolute difference.
+
 % ============================================================================
 \subsection{Aggregation and Link to the Research Question}
 \label{sec:methodology-aggregation}
@@ -1007,7 +1147,7 @@ $t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests were computed with SciPy 1.18.1
 under Python 3.13, outside the training environment of Tab.~\ref{tab:training-config}.
 Writing $c_{\mathrm{occ}}$ for $c$ of
 positive-drops occlusion and $c_{\mathrm{cam}}$ for $c$ of Grad-CAM, the comparisons
-reported in Section~\ref{sec:results} are
+reported in Chapter~\ref{sec:results} are
 \begin{itemize}
 \item the paired change from 90\% to 10\% of the test F1, of $c_{\mathrm{occ}}$ and of
   $c_{\mathrm{cam}}$, and the slope of Eq.~\eqref{eq:slope} of the test F1;
@@ -1016,15 +1156,24 @@ reported in Section~\ref{sec:results} are
   $c^{\mathrm{ref}}_{\mathrm{occ}} - c^{\mathrm{ref}}_{\mathrm{cam}}$;
 \item $c_{\mathrm{occ}}$ and $c_{\mathrm{cam}}$ against 0.5 at each ratio;
 \item the same comparisons for the min-max normalisation, the two other fills of the
-  paragraph \emph{Fill colour} and the ratios 50\%, 30\% and 10\% alone, as checks.
+  paragraph \emph{Fill colour} and the ratios 50\%, 30\% and 10\% alone, as checks;
+\item for the direct tests of Section~\ref{sec:methodology-intervention}, the paired
+  change from 90\% to 10\% and the comparison with 0.5 of $c_{\mathrm{int}}$, of
+  $c_{\mathrm{hr}}$ and of the Grad-CAM variants, and the same paired change of the
+  F1, recall, false-positive rate, ROC-AUC and average precision of the removal
+  versions.
 \end{itemize}
 These comparisons were chosen after an exploratory analysis of the same data, not
 fixed in advance, and no correction for the number of tests is applied. A $p$-value is
-therefore not read as a decision. A result is called clear only if $p < 0.01$; a value
+therefore not read as confirmatory evidence. As a working threshold, a result is called
+clear only if $p < 0.01$; a value
 between 0.01 and 0.1 is reported with its numbers but not read as evidence on its own.
 With a threshold of 0.05 instead, neither answer to the research question would change;
 only some of the secondary comparisons and checks would. A Holm correction over the five
-comparisons that answer the research question would leave its four clear results clear.
+comparisons of Section~\ref{sec:results-divergence} that bear on the research question,
+namely the paired changes from 90\% to 10\% of the test F1, of $c_{\mathrm{cam}}$ and of
+$c_{\mathrm{occ}}$, the method difference at 10\% and $c_{\mathrm{cam}}$ against 0.5
+at 10\%, would leave its four clear results clear.
 The number of materials with the stated sign, given with each result, is a
 distribution-free check: 13 of 15 corresponds to a two-sided sign-test $p$ of 0.007.
 Even the 15 models of one ratio are not fully independent, since they are trained on
@@ -1045,7 +1194,8 @@ shows where the heatmap importance lies, and it is read against two levels.
 The first level is $c = 0.5$, the value of a flat map, at which, pixel for pixel, the
 region outside the reference square carries as much importance as the square itself
 (Eq.~\eqref{eq:odds}). The background is taken to outweigh the workpiece at a ratio
-only if $c$ lies clearly below 0.5 there. If this holds at no ratio, the answer to the
+only if $c$ lies clearly below 0.5 there; the same level applies to the intervention
+centre measure $c_{\mathrm{int}}$ of Eq.~\eqref{eq:cint}. If this holds at no ratio, the answer to the
 first part of the research question is a decline without a ratio at which the
 background clearly dominates, and no threshold is read into the curve.
 
@@ -1053,19 +1203,28 @@ The second level is the reference value of the respective method (paragraph
 \emph{Reference values of $c$} in Section~\ref{sec:methodology-reference}), the value
 of a map that stays uniformly on the box, which rises as $r$ falls. This rise decides
 how a trend in $c$ is read. A $c$ that falls while its reference rises cannot be
-explained by the geometry of the square, so a clear fall of $c$ as the ratio falls is
-read as evidence moving away from the workpiece. A $c$ that rises can be explained in
-part by the rising reference, so a rise is not read as proof that the evidence stays on
-the workpiece; the reference gap of the paragraph \emph{Reference gap} shows how much of
-the rise remains beyond the geometry. The two methods also differ in resolution, so
-their reference values differ at every ratio. The method
-difference is therefore always reported together with the difference of the
-reference values, which shows how much of it resolution alone would produce. An
-explainability method is taken to detect the shift if its paired change in $c$ from
-90\% to 10\% is clearly negative while the test F1 also falls clearly over the same
-range.
+explained by the geometry of the square or by the resolution of the method, but it can
+still arise inside the method rather than in the model. A $c$ that rises can be
+explained in part by the rising reference, so a rise is not read as proof that the
+evidence stays on the workpiece; the reference gap of the paragraph \emph{Reference gap}
+shows how much of the rise remains beyond the geometry. The two methods also differ in
+resolution, so their reference values differ at every ratio. The method difference is
+therefore always reported together with the difference of the reference values, which
+shows how much of it resolution alone would produce.
+
+Neither level shows whether a heatmap reflects the model. This is decided by the direct
+tests of Section~\ref{sec:methodology-intervention}, which do not depend on either
+heatmap. If the background dominated the decision at a ratio, removing it would lower
+the score more per pixel than removing the workpiece, so that $c_{\mathrm{int}}$ would
+lie clearly below 0.5, and crops with only the background left would still be
+recognised. A trend in the $c$ of an explainability method is read as a property of the
+models only if the direct tests show the same trend; a method that shows a trend the
+direct tests do not show is taken to report a shift that is not there.
 
 Per-pixel concentration is used instead of the fraction of the total importance inside
-the square, because that fraction depends on the area of the square. A flat map gives a
-fraction of about $r/100$, which falls from 0.9 to 0.1 over the five ratios without any
-change in where the evidence lies, while it gives $c = 0.5$ at every ratio.
+the square. Both tell whether the square is preferred, since $c > 0.5$ holds exactly when
+that fraction exceeds the area share $r/100$, but only $c$ has the same level of no
+preference at every ratio: a flat map gives a fraction of about $r/100$, which falls from
+0.9 to 0.1 over the five ratios without any change in where the evidence lies, while it
+gives $c = 0.5$ at every ratio. Taking dominance to mean the per-pixel preference is a
+definition (Section~\ref{sec:background-comparison}).
