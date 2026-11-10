@@ -27,6 +27,8 @@
 \usepackage{setspace}
 \usepackage{amssymb}
 \usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{longtable}
 \usepackage{placeins} % \FloatBarrier keeps floats inside their section
 \setlength{\emergencystretch}{2em}
@@ -192,9 +194,11 @@ own computer and checked the results against the model outputs. During the
 writing, I used Claude to turn my notes, results and outlines into draft text,
 which I then reviewed, revised and checked against my analysis outputs. Claude
 was also used for grammar, spelling and LaTeX typesetting, to find and summarise
-sources, to check the bibliography and to manage the thesis repository. The research question, the experimental design and the
-interpretation of the results were decided by me, in discussion with my advisers
-and with Claude. I have checked everything produced with AI assistance and take
+sources, to check the bibliography and to manage the thesis repository. The decisions on the research question, the experimental
+design and the interpretation of the results were mine, made in discussion with my
+advisers. Claude also proposed analyses, including several of the later checks, and
+alternative interpretations of the results; I discussed these, decided which to use
+and checked them against the results. I have checked everything produced with AI assistance and take
 full responsibility for the content of this thesis.
 }
 \begin{document}
@@ -421,6 +425,7 @@ $c^{\mathrm{ref}}_{\mathrm{occ}}, c^{\mathrm{ref}}_{\mathrm{cam}}$ & reference v
 $I^{[B_r]}, I^{[\bar{B}_r]}$ & crop with the square or its outside filled & Eq.~\eqref{eq:cint-drops} \\
 $\Delta_{\mathrm{in}}, \Delta_{\mathrm{out}}$ & drop of $z_1$ when the square or its outside is removed & Eq.~\eqref{eq:cint-drops} \\
 $c_{\mathrm{int}}$ & intervention centre measure & Eq.~\eqref{eq:cint} \\
+$c_{\mathrm{hr}}$ & centre measure of the HiResCAM map & Eq.~\eqref{eq:hirescam} \\
 $B'_r$ & cells of the $32 \times 32$ Grad-CAM map whose centre lies in $B_r$ & Eq.~\eqref{eq:weight-split} \\
 $\bar{g}^{\,\mathrm{in}}_k, \bar{g}^{\,\mathrm{out}}_k$ & mean gradient of channel $k$ inside and outside $B'_r$ (not the $g$ of the toy) & Eq.~\eqref{eq:weight-split} \\[4pt]
 \multicolumn{3}{@{}l}{\textbf{Statistics}} \\*[2pt]

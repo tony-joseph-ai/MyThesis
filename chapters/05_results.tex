@@ -703,10 +703,22 @@ while Grad-CAM falls.
 
 \paragraph{Untrained network}
 For the untrained network, every Grad-CAM map of the 750 crops is zero everywhere, so
-$c = 0.5$ throughout. HiResCAM of the untrained network gives 0.542 to 0.579, the same at
+$c = 0.5$ throughout. The reason is visible before the ReLU (150 crops at 10\%): there,
+the weighted sum $\sum_k \alpha_k A^k$ is negative at every cell of every map. Across
+the map it varies by only about 16\% of its mean (median over the crops), while the
+single feature maps vary by about 66\%; with about half of the 256 weights positive, the
+weighted maps nearly cancel to a small negative constant, which the ReLU sets to zero.
+HiResCAM of the untrained network gives 0.542 to 0.579, the same at
 every ratio ($p = 0.63$ for the change from 90\% to 10\%), against 0.749 to 0.938 for the
 trained models. Neither pattern of the trained models is therefore produced by the
 architecture alone.
+
+\paragraph{Border of the input}
+The zero padding of the convolutions does not carry the Grad-CAM shift. At 10\%, the
+trained Grad-CAM maps put $0.100 \pm 0.017$ of their importance outside the square into
+the border ring of 8 pixels, less than the ring's share of that area, 0.134 (12 of
+the 15 models below it; 123 maps that are not flat). Computed without the ring, the mean
+$c$ is 0.404 instead of 0.407; the largest change for a single crop is 0.047.
 
 \paragraph{Summary of the section}
 Removing the workpiece removes the models' ability to recognise their material at every

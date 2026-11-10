@@ -1030,6 +1030,35 @@ $|B_{10}| = 6{,}400$ pixels and 59,136 pixels outside it
 $c_{\mathrm{int}} = 0.986$. Per pixel, the square matters about 72 times as much as its
 outside; in total, about 7.8 times.
 
+Algorithm~\ref{alg:centre-measures} collects the steps from one analysed crop to its two
+centre measures and to $c_{\mathrm{int}}$, in the order in which the scripts compute them.
+
+\begin{algorithm}[tbp]
+\caption[Centre measures of one crop]{Centre measures of one analysed crop $I$ at ratio
+$r$: positive-drops occlusion and Grad-CAM (Sections~\ref{sec:methodology-explainability}
+and~\ref{sec:methodology-reduction}) and the intervention centre measure
+(Section~\ref{sec:methodology-cint}). $z_1(\cdot)$ is the positive-class logit of the
+trained model in evaluation mode.}
+\label{alg:centre-measures}
+\begin{algorithmic}[1]
+\State $z \gets z_1(I)$ \Comment{logit of the unchanged crop}
+\For{$i, j = 0, \dots, 14$} \Comment{$15 \times 15$ patch positions, stride 16}
+  \State $I^{(ij)} \gets I$ with the pixels $\Omega_{ij}$ set to 0.5
+  \State $D_{ij} \gets z - z_1\big(I^{(ij)}\big)$ \Comment{Eq.~\eqref{eq:bg-occlusion}}
+\EndFor
+\State $\hat{H}^{\mathrm{pos}} \gets \max(D, 0) / \max\big(\max(D, 0)\big)$, or 0 if no drop is positive \Comment{Eq.~\eqref{eq:norm-positive}}
+\State $A^k \gets$ feature maps of c4 for $I$; \ $\alpha_k \gets$ mean of $\partial z_1 / \partial A^k$ over the $32 \times 32$ cells
+\State $\hat{H}^{\mathrm{cam}} \gets \mathrm{ReLU}\big(\sum_k \alpha_k A^k\big)$, divided by its maximum, or 0 \Comment{Eqs.~\eqref{eq:bg-gradcam-map}, \eqref{eq:norm-gradcam}}
+\For{$\hat{H} \in \{\hat{H}^{\mathrm{pos}}, \hat{H}^{\mathrm{cam}}\}$}
+  \State $H \gets \mathcal{U}\big(\lfloor 255\,\hat{H} \rfloor\big) / 255$ \Comment{8-bit, bilinear to $256 \times 256$, Eq.~\eqref{eq:upsample}}
+  \State $m_{\mathrm{in}}, m_{\mathrm{out}} \gets$ mean of $H$ inside and outside $B_r$ \Comment{Eq.~\eqref{eq:region-means}}
+  \State $c \gets m_{\mathrm{in}} / (m_{\mathrm{in}} + m_{\mathrm{out}})$, or 0.5 if $m_{\mathrm{in}} + m_{\mathrm{out}} < 10^{-8}$ \Comment{Eq.~\eqref{eq:center-frac}}
+\EndFor
+\State $\Delta_{\mathrm{in}} \gets \max\big(0, z - z_1(I^{[B_r]})\big)$, \ $\Delta_{\mathrm{out}} \gets \max\big(0, z - z_1(I^{[\bar{B}_r]})\big)$ \Comment{Eq.~\eqref{eq:cint-drops}}
+\State $c_{\mathrm{int}} \gets$ Eq.~\eqref{eq:cint}, or 0.5 if $\Delta_{\mathrm{in}} = \Delta_{\mathrm{out}} = 0$
+\end{algorithmic}
+\end{algorithm}
+
 \paragraph{Variants of Grad-CAM}
 \label{sec:methodology-camvariants}
 Grad-CAM was recomputed on the same 750 crops in three variants. The first uses the
@@ -1100,7 +1129,11 @@ All 75 models start from the same weights, drawn with seed 42 before the first e
 al.~\cite{adebayo2018sanity}, Grad-CAM and HiResCAM were also computed for this
 untrained network on the 750 crops. A heatmap that looks the same for the untrained
 and the trained network would reflect the architecture or the input rather than what
-the model has learned.
+the model has learned. On the 150 crops at 10\%, two further quantities were recorded:
+for the untrained network, the weighted sum of Eq.~\eqref{eq:bg-gradcam-map} before its
+ReLU, and for the trained Grad-CAM maps, the share of the importance outside $B_{10}$
+that lies within 8 pixels, one Grad-CAM cell, of the border of the input, where the zero
+padding of the convolutions forms a black frame (Section~\ref{sec:background-cnn}).
 
 \paragraph{Computation and reading}
 These checks were computed on a CPU with PyTorch 2.15, outside the training environment

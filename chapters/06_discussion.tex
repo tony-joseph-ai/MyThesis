@@ -140,7 +140,8 @@ background shortcut either: the background alone gives a ROC-AUC slightly below,
 above, 0.5. Adebayo et al.~\cite{adebayo2018sanity} showed that heatmaps can look
 plausible without depending on what the model learned. Their randomisation check is
 uninformative for Grad-CAM here, because the untrained network, the common starting point
-of all 75 models, gives no Grad-CAM map at all, so any trained map differs from it.
+of all 75 models, gives no Grad-CAM map at all (its weighted feature maps cancel to a
+small negative constant), so any trained map differs from it.
 HiResCAM passes it (0.54 to 0.58 for the untrained network, flat across the ratios) and
 still only supports, rather than proves, the reading of the direct tests. A sanity check
 of this kind is not enough to trust a heatmap trend.
@@ -216,7 +217,9 @@ gain of all materials ($+0.131$, Section~\ref{sec:results-200epoch}). Its decisi
 rests on the workpiece: with the black fill, its intervention centre measure is 0.93 to
 1.00 at every ratio, HiResCAM gives 0.74 to 0.94, and with the background filled in its
 ROC-AUC differs from that with the background by at most 0.03 at every ratio and is
-higher at 10\% (0.941 against 0.913). Its false
+higher at 10\% (0.941 against 0.913). All of these values come from the 100-epoch
+models, which for aluminium are partly undertrained; neither the heatmaps nor the
+removal tests were repeated for the 200-epoch models. Its false
 positives come mostly from grey plastic (54), steel (53) and white plastic (46).
 Besides the training length, the resemblance to these materials is therefore the most
 likely cause of its weakness; a reflecting surface whose appearance changes with its
@@ -296,8 +299,12 @@ removal on the test split, not on one of them alone. HiResCAM is used as a secon
 gradient method, not as ground truth, since its guarantee covers networks with one fully
 connected layer and this network has two (Section~\ref{sec:methodology-camvariants}).
 The convolutions pad with zeros, which on inputs that are not normalised form a black
-border (Section~\ref{sec:background-cnn}); whether this affects the maps along the border
-was not examined.
+border (Section~\ref{sec:background-cnn}). For Grad-CAM at 10\%, the border ring of
+8 pixels, one Grad-CAM cell, holds 0.100 of the importance outside the square, less than
+its share of that area (0.134), and leaving the ring out changes the mean $c$ from 0.407
+to 0.404 (Section~\ref{sec:results-camvariants}), so the border does not carry the
+Grad-CAM shift. Occlusion was not checked in this way, and the other ratios were not
+checked.
 
 \paragraph{Interpretation}
 Neither heatmap is ground truth for what a model uses. Both methods explain the
