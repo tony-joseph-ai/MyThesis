@@ -6,6 +6,7 @@
 %%%%%%%%%%
 %Spracheinstellung / language setting / replace "english" if needed
 \usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
+\babelhyphenation[ngerman]{Hin-ter-grund-an-teil} % the German patterns split this compound wrongly
 \usepackage[absolute,overlay]{textpos}
 \usepackage[giveninits=true,sorting=none,sortcites=true,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
 % Line breaks in URLs and DOIs: allowed after letters (penalty 100), but
@@ -25,6 +26,10 @@
 \hypersetup{hidelinks}
 \usepackage{setspace}
 \usepackage{amssymb}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{longtable}
 \usepackage{placeins} % \FloatBarrier keeps floats inside their section
 \setlength{\emergencystretch}{2em}
 
@@ -127,7 +132,8 @@ the workpiece the models cannot tell the materials apart, without the background
 rank the crops as well as before, and the centre measure obtained by removal stays well
 above the no-preference level of 0.5. The errors are mostly confusions between
 look-alike workpieces, above all aluminium, steel and grey plastic. The two methods
-disagree. Occlusion sensitivity agrees with the direct tests. The Grad-CAM centre
+disagree. On average over the materials, occlusion sensitivity agrees with the direct
+tests. The Grad-CAM centre
 measure falls from 0.737 to 0.407, a shift that the tests do not confirm; it arises from
 the averaging of gradients in Grad-CAM, and HiResCAM, which avoids it, agrees with
 occlusion. A trend in a heatmap should therefore be checked by intervening on the input
@@ -160,8 +166,8 @@ Modelle die Materialien nicht mehr unterscheiden, ohne den Hintergrund ordnen si
 Ausschnitte so gut wie zuvor, und das durch Entfernen gewonnene Zentrumsmaß bleibt
 deutlich über dem neutralen Wert 0,5. Die Fehler sind überwiegend Verwechslungen
 ähnlich aussehender Werkstücke, vor allem von Aluminium, Stahl und grauem Kunststoff.
-Die beiden Methoden widersprechen sich. Die Okklusionssensitivität stimmt mit den
-direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
+Die beiden Methoden widersprechen sich. Im Mittel über die Materialien stimmt die
+Okklusionssensitivität mit den direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
 Verschiebung, die die Tests nicht bestätigen; sie entsteht durch die Mittelung der
 Gradienten in Grad-CAM, und HiResCAM, das diese Mittelung vermeidet, stimmt mit der
 Okklusion überein. Ein Trend in einer Heatmap sollte daher durch einen Eingriff in die
@@ -188,9 +194,11 @@ own computer and checked the results against the model outputs. During the
 writing, I used Claude to turn my notes, results and outlines into draft text,
 which I then reviewed, revised and checked against my analysis outputs. Claude
 was also used for grammar, spelling and LaTeX typesetting, to find and summarise
-sources, to check the bibliography and to manage the thesis repository. The research question, the experimental design and the
-interpretation of the results were decided by me, in discussion with my advisers
-and with Claude. I have checked everything produced with AI assistance and take
+sources, to check the bibliography and to manage the thesis repository. The decisions on the research question, the experimental
+design and the interpretation of the results were mine, made in discussion with my
+advisers. Claude also proposed analyses, including several of the later checks, and
+alternative interpretations of the results; I discussed these, decided which to use
+and checked them against the results. I have checked everything produced with AI assistance and take
 full responsibility for the content of this thesis.
 }
 \begin{document}
@@ -304,23 +312,131 @@ AG & Acrylic glass \\
 AP & Average precision \\
 CAM & Class activation mapping \\
 CNN & Convolutional neural network \\
+COCO & Common Objects in Context (dataset) \\
 CPU & Central processing unit \\
 CRP & Concept relevance propagation \\
+CUDA & Compute Unified Device Architecture \\
+cuDNN & CUDA Deep Neural Network library \\
 F1 & Harmonic mean of precision and recall \\
 FPR & False-positive rate \\
 GPU & Graphics processing unit \\
 Grad-CAM & Gradient-weighted class activation mapping \\
 HiResCAM & High-resolution class activation mapping \\
 IoU & Intersection over union \\
+JPEG & Joint Photographic Experts Group (image format) \\
+L-CRP & Concept relevance propagation for localisation models \\
 LRP & Layer-wise relevance propagation \\
 mAP & Mean average precision \\
 O2I & Object-to-image (ratio) \\
+PETG & Polyethylene terephthalate glycol \\
 ReLU & Rectified linear unit \\
 RGB & Red, green, blue \\
 ROC-AUC & Area under the receiver operating characteristic curve \\
 SE & Standard error \\
 YOLO & You Only Look Once (object detector) \\
 \end{tabular}
+
+\newpage
+\section*{List of Symbols}
+Symbols are grouped by topic; the last column gives the equation or section where each
+is defined. Where a letter has two uses, both are listed, and the context and the
+subscript tell them apart.
+
+{\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.53\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}@{}}
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Defined in} \\[2pt]
+\endhead
+\multicolumn{3}{@{}l}{\textbf{Data, crops and labels}} \\*[2pt]
+$r$ & object-to-image (O2I) ratio, in percent & Eq.~\eqref{eq:bg-o2i} \\
+$A_{\mathrm{obj}}, A_{\mathrm{img}}$ & area of the object and of the image, in pixels & Eq.~\eqref{eq:bg-o2i} \\
+$s_{\mathrm{obj}}, s_{\mathrm{img}}$ & side of a square object and of a square image, in pixels & Eq.~\eqref{eq:bg-side-fraction} \\
+$\mathcal{R}$ & set of the five ratios $\{90, 70, 50, 30, 10\}$ & Eq.~\eqref{eq:crop-side} \\
+$\tilde{x}, \tilde{y}, \tilde{w}, \tilde{h}$ & normalised box centre, width and height from the label file & Eq.~\eqref{eq:yolo-pixels} \\
+$x_b, y_b, w_b, h_b$ & box centre, width and height in the photograph, in pixels & Eq.~\eqref{eq:yolo-pixels} \\
+$s_r$ & side of the crop at ratio $r$ before rounding, in pixels & Eq.~\eqref{eq:crop-side} \\
+$x^{\pm}, y^{\pm}$ & bounds of the crop window, in pixels & Eq.~\eqref{eq:crop-window} \\
+$\gamma$ & aspect ratio $w_b/h_b$ of the box & Eq.~\eqref{eq:box-contained} \\
+$\mathcal{M}$ & set of the 15 materials & Eq.~\eqref{eq:ovr-label} \\
+$t$ & target material of a one-vs-rest model, $t \in \mathcal{M}$ & Eq.~\eqref{eq:ovr-label} \\
+$y$ & binary label of a crop, 1 for the target material & Eq.~\eqref{eq:ovr-label} \\
+$I$ & input crop & Eq.~\eqref{eq:bg-softmax} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Network and training}} \\*[2pt]
+$X$ & input of a convolutional layer, $C \times N \times N$ & Eq.~\eqref{eq:bg-conv} \\
+$C, K$ & number of input channels and of kernels of a layer & Eq.~\eqref{eq:bg-conv} \\
+$N$ & side of an input or feature map, in cells & Eq.~\eqref{eq:bg-conv} \\
+$W^k, b^k$ & kernel $k$ and its bias & Eq.~\eqref{eq:bg-conv} \\
+$Y^k$ & output of kernel $k$ & Eq.~\eqref{eq:bg-conv} \\
+$(u, v)$ & row and column of a map cell or of a pixel & Eq.~\eqref{eq:bg-conv} \\
+$A^k$ & feature map $k$ after the ReLU & Eq.~\eqref{eq:bg-maxpool} \\
+$M^k$ & feature map $k$ after max pooling & Eq.~\eqref{eq:bg-maxpool} \\
+$g = (g_1, g_2)$ & global averages of the two channels of the toy network & Sec.~\ref{sec:background-cnn} \\
+$z_0, z_1$ & logits of the negative and the positive class & Eq.~\eqref{eq:bg-softmax} \\
+$z$ & logit of the target class, explained by the heatmaps & Eq.~\eqref{eq:bg-occlusion} \\
+$p_j$ & softmax probability of class $j \in \{0, 1\}$ & Eq.~\eqref{eq:bg-softmax} \\
+$\hat{y}$ & predicted label, 1 if $z_1 > z_0$ & Sec.~\ref{sec:methodology-training} \\
+$\ell$ & cross-entropy loss of one crop & Eq.~\eqref{eq:bg-ce} \\
+$L$ & loss of a batch, weighted in Eq.~\eqref{eq:weighted-ce} & Eq.~\eqref{eq:bg-gd} \\
+$\theta$ & parameters of the network & Eq.~\eqref{eq:bg-gd} \\
+$\eta$ & learning rate & Eq.~\eqref{eq:bg-gd} \\
+$\delta_{uv}$ & 1 for the cell that max pooling passes on, 0 otherwise (toy) & Eq.~\eqref{eq:bg-chain} \\
+$w_0, w_1$ & class weights of the loss & Eq.~\eqref{eq:class-weight} \\
+$n^+, n^-$ & numbers of positive and negative crops in a training set & Eq.~\eqref{eq:class-weight} \\
+$\mathcal{S}$ & batch of training crops with their labels & Eq.~\eqref{eq:weighted-ce} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Metrics}} \\*[2pt]
+TP, FP, FN & numbers of true positives, false positives and false negatives & Eq.~\eqref{eq:bg-prf} \\
+$P, R, F_1$ & precision, recall and F1 & Eq.~\eqref{eq:bg-prf} \\
+$I^+, I^-$ & a positive and a negative crop drawn at random & Eq.~\eqref{eq:bg-auc} \\
+$N^+, N^-$ & numbers of positive and negative crops in a split & Sec.~\ref{sec:methodology-metrics} \\
+$F_{1,E}^{\mathrm{val}}(t, r)$ & highest validation F1 within the first $E$ epochs of a 200-epoch run & Eq.~\eqref{eq:delta-f1} \\
+$\Delta_{t,r}$ & gain in validation F1 from 100 to 200 epochs & Eq.~\eqref{eq:delta-f1} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Heatmaps}} \\*[2pt]
+$n$ & number of occlusion patch positions per axis & Eq.~\eqref{eq:bg-occlusion} \\
+$\Omega_{ij}$ & pixels covered by the occlusion patch at position $(i, j)$ & Eq.~\eqref{eq:bg-occlusion} \\
+$I^{(ij)}$ & crop $I$ with the patch at position $(i, j)$ filled & Eq.~\eqref{eq:bg-occlusion} \\
+$D, D_{ij}$ & occlusion map: drop of the logit $z$ per patch position & Eq.~\eqref{eq:bg-occlusion} \\
+$D^+$ & positive part of $D$ & Eq.~\eqref{eq:norm-positive} \\
+$U, V$ & number of rows and columns of a feature map & Eq.~\eqref{eq:bg-gradcam-weights} \\
+$\alpha_k$ & Grad-CAM weight of channel $k$, its mean gradient & Eq.~\eqref{eq:bg-gradcam-weights} \\
+$G$ & Grad-CAM map & Eq.~\eqref{eq:bg-gradcam-map} \\
+$G^{\mathrm{HR}}$ & HiResCAM map & Eq.~\eqref{eq:hirescam} \\
+$\hat{H}^{\mathrm{pos}}, \hat{H}^{\mathrm{cam}}, \hat{H}^{\mathrm{mm}}$ & normalised occlusion (positive drops), Grad-CAM and min-max occlusion map & Eqs.~\eqref{eq:norm-positive}--\eqref{eq:norm-minmax} \\
+$\varepsilon$ & small constant, $10^{-8}$, that prevents a division by zero & Eq.~\eqref{eq:norm-minmax} \\
+$\mathcal{U}$ & bilinear resizing to $256 \times 256$ pixels & Eq.~\eqref{eq:upsample} \\
+$H$ & normalised map after resizing, $256 \times 256$ & Eq.~\eqref{eq:upsample} \\
+$H^{\mathrm{blk}}$ & occlusion block map without interpolation & Eq.~\eqref{eq:block-map} \\
+$\mathcal{C}_{uv}$ & patch positions that cover pixel $(u, v)$ & Eq.~\eqref{eq:block-map} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Centre measure and reference values}} \\*[2pt]
+$s^{B}_{r}$ & side of the reference square before rounding, in pixels & Eq.~\eqref{eq:box-side} \\
+$B_r$ & reference square at ratio $r$, centred in the input & Eq.~\eqref{eq:box-bounds} \\
+$a_r, b_r$ & integer bounds of $B_r$, in pixels & Eq.~\eqref{eq:box-bounds} \\
+$|B_r|$ & number of pixels in $B_r$ & Eq.~\eqref{eq:box-bounds} \\
+$\bar{B}_r$ & pixels outside $B_r$ & Eq.~\eqref{eq:cint-drops} \\
+$m_{\mathrm{in}}, m_{\mathrm{out}}$ & mean importance per pixel inside and outside $B_r$ & Eq.~\eqref{eq:region-means} \\
+$c$ & centre measure; 0.5 means no preference & Eq.~\eqref{eq:center-frac} \\
+$c_{\mathrm{occ}}, c_{\mathrm{cam}}$ & $c$ of positive-drops occlusion and of Grad-CAM & Sec.~\ref{sec:methodology-tests} \\
+$\lambda, \kappa$ & positive scale factor and additive constant & Eq.~\eqref{eq:c-invariance} \\
+$\rho$ & area fraction $|B_r|/256^2$ of the square & Eq.~\eqref{eq:c-ref-approx} \\
+$f$ & share of the bounding box that lies inside $B_r$ & Eq.~\eqref{eq:c-ref-approx} \\
+$c_{\mathrm{box}}$ & $c$ of a map that is uniform on the bounding box & Eq.~\eqref{eq:c-ref-approx} \\
+$\chi, \chi_{uv}$ & indicator of the bounding box in the input & Eq.~\eqref{eq:ref-grids} \\
+$\bar{\chi}^{\,\mathrm{occ}}, \bar{\chi}^{\,\mathrm{cam}}$ & share of each occlusion patch or Grad-CAM cell covered by the box & Eq.~\eqref{eq:ref-grids} \\
+$c^{\mathrm{ref}}_{\mathrm{occ}}, c^{\mathrm{ref}}_{\mathrm{cam}}$ & reference values of $c$ at the resolution of each method & Sec.~\ref{sec:methodology-reference} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Direct tests and Grad-CAM variants}} \\*[2pt]
+$I^{[B_r]}, I^{[\bar{B}_r]}$ & crop with the square or its outside filled & Eq.~\eqref{eq:cint-drops} \\
+$\Delta_{\mathrm{in}}, \Delta_{\mathrm{out}}$ & drop of $z_1$ when the square or its outside is removed & Eq.~\eqref{eq:cint-drops} \\
+$c_{\mathrm{int}}$ & intervention centre measure & Eq.~\eqref{eq:cint} \\
+$c_{\mathrm{hr}}$ & centre measure of the HiResCAM map & Eq.~\eqref{eq:hirescam} \\
+$B'_r$ & cells of the $32 \times 32$ Grad-CAM map whose centre lies in $B_r$ & Eq.~\eqref{eq:weight-split} \\
+$\bar{g}^{\,\mathrm{in}}_k, \bar{g}^{\,\mathrm{out}}_k$ & mean gradient of channel $k$ inside and outside $B'_r$ (not the $g$ of the toy) & Eq.~\eqref{eq:weight-split} \\[4pt]
+\multicolumn{3}{@{}l}{\textbf{Statistics}} \\*[2pt]
+$\phi_{t,r}$ & one value per model, for material $t$ and ratio $r$ & Eq.~\eqref{eq:ratio-mean} \\
+$\bar{\phi}_{\cdot r}, \bar{\phi}_{t\cdot}$ & mean over the materials at ratio $r$; mean of material $t$ over the ratios & Eqs.~\eqref{eq:ratio-mean}, \eqref{eq:slope} \\
+$\mathrm{SE}_r, \hat{\sigma}_r$ & standard error and sample standard deviation over the 15 models & Eq.~\eqref{eq:ratio-se} \\
+$\psi_t$ & slope of material $t$ over the ratios, per 10 points & Eq.~\eqref{eq:slope} \\
+$\mathcal{R}', \bar{r}$ & set of ratios used for a slope and its mean & Eq.~\eqref{eq:slope} \\
+$d_t, \bar{d}$ & paired difference of material $t$ and its mean over the materials & Sec.~\ref{sec:methodology-tests} \\
+$t$ & Student's $t$ statistic, written $t(14)$ with its 14 degrees of freedom & Sec.~\ref{sec:methodology-tests} \\[4pt]
+\end{longtable}}
 
 \newpage
 \pagenumbering{arabic}
