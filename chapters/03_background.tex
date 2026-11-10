@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-\section{Background}
+\chapter{Background}
 \label{sec:background}
 
 Section~\ref{sec:related-work-gap} ended with a gap: none of the reviewed studies
@@ -15,21 +15,20 @@ and~\ref{sec:background-gradcam}) and the measure that compares them
 (Section~\ref{sec:background-comparison}).
 
 % ============================================================================
-\subsection{The Learning Factory Dataset}
+\section{The Learning Factory Dataset}
 \label{sec:background-dataset}
 
 \paragraph{The learning factory}
 All images in this thesis show the Fischertechnik Industry~4.0 learning factory, a
 model production line with five modules, namely a sorting machine, an oven, a milling
-machine, a high-bay warehouse and a vacuum gripper~\cite{schneidereitFischertechnik2023,
+machine, a high-bay warehouse and a vacuum gripper \citep{schneidereitFischertechnik2023,
 schneidereitYOLOv8}. Fig.~\ref{fig:bg-dataset}\,(a) shows one photograph of it. Around a
 workpiece, the photographs contain red and blue building blocks, many black parts,
 cables and the grey base plate. This is the complex background that both earlier
 studies on the learning factory examined.
 
 \paragraph{Workpieces and capture protocol}
-The dataset was created by T.~Schneidereit, Gohrenz and
-Breu{\ss}~\cite{schneidereitYOLOv8}. It contains 15 cylindrical workpieces that differ in
+The dataset was created by \citet*{schneidereitYOLOv8}. It contains 15 cylindrical workpieces that differ in
 material and colour and fall into four families: six plastics (white, red, blue,
 yellow, grey and black), four workpieces of acrylic glass (AG; orange, yellow, blue and
 red), three metals (aluminium, brass and steel) and two woods (light and dark). The plastic
@@ -49,7 +48,7 @@ workpiece changes.
 
 \paragraph{Labels}
 Each photograph has $960 \times 720$ pixels and was labelled with labelImg in the format
-of the YOLO (You Only Look Once) detector~\cite{redmon2016yolo}. A label file holds one
+of the YOLO (You Only Look Once) detector \citep{redmon2016yolo}. A label file holds one
 line per object, and every photograph of this dataset contains exactly one workpiece.
 The line consists of a class index and four numbers, the box centre $(x_c, y_c)$, the
 width $w$ and the height $h$, each divided by the width or height of the photograph so
@@ -59,7 +58,7 @@ that serves as the real example throughout this chapter. Its box measures
 $36 \times 33$ pixels, i.e., about 0.17\% of the photograph, and is smaller than the
 median box over all 2,490 labels, $50 \times 46$ pixels or 0.33\%. On the whole
 photograph, the workpiece is thus a small object by the 1\% criterion collected by
-Nikouei et al.~\cite{nikouei2025smallobject} (Section~\ref{sec:related-work-industrial}).
+\citet{nikouei2025smallobject} (Section~\ref{sec:related-work-industrial}).
 The box, however, tells where the workpiece is, and that makes it possible to cut crops
 in which it covers a prescribed part of the image. During the exploration of the dataset,
 two label files with a class index outside the range 0 to 14 were found in the folder
@@ -69,14 +68,12 @@ corrected; the labels used here were not affected.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_dataset.pdf}
-\caption[Learning factory and the 15 workpieces]{Fischertechnik Industry~4.0 learning
-factory and the 15 workpieces, where AG is an abbreviation for acrylic glass.
-(a) Photograph 2024-04-15-095336 ($960 \times 720$ pixels) with the bounding box of the
-black plastic workpiece (yellow) and the enlarged region (white, dashed); (b) enlarged
-region with the box centre $(x_c, y_c)$, width $w$ and height $h$ of the label in the
-format of the YOLO (You Only Look Once) detector; (c) the 15 workpieces at the same
-position, cropped at an object-to-image (O2I) ratio of 90\%. Source of the photographs:
-dataset of \cite{schneidereitYOLOv8}.}
+\caption[Learning factory and the 15 workpieces]{The Fischertechnik Industry~4.0
+learning factory and the 15 workpieces of the dataset. Panel (a) shows photograph
+2024-04-15-095336 with the bounding box of the black-plastic workpiece in yellow, panel
+(b) the enlarged region with the quantities of its YOLO label, and panel (c) the 15
+workpieces at the same position, cropped at an O2I ratio of 90\%. Source: created by the
+author at the BTU AI-Lab from photographs of the dataset of \citet{schneidereitYOLOv8}.}
 \label{fig:bg-dataset}
 \end{figure}
 
@@ -90,7 +87,7 @@ the overlap at a single position. Red plastic and red AG almost disappear agains
 red plate on which they lie there, and aluminium, steel and grey plastic look much
 alike, a similarity that the 2025 study also points out. Aluminium also occurs in the
 learning factory itself, which uses it for the supports of the suction
-pads~\cite{schneidereitYOLOv8}. These similarities are intended: the 2025 study chose
+pads \citep{schneidereitYOLOv8}. These similarities are intended: the 2025 study chose
 several workpieces for them, e.g., the black workpiece because it matches the many black
 parts of the learning factory. For black plastic, the
 workpiece of the real example, the overlap is with the dark parts of the learning
@@ -115,10 +112,10 @@ describe these 15 workpieces.
 Whether they carry over to other workpieces of the same materials is not tested.
 
 % ============================================================================
-\subsection{The Object-to-Image Ratio}
+\section{The Object-to-Image Ratio}
 \label{sec:background-o2i}
 
-Pawlowski et al.~\cite{pawlowski2019needles} define the O2I ratio by area,
+\citet{pawlowski2019needles} define the O2I ratio by area,
 
 \begin{equation}
 r = 100 \cdot \frac{A_{\mathrm{obj}}}{A_{\mathrm{img}}},
@@ -168,7 +165,7 @@ ratio unchanged, but the workpiece has lost half of its width in pixels.
 \paragraph{The real crops}
 Fig.~\ref{fig:bg-o2i}\,(d) shows the same construction on photograph
 2024-04-15-095336. The native crop sides are 36, 42, 48, 62 and 108 pixels at the five
-ratios, and every crop is resized to $256 \times 256$ pixels. This photograph is
+ratios, and every crop is resized to $256 \times 256$ pixels. Below each crop, the figure gives this side together with the side fraction $\sqrt{r/100}$ of the dashed square, which has the area of the bounding box. This photograph is
 therefore enlarged about 7 times at 90\% and about 2.4 times at 10\%. At 90\% and 70\%, the crop shows almost only the
 workpiece, with a thin strip of red plate and a dark band along the top edge. At 10\%,
 the workpiece sits on the red plate of the module, surrounded by red building blocks, a
@@ -177,13 +174,12 @@ cable and dark structure.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_o2i.pdf}
-\caption[Object-to-image ratio on the toy scene and on a real photograph]{Object-to-image
-(O2I) ratio. (a) Toy scene of $16 \times 16$ pixels with a dark workpiece and dark
-factory parts, (red) tight crop, (blue) loose crop; (b) tight crop, $8 \times 8$ pixels;
-(c) loose crop, averaged in $2 \times 2$ blocks to $8 \times 8$ pixels; (d) crops of
-photograph 2024-04-15-095336 at the five O2I ratios, each resized to $256 \times 256$
-pixels, with (dashed) the centred square that has the area of the bounding box, and
-below each crop the side fraction $\sqrt{r/100}$ and the native crop side.}
+\caption[Object-to-image ratio on the toy scene and on a real photograph]{The
+object-to-image (O2I) ratio on the toy scene and on a real photograph. Panels (a) to (c)
+show the toy scene with the tight (red) and the loose (blue) crop and both crops at $8
+\times 8$ pixels, and panel (d) shows photograph 2024-04-15-095336 at the five ratios
+with the square of the box area dashed. Source: generated with Anthropic Claude
+assistance.}
 \label{fig:bg-o2i}
 \end{figure}
 
@@ -198,13 +194,13 @@ is therefore the combined effect of more background and a smaller workpiece, and
 network of Section~\ref{sec:background-cnn} shows why the second part matters.
 
 % ============================================================================
-\subsection{Convolutional Neural Networks}
+\section{Convolutional Neural Networks}
 \label{sec:background-cnn}
 
 Fig.~\ref{fig:bg-cnn-toy} follows the tight toy crop through the first stages of a
 convolutional neural network (CNN). A CNN computes a stack of feature maps, each from
 the maps before it, and ends in a small number of scores, one per
-class~\cite[Ch.~9]{goodfellow2016deep}.
+class \citep[Ch.~9]{goodfellow2016deep}.
 
 \paragraph{Convolution}
 Let $X \in \mathbb{R}^{C \times N \times N}$ be an input with $C$ channels, e.g., the
@@ -223,7 +219,7 @@ $b^k \in \mathbb{R}$ its bias, $(u, v)$ the row and column of an output position
 $Y^k \in \mathbb{R}^{N \times N}$ the output for kernel $k$. The same kernel is applied at
 every position, so a pattern is detected wherever it occurs. Strictly,
 Eq.~\eqref{eq:bg-conv} is a cross-correlation, since the kernel is not flipped, but
-deep learning calls it a convolution~\cite[Sec.~9.1]{goodfellow2016deep}. At the border, the sum
+deep learning calls it a convolution \citep[Sec.~9.1]{goodfellow2016deep}. At the border, the sum
 reaches beyond the input. Padding with one row and column of zeros on each side keeps
 the output at $N \times N$, which is what the network of this thesis does. Since its
 inputs are not normalised, a border of zeros is black, and a filter that responds to dark
@@ -240,7 +236,7 @@ weights $+1/9$ and the bias $-0.7$ and responds where the mean is above 0.7.
 
 \paragraph{Rectified linear unit}
 The rectified linear unit (ReLU) keeps positive values and sets negative ones to zero,
-$A^k = \max(Y^k, 0)$ element by element~\cite[Sec.~6.3.1]{goodfellow2016deep}. The result
+$A^k = \max(Y^k, 0)$ element by element \citep[Sec.~6.3.1]{goodfellow2016deep}. The result
 $A^k \in \mathbb{R}_{\ge 0}^{N \times N}$ is the feature map of channel $k$.
 Fig.~\ref{fig:bg-cnn-toy}\,(d) shows the dark feature map $A^1$ of the tight crop. The
 dark detector responds to any dark region that fills its $3 \times 3$ neighbourhood,
@@ -254,7 +250,7 @@ named, with a hedge, as the likely reason why its detector found this workpiece 
 
 \paragraph{Max pooling}
 Max pooling with $2 \times 2$ windows halves the resolution by keeping the largest value
-of each window~\cite[Sec.~9.3]{goodfellow2016deep},
+of each window \citep[Sec.~9.3]{goodfellow2016deep},
 
 \begin{equation}
 M^k_{uv} = \max_{\Delta u,\,\Delta v \in \{0, 1\}} A^k_{2u+\Delta u,\,2v+\Delta v},
@@ -277,8 +273,8 @@ its outputs as a weighted sum of all its inputs plus a bias. The last layer retu
 logits, real-valued scores without bounds, one per class, which the softmax of
 Section~\ref{sec:background-training} turns into probabilities. The toy network instead
 takes the mean of each whole pooled map, the special case with a single region, called
-global average pooling~\cite{lin2014network}. This gives
-$g = (g_1, g_2) = (0.201, 0.125)$ for the dark and the light channel. A single linear
+global average pooling \citep{lin2014network}. This gives
+$\bm{g} = (g_1, g_2) = (0.201, 0.125)$ for the dark and the light channel. A single linear
 unit with the weights $(10, -5)$ and no bias then returns the logit
 $z = 10 \cdot 0.201 - 5 \cdot 0.125 = 1.39$, and a positive $z$ stands for the decision
 ``black plastic''. The toy network rewards dark regions and penalises light
@@ -286,7 +282,7 @@ ones.
 
 \paragraph{Receptive field}
 Each value of a feature map depends only on a limited region of the input, its receptive
-field~\cite{araujo2019computing}. In the toy, one value of $A^1$ sees $3 \times 3$
+field \citep{araujo2019computing}. In the toy, one value of $A^1$ sees $3 \times 3$
 pixels. Through the four
 convolutional layers of the network of this thesis and the three poolings between them,
 the width of this theoretical receptive field grows as
@@ -300,7 +296,7 @@ Fig.~\ref{fig:bg-cnn-toy}\,(f) shows what this does to the toy. In the loose cro
 workpiece covers $2 \times 2$ pixels and no longer fills a $3 \times 3$ neighbourhood.
 The dark detector gives only 0.06 or 0.14 on the workpiece, the higher value in the two
 cells that a factory part, now a single pixel, touches diagonally, instead of 0.50 in the
-tight crop. The global averages become $g = (0.025, 0.100)$, and the logit falls from
+tight crop. The global averages become $\bm{g} = (0.025, 0.100)$, and the logit falls from
 1.39 to $-0.25$. The toy network fails at the small ratio, although the workpiece has not changed. The
 toy was built to make this visible, and how strongly the real network is affected cannot
 be read from it. It is, however, the scale effect that Section~\ref{sec:methodology-covariates} lists among the
@@ -309,12 +305,12 @@ quantities that change together with the ratio.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_cnn_toy.pdf}
-\caption[Building blocks of a CNN on the toy crop]{Building blocks of a convolutional
-neural network (CNN) on the toy crop. (a) Grey levels of the tight crop;
-(b) $3 \times 3$ kernel of the dark detector, bias $+0.6$; (c) convolution output,
-(blue) negative, (red) positive; (d) feature map after the rectified linear unit (ReLU);
-(e) after $2 \times 2$ max pooling; (f) feature map of the loose crop of
-Fig.~\ref{fig:bg-o2i}\,(c), on the same colour scale as (d).}
+\caption[Building blocks of a CNN on the toy crop]{The building blocks of a CNN on the
+tight toy crop, from its grey levels (a), the dark-detector kernel (b) and the
+convolution output (c) to the feature map after the ReLU (d) and after max pooling (e).
+Panel (f) gives the feature map of the loose crop on the colour scale of panel (d), and
+in panel (c) blue marks negative and red positive values. Source: generated with
+Anthropic Claude assistance.}
 \label{fig:bg-cnn-toy}
 \end{figure}
 
@@ -333,15 +329,14 @@ have to be retrained for them.
 \begin{table}[htbp]
 \centering
 \caption[Architecture of MaterialCNNBinary]{Architecture of \texttt{MaterialCNNBinary}
-with the output shape after every stage for a $256 \times 256$ input, given as channels
-$\times$ height $\times$ width, where ReLU is the rectified linear unit and Grad-CAM
-stands for Gradient-weighted Class Activation Mapping.}
+with the output shape after every stage for a $256 \times 256$ input. Shapes are given
+as channels $\times$ height $\times$ width.}
 \label{tab:cnn-architecture}
 \small
 \begin{tabular}{l p{6cm} r}
-\hline
-\textbf{Stage} & \textbf{Operation} & \textbf{Output shape} \\
-\hline
+\toprule
+Stage & Operation & Output shape \\
+\midrule
 Input & Colour crop (red, green, blue), values in $[0,1]$ & $3 \times 256 \times 256$ \\
 c1 & $3 \times 3$ convolution, padding 1, ReLU & $32 \times 256 \times 256$ \\
 Pool 1 & $2 \times 2$ max pooling & $32 \times 128 \times 128$ \\
@@ -356,16 +351,16 @@ Adaptive pooling & Average over a $4 \times 4$ grid of regions & $256 \times 4 \
 Flatten & & 4,096 \\
 fc1 & Fully connected, ReLU, dropout 0.5 & 256 \\
 fc2 & Fully connected & 2 (logits $z_0, z_1$) \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Why train from scratch}
 The network is trained from randomly initialised weights, as instructed by the
 supervisors, and not adapted from a network pre-trained on
-ImageNet~\cite{deng2009imagenet}. A network without such priors cannot bring habits
+ImageNet \citep{deng2009imagenet}. A network without such priors cannot bring habits
 learned on another domain into its decision, e.g., a reliance on typical backgrounds or
-the preference for texture over shape that Geirhos et al.~\cite{geirhos2019texture}
+the preference for texture over shape that \citet{geirhos2019texture}
 found in ImageNet-trained CNNs (Section~\ref{sec:related-work-o2i}). Whatever the models
 use, they have learned from the learning factory itself. The price is a small network, with 1,437,762 parameters, 73\% of them in fc1, trained
 on few images, at most 116 training photographs per material. The four convolutional
@@ -374,12 +369,12 @@ $32 \times 32$ map for Grad-CAM, with few enough parameters to train from scratc
 whether this depth suits the data best was not tested, and no other depth was tried.
 
 % ============================================================================
-\subsection{Training and Evaluating a Binary Classifier}
+\section{Training and Evaluating a Binary Classifier}
 \label{sec:background-training}
 
 \paragraph{One-vs-rest}
 A classification problem with several classes can be split into one binary problem per
-class, each of which separates that class from all others~\cite{rifkin2004defense}.
+class, each of which separates that class from all others \citep{rifkin2004defense}.
 Here, each binary classifier decides whether a crop shows a given material or one of the
 other 14 (Section~\ref{sec:methodology-ovr}), so every binary task is imbalanced by
 about 1:14.
@@ -387,7 +382,7 @@ about 1:14.
 \paragraph{Output and loss}
 For an input crop $I$, a binary network returns two logits $z_0(I)$ and $z_1(I)$ for the
 negative and the positive class. The softmax turns them into
-probabilities~\cite[Sec.~6.2.2.3]{goodfellow2016deep},
+probabilities \citep[Sec.~6.2.2.3]{goodfellow2016deep},
 
 \begin{equation}
 p_j(I) = \frac{e^{z_j(I)}}{e^{z_0(I)} + e^{z_1(I)}}, \qquad j \in \{0, 1\},
@@ -401,7 +396,7 @@ of the logits, $p_1 = 1/(1 + e^{-(z_1 - z_0)})$. The single logit $z$ of the toy
 the role of this difference, so the tight crop with $z = 1.39$ has $p_1 = 0.80$ and is
 called positive, and the loose crop with $z = -0.25$ has $p_1 = 0.44$ and is called
 negative. During training, the network is penalised for each crop by the
-cross-entropy~\cite[Sec.~6.2.1.1]{goodfellow2016deep},
+cross-entropy \citep[Sec.~6.2.1.1]{goodfellow2016deep},
 
 \begin{equation}
 \ell(I, y) = -\log p_y(I),
@@ -420,21 +415,21 @@ here and the exact form of the weighted mean are given in
 Section~\ref{sec:methodology-training}.
 
 \paragraph{Gradient and backpropagation}
-Training changes the parameters $\theta$ of the network, i.e., all kernels, biases and
+Training changes the parameters $\bm{\theta}$ of the network, i.e., all kernels, biases and
 weights of the fully connected layers, so that the batch loss falls. The gradient
-$\nabla_\theta L$, the vector of all partial derivatives of $L$ with respect to the
+$\nabla_{\bm{\theta}} L$, the vector of all partial derivatives of $L$ with respect to the
 parameters, points in the direction in which the loss increases fastest. A step of
-gradient descent moves against it~\cite[Sec.~4.3]{goodfellow2016deep},
+gradient descent moves against it \citep[Sec.~4.3]{goodfellow2016deep},
 
 \begin{equation}
-\theta \leftarrow \theta - \eta\, \nabla_\theta L,
+\bm{\theta} \leftarrow \bm{\theta} - \eta\, \nabla_{\bm{\theta}} L,
 \label{eq:bg-gd}
 \end{equation}
 
 where $\eta > 0$ is the learning rate. The network is a chain of functions, layer after
 layer, so each partial derivative is a product of local derivatives by the chain rule.
 Backpropagation evaluates these products from the output backwards, one layer at a
-time~\cite[Sec.~6.5]{goodfellow2016deep}. The same computation gives the derivative of a logit
+time \citep[Sec.~6.5]{goodfellow2016deep}. The same computation gives the derivative of a logit
 with respect to any intermediate feature map, the quantity on which Grad-CAM is built.
 
 The toy shows how such a derivative is formed. Its logit is $z = 10\,g_1 - 5\,g_2$, the
@@ -463,10 +458,10 @@ derivatives over the map.
 \paragraph{Optimiser and dropout}
 Adam is a variant of the step of Eq.~\eqref{eq:bg-gd} that scales the step of each
 parameter by running averages of its past gradients and squared
-gradients~\cite{kingma2015adam}. Dropout sets each output of a layer to zero with a
-fixed probability during training~\cite{srivastava2014dropout}; in the PyTorch
+gradients \citep{kingma2015adam}. Dropout sets each output of a layer to zero with a
+fixed probability during training \citep{srivastava2014dropout}; in the PyTorch
 implementation, the remaining outputs are rescaled during training so that their expected
-value is unchanged~\cite{paszke2019pytorch}. A network trained this way is
+value is unchanged \citep{paszke2019pytorch}. A network trained this way is
 discouraged from relying on any single unit. Dropout is switched off when the trained
 network is evaluated, including during the explainability analyses. The settings used
 here are listed in Tab.~\ref{tab:training-config}.
@@ -478,14 +473,14 @@ with the best validation result is kept. Because the validation split took part 
 choice, its results are slightly optimistic, which matters again for the explainability
 analyses, since they also run on validation crops
 (Section~\ref{sec:methodology-sampling}). The test split is evaluated once, after all
-choices have been made~\cite[Sec.~5.3]{goodfellow2016deep}. The split itself is made by
+choices have been made \citep[Sec.~5.3]{goodfellow2016deep}. The split itself is made by
 photograph (Section~\ref{sec:methodology-split}).
 
 \paragraph{Metrics under class imbalance}
 On a split with true labels, the predictions of a binary classifier fall into four
 counts, the true positives $\mathrm{TP}$, false positives $\mathrm{FP}$, false negatives
 $\mathrm{FN}$ and true negatives $\mathrm{TN}$. Precision, recall and the F1 score of the
-positive class are~\cite[Sec.~11.1]{goodfellow2016deep}
+positive class are \citep[Sec.~11.1]{goodfellow2016deep}
 
 \begin{equation}
 P = \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FP}}, \qquad
@@ -503,7 +498,7 @@ characteristic (ROC) curve plots the recall against the false positive rate
 $\mathrm{FP}/(\mathrm{FP} + \mathrm{TN})$ while the decision threshold on $p_1$ moves
 from 1 to 0. The area under this curve (ROC-AUC) equals the probability that a randomly
 chosen positive crop receives a higher score than a randomly chosen negative
-one~\cite{fawcett2006roc},
+one \citep{fawcett2006roc},
 
 \begin{equation}
 \mathrm{AUC} = \Pr\big[p_1(I^+) > p_1(I^-)\big]
@@ -538,22 +533,20 @@ answer of the first classifier ties every pair and gives 0.5.
 \begin{table}[htbp]
 \centering
 \caption[Metrics of two classifiers on 30 toy crops]{Counts and metrics of two
-classifiers on 30 toy crops with 2 positive and 28 negative crops (1:14) at the
-threshold 0.5, where TP, FP, FN and TN are the numbers of true positives, false
-positives, false negatives and true negatives, Acc., Prec.\ and Rec.\ stand for
-accuracy, precision and recall, F1 is the harmonic mean of precision and recall, and
-ROC-AUC is the area under the receiver operating characteristic curve.}
+classifiers on 30 toy crops, 2 positive and 28 negative, at the threshold 0.5. TP, FP,
+FN and TN count the true positives, false positives, false negatives and true negatives,
+and Acc., Prec.\ and Rec.\ stand for accuracy, precision and recall.}
 \label{tab:bg-toy-metrics}
 \small
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrrr}
-\hline
-\textbf{Classifier} & \textbf{TP} & \textbf{FP} & \textbf{FN} & \textbf{TN} &
-\textbf{Acc.} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{ROC-AUC} \\
-\hline
+\toprule
+Classifier & TP & FP & FN & TN &
+Acc. & Prec. & Rec. & F1 & ROC-AUC \\
+\midrule
 Always ``not X'' & 0 & 0 & 2 & 28 & 0.933 & 0.000 & 0.000 & 0.000 & 0.500 \\
 Toy model & 2 & 2 & 0 & 26 & 0.933 & 0.500 & 1.000 & 0.667 & 0.982 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -565,7 +558,7 @@ Sections~\ref{sec:background-occlusion} and~\ref{sec:background-gradcam} ask whe
 evidence lies.
 
 % ============================================================================
-\subsection{Occlusion Sensitivity}
+\section{Occlusion Sensitivity}
 \label{sec:background-occlusion}
 
 A heatmap, or attribution map, assigns to each region of the input a value for how much
@@ -574,12 +567,12 @@ class. There are three main families of methods to compute such maps. Perturbati
 change the input and observe the output. Gradient-based methods read derivatives of the
 output inside the network. Relevance propagation passes the output backwards through the
 layers and distributes it over the input pixels, as layer-wise relevance propagation
-(LRP)~\cite{bach2015lrp, montavon2019lrp} does, the method of the 2025
-study~\cite{schneidereitYOLOv8}, which is not used here. Occlusion sensitivity belongs
+(LRP) \citep{bach2015lrp, montavon2019lrp} does, the method of the 2025
+study \citep{schneidereitYOLOv8}, which is not used here. Occlusion sensitivity belongs
 to the first family, Grad-CAM (Section~\ref{sec:background-gradcam}) to the second.
 
 \paragraph{The method}
-Zeiler and Fergus~\cite{zeilerFergus2014} slide a grey patch over the image and record
+\citet{zeilerFergus2014} slide a grey patch over the image and record
 the output of the network at every patch position. Let $\Omega_{ij}$ be the set of pixels
 that the patch covers at position $(i, j)$, and let $I^{(ij)}$ be the crop $I$ with the
 fill value written into all channels of the pixels in $\Omega_{ij}$ and unchanged
@@ -604,7 +597,7 @@ On the tight toy crop, a grey patch of $2 \times 2$ pixels with the fill value 0
 moved with a stride of 1, which gives $7 \times 7$ positions
 (Fig.~\ref{fig:bg-methods-toy}\,(a)). Neighbouring patches overlap by half, as the
 $32 \times 32$ patches with stride 16 of the thesis do. The occlusion map of
-Eq.~\eqref{eq:bg-occlusion}, shown in Fig.~\ref{fig:bg-methods-toy}\,(b), has its
+Eq.~\eqref{eq:bg-occlusion}, shown in Fig.~\ref{fig:bg-methods-toy}\,(b) with negative drops in blue and positive drops in red, has its
 largest drops over the workpiece, up to 0.44 at its centre, because the grey patch is
 lighter than the workpiece and removes dark evidence. A patch over a dark factory part
 also gives a clear drop of 0.32. Of the 49 drops, 20 are negative, down to $-0.25$. On
@@ -645,38 +638,35 @@ black-plastic model trained at 70\%, which classifies the crop as black plastic 
 $p_1 > 0.999$ and $z_1 = 6.56$. The $15 \times 15$ map $D$ of
 Fig.~\ref{fig:bg-methods-real}\,(b) ranges from $-0.082$ to $+1.111$, and 32 of its 225
 drops are negative. The positive drops concentrate on the lower front of the workpiece,
-and panel (c) shows them after normalisation and interpolation. The choice of patch
+and panel (c) shows them after normalisation and bilinear interpolation, with the reference square dashed. The choice of patch
 size, stride and fill is justified in Section~\ref{sec:methodology-patch}, and the
 results over all models are reported in Section~\ref{sec:results-divergence}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_methods_toy.pdf}
-\caption[Occlusion sensitivity and Grad-CAM on the toy crop]{Occlusion sensitivity and
-Gradient-weighted Class Activation Mapping (Grad-CAM) on the toy crop. (a) Tight crop
-with the grey $2 \times 2$ patch at position $(0, 0)$; (b) occlusion map $D$, drop of the
-logit per patch position, (blue) negative, (red) positive; (c) steel-like crop,
-workpiece at the fill value 0.5; (d) its occlusion map; (e) dark and (f) light feature
-map with the Grad-CAM weights $\alpha_1$ and $\alpha_2$; (g) weighted sum of the feature
-maps and (h) Grad-CAM map after the rectified linear unit (ReLU), both in units of
-$10^{-3}$.}
+\caption[Occlusion sensitivity and Grad-CAM on the toy crop]{Occlusion sensitivity on
+the tight toy crop (a, b) and on the steel-like crop (c, d), each with the grey patch
+and the occlusion map. Panels (e) to (h) give the dark and the light feature map with
+their Grad-CAM weights, their weighted sum and the Grad-CAM map after the ReLU, the last
+two in units of $10^{-3}$. Source: generated with Anthropic Claude assistance.}
 \label{fig:bg-methods-toy}
 \end{figure}
 
 % ============================================================================
-\subsection{Grad-CAM}
+\section{Grad-CAM}
 \label{sec:background-gradcam}
 
 \paragraph{From CAM to Grad-CAM}
-Class activation mapping (CAM)~\cite{zhou2016cam} applies to networks whose last feature
+Class activation mapping (CAM) \citep{zhou2016cam} applies to networks whose last feature
 maps are globally averaged and fed into a single linear layer. The map of a class is
 then the sum of the feature maps, each weighted by its weight in that linear layer, and
 shows where the channels that favour the class are active. Gradient-weighted Class
-Activation Mapping (Grad-CAM)~\cite{selvaraju2017gradcam} drops this restriction on the
+Activation Mapping (Grad-CAM) \citep{selvaraju2017gradcam} drops this restriction on the
 architecture by taking the weights from the gradient. For a network of the CAM type,
 the gradient of the logit is the same at every position of a map, and Grad-CAM gives
 the CAM map; for other networks it averages gradients that can differ between
-positions, which can mark locations the model does not use~\cite{draelos2021hirescam}.
+positions, which can mark locations the model does not use \citep{draelos2021hirescam}.
 For feature maps
 $A^k \in \mathbb{R}_{\ge 0}^{U \times V}$, $k = 1, \dots, K$, of a chosen layer and the
 target logit $z$, the weight of channel $k$ is the mean gradient over its map,
@@ -724,11 +714,11 @@ Grad-CAM shows where channels with a positive weight are active, not what kind o
 feature these channels respond to. A channel that responds to dark regions and one that
 responds to a surface texture can look the same in $G$. For a reflecting workpiece such
 as aluminium, a Grad-CAM map on the workpiece cannot tell whether the model uses the shape of the workpiece or the texture of
-its reflecting surface, the distinction that Geirhos et al.~\cite{geirhos2019texture}
+its reflecting surface, the distinction that \citet{geirhos2019texture}
 draw for ImageNet-trained CNNs.
 
 \paragraph{Grad-CAM on a real crop}
-Fig.~\ref{fig:bg-methods-real}\,(d) shows two of the 256 feature maps of c4 for the crop
+Fig.~\ref{fig:bg-methods-real}\,(d) shows two of the 256 feature maps of c4 (dark for high activation) for the crop
 at 70\%, $A^{61}$ with $\alpha_{61} = +2.7 \times 10^{-5}$ and $A^{78}$ with
 $\alpha_{78} = -4.3 \times 10^{-4}$, the channels that add most to and subtract most from
 the weighted sum. Both respond mainly to the red plate around the workpiece and hardly to
@@ -736,9 +726,9 @@ the workpiece itself, one with a small positive and the other with a negative we
 the 256 weights, 128 are positive and 128 negative, so the map of
 Eq.~\eqref{eq:bg-gradcam-map} is a balance of many channels that push the logit in
 opposite directions. The measured $32 \times 32$ map of
-Fig.~\ref{fig:bg-methods-real}\,(e) covers the centre and the lower front of the
+Fig.~\ref{fig:bg-methods-real}\,(e), divided by its maximum, covers the centre and the lower front of the
 workpiece, and it marks the dark band along the top edge of the crop, outside the
-reference square, only weakly. This is
+reference square, only weakly. Panel (f) shows the same map after the bilinear interpolation that is used for $c$. This is
 one image and is meant as an illustration. How the Grad-CAM map spreads at 30\% and
 10\% is shown in Section~\ref{sec:results-qualitative}. In contrast to occlusion, which
 needed 225 separate local tests for the map of panel (b), Grad-CAM reads all feature
@@ -747,23 +737,17 @@ maps at once in one forward and one backward pass.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_methods_real.pdf}
-\caption[Occlusion sensitivity and Grad-CAM on one real crop]{Occlusion sensitivity and
-Gradient-weighted Class Activation Mapping (Grad-CAM) for one crop of black plastic at
-an object-to-image (O2I) ratio of 70\% (photograph 2024-04-15-095336) and the 70\%
-black-plastic model. (a) Crop with one grey $32 \times 32$ patch and the stride-16 grid;
-(b) measured $15 \times 15$ map $D$ of drops of the positive-class logit $z_1$;
-(c) positive drops, normalised and bilinearly interpolated, as used both for $c$ and
-for display, with the reference square (dashed) and the centre measure $c$; (d) two of the 256 feature maps
-of the fourth convolutional layer, $32 \times 32$, with their weights $\alpha$ (dark
-for high activation);
-(e) measured $32 \times 32$ Grad-CAM map after the rectified linear unit (ReLU),
-divided by its maximum; (f) Grad-CAM, interpolated as for $c$ and for display, with $c$. The smooth
-appearance of (c) and (f) comes from the interpolation, not from the measurement.}
+\caption[Occlusion sensitivity and Grad-CAM on one real crop]{Occlusion sensitivity
+(a--c) and Grad-CAM (d--f) for the crop of photograph 2024-04-15-095336 at an O2I ratio
+of 70\%, explained by the 70\% black-plastic model. Panels (b) and (e) are the measured
+maps, while (c) and (f) are normalised and bilinearly interpolated as for the centre
+measure $c$, so their smooth appearance comes from the interpolation, not from the
+measurement. Source: created by the author at the BTU AI-Lab.}
 \label{fig:bg-methods-real}
 \end{figure}
 
 % ============================================================================
-\subsection{Object versus Background in a Heatmap}
+\section{Object versus Background in a Heatmap}
 \label{sec:background-comparison}
 
 The research question asks whether the evidence of a model lies on the workpiece or on
@@ -806,13 +790,11 @@ entirely outside the square, so the two values are not fully comparable
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{ch3_figures/fig_ch3_centre_measure_toy.pdf}
-\caption[Comparing importance inside and outside a centred square on the
-toy]{Comparing importance inside and outside a centred square on the toy, where $c$ is
-the centre measure and share is the part of the summed map inside the square (dashed).
-(a, b) Flat map with the square of the tight and of the loose crop; (c) occlusion map
-with positive drops only, each pixel the mean of the positive drops of the patches that
-cover it, divided by its maximum; (d) Grad-CAM map divided by its maximum, where Grad-CAM stands for
-Gradient-weighted Class Activation Mapping.}
+\caption[Comparing importance inside and outside a centred square on the toy]{The centre
+measure $c$ and the share of the summed map inside the centred square (dashed) on the
+toy. Panels (a) and (b) give a flat map with the square of the tight and of the loose
+crop, and panels (c) and (d) the positive-drops occlusion map and the Grad-CAM map, each
+divided by its maximum. Source: generated with Anthropic Claude assistance.}
 \label{fig:bg-centre-toy}
 \end{figure}
 
@@ -821,7 +803,7 @@ Occlusion and Grad-CAM answer different questions. Occlusion asks what replacing
 patch with grey changes in the score while the rest of the image stays in place.
 Grad-CAM asks where the channels that push the score up are active. Both can be right
 about their own question and still point to different regions, and neither map is
-ground truth for what the model uses~\cite{adebayo2018sanity}. The two answers can
+ground truth for what the model uses \citep{adebayo2018sanity}. The two answers can
 separate in two ways. If the background contains many similar cues, like a room full of
 clocks, covering one of them leaves the others visible and changes the score little,
 while Grad-CAM marks all of them at once. Grad-CAM can also mark regions the model does

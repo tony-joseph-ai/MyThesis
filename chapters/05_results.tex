@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-\section{Results}
+\chapter{Results}
 \label{sec:results}
 
 Section~\ref{sec:methodology-rq} set out two layers of evidence for the research
@@ -19,18 +19,18 @@ centre measure, the direct tests of the heatmaps, the robustness checks and the
 200-epoch check.
 
 % ============================================================================
-\subsection{Classification Performance}
+\section{Classification Performance}
 \label{sec:results-training}
 
 All 75 models were trained for 100 epochs, the checkpoint with the highest validation
 F1 was kept, and the test split was evaluated once per model with that checkpoint
 (Section~\ref{sec:methodology-metrics}).
 
-\subsubsection{Convergence}
+\subsection{Convergence}
 \label{sec:results-convergence}
 
 Fig.~\ref{fig:loss-curves} shows the training and validation loss of the 15 models at
-an O2I ratio of 90\% over all 100 epochs. The training loss falls for all 15. The validation loss levels
+an O2I ratio of 90\% over all 100 epochs, with one panel per material in the order of the dataset. The training loss falls for all 15. The validation loss levels
 off within the first epochs and then becomes noisy, which is to be expected on a split
 with at most 25 positive crops per material. Four materials show a clear gap between
 the two curves. For steel, the validation loss stays flat from about epoch 40 while the
@@ -48,15 +48,14 @@ limited by the training length is checked in Section~\ref{sec:results-200epoch}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{fig_loss_curves_r90.pdf}
-\caption[Loss curves at an O2I ratio of 90\%]{Training and validation loss of the 15
-one-vs-rest models at an object-to-image (O2I) ratio of 90\% over 100 epochs, one panel
-per material in the order of the dataset, (blue) training loss, (orange) validation
-loss, both with the class weights of Eq.~\eqref{eq:class-weight}. The dotted vertical
-line marks the epoch with the highest validation F1, whose number is given in the panel
-title. AG: acrylic glass.}
+\caption[Loss curves at an O2I ratio of 90\%]{Training (blue) and validation (orange)
+loss of the 15 one-vs-rest models at an O2I ratio of 90\% over 100 epochs, both with the
+class weights of Eq.~\eqref{eq:class-weight}. The dotted line marks the epoch with the
+highest validation F1, whose number is given in the panel title. Source: created by the
+author at the BTU AI-Lab.}
 \label{fig:loss-curves}
 \end{figure}
-\subsubsection{Test F1 by Material and Ratio}
+\subsection{Test F1 by Material and Ratio}
 \label{sec:results-primary-table}
 
 Tab.~\ref{tab:ovr-full-results} lists the test F1 of all 75 models. The mean over the
@@ -72,19 +71,17 @@ degrades as the workpiece takes up less of the crop.
 
 \begin{table}[htbp]
 \centering
-\caption[Test F1 of the 75 one-vs-rest models]{Test F1 of the 75 one-vs-rest models
-per material and object-to-image (O2I) ratio, with the checkpoint of the highest
-validation F1 after 100 epochs. The last three rows give the mean over the 15
-materials, its standard error (SE) and the mean test ROC-AUC (receiver operating
-characteristic area under the curve). The last column gives the mean of each material
-over the five ratios, formed from unrounded values. AG: acrylic glass.}
+\caption[Test F1 of the 75 one-vs-rest models]{Test F1 of the 75 one-vs-rest models per
+material and O2I ratio, with the checkpoint of the highest validation F1 after 100
+epochs. The last three rows give the mean over the 15 materials, its SE and the mean
+test ROC-AUC, and the last column gives the mean of each material over the five ratios.}
 \label{tab:ovr-full-results}
 \small
 \begin{tabular}{lcccccc}
-\hline
-\textbf{Material} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} & \textbf{Mean} \\
-\hline
+\toprule
+Material & 90\% & 70\% & 50\% & 30\% &
+10\% & Mean \\
+\midrule
 White plastic  & 0.941 & 0.902 & 0.863 & 0.807 & 0.875 & 0.878 \\
 Aluminium      & 0.613 & 0.625 & 0.508 & 0.327 & 0.389 & 0.492 \\
 Brass          & 0.906 & 0.868 & 0.836 & 0.939 & 0.772 & 0.864 \\
@@ -100,11 +97,11 @@ Grey plastic   & 0.766 & 0.745 & 0.696 & 0.739 & 0.642 & 0.717 \\
 Black plastic  & 0.962 & 0.962 & 0.960 & 0.960 & 0.936 & 0.956 \\
 Light wood     & 0.741 & 0.756 & 0.833 & 0.741 & 0.727 & 0.760 \\
 Dark wood      & 0.800 & 0.814 & 0.806 & 0.830 & 0.816 & 0.813 \\
-\hline
+\midrule
 Mean          & 0.813 & 0.799 & 0.796 & 0.769 & 0.720 & 0.779 \\
 SE            & 0.034 & 0.034 & 0.035 & 0.045 & 0.048 & -- \\
 Mean ROC-AUC  & 0.982 & 0.981 & 0.982 & 0.973 & 0.970 & -- \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -151,7 +148,7 @@ materials fail mainly on look-alike workpieces of the same colour family.
 
 \FloatBarrier
 % ============================================================================
-\subsection{Where the Heatmap Importance Lies}
+\section{Where the Heatmap Importance Lies}
 \label{sec:results-divergence}
 
 Occlusion sensitivity and Grad-CAM were applied to 10 validation crops of the target
@@ -163,33 +160,34 @@ of Eq.~\eqref{eq:center-frac}, written $c_{\mathrm{occ}}$ for occlusion and
 $c_{\mathrm{cam}}$ for Grad-CAM, and averaged first over the 10 crops of a model and
 then over the 15 models of a ratio.
 
-\subsubsection{The Centre Measure by Ratio}
+\subsection{The Centre Measure by Ratio}
 \label{sec:results-centre}
 
 Tab.~\ref{tab:centerfrac} gives both centre measures and their difference at every
-ratio, and Fig.~\ref{fig:centerfrac-ratio} plots the two curves.
+ratio, and Fig.~\ref{fig:centerfrac-ratio} plots the two curves. The method
+difference is formed per material, and the fifth column of the table gives its statistic
+$t(14)$, the $p$-value and the number $n_>$ of materials with
+$c_{\mathrm{occ}} > c_{\mathrm{cam}}$. The reference difference is
+$c^{\mathrm{ref}}_{\mathrm{occ}} - c^{\mathrm{ref}}_{\mathrm{cam}}$ from
+Tab.~\ref{tab:reference}, and the last two columns give the method difference beyond
+it, with its $p$-value.
 
 \begin{table}[htbp]
 \centering
 \caption[Centre measure $c$ of both methods per ratio]{Centre measure $c$ of occlusion
-sensitivity ($c_{\mathrm{occ}}$, positive drops, grey fill) and Grad-CAM
-($c_{\mathrm{cam}}$) per object-to-image (O2I) ratio, mean $\pm$ standard error (SE)
-over the 15 per-model values. The method difference $c_{\mathrm{occ}} -
-c_{\mathrm{cam}}$ is formed per material and tested against 0, with the statistic
-$t(14)$, the $p$-value and the number $n_>$ of materials with
-$c_{\mathrm{occ}} > c_{\mathrm{cam}}$ in the fifth column. The reference
-difference is $c^{\mathrm{ref}}_{\mathrm{occ}} - c^{\mathrm{ref}}_{\mathrm{cam}}$
-(Tab.~\ref{tab:reference}), and the last two columns give the method difference beyond
-the reference difference, with its $p$-value.}
+sensitivity (positive drops, grey fill) and Grad-CAM per O2I ratio, mean $\pm$ SE over
+the 15 per-model values. The method difference $c_{\mathrm{occ}} - c_{\mathrm{cam}}$ is
+tested against 0 per material, both as it stands and beyond the reference difference of
+Tab.~\ref{tab:reference}.}
 \label{tab:centerfrac}
 \footnotesize
 \setlength{\tabcolsep}{2pt}
 \begin{tabular}{lccccccc}
-\hline
-\textbf{O2I} & $\boldsymbol{c_{\mathrm{occ}}}$ & $\boldsymbol{c_{\mathrm{cam}}}$ &
-\textbf{Method diff.} & $\boldsymbol{t}$; $\boldsymbol{p}$; $\boldsymbol{n_>}$ &
-\shortstack{\textbf{Ref.}\\\textbf{diff.}} & \textbf{Beyond ref.} & $\boldsymbol{p}$ \\
-\hline
+\toprule
+O2I & $\boldsymbol{c_{\mathrm{occ}}}$ & $\boldsymbol{c_{\mathrm{cam}}}$ &
+Method diff. & $\boldsymbol{t}$; $\boldsymbol{p}$; $\boldsymbol{n_>}$ &
+\shortstack{Ref.\\diff.} & Beyond ref. & $\boldsymbol{p}$ \\
+\midrule
 90\% & $0.728\,{\pm}\,0.039$ & $0.737\,{\pm}\,0.040$ & $-0.008\,{\pm}\,0.059$ & $-0.14$; 0.89; 5 &
  $-0.152$ & $+0.144\,{\pm}\,0.059$ & 0.028 \\
 70\% & $0.781\,{\pm}\,0.047$ & $0.722\,{\pm}\,0.039$ & $+0.058\,{\pm}\,0.062$ & 0.94; 0.36; 8 &
@@ -200,21 +198,18 @@ the reference difference, with its $p$-value.}
  $-0.066$ & $+0.256\,{\pm}\,0.090$ & 0.013 \\
 10\% & $0.884\,{\pm}\,0.047$ & $0.407\,{\pm}\,0.069$ & $+0.477\,{\pm}\,0.098$ & 4.86; 0.0003; 13 &
  $-0.032$ & $+0.509\,{\pm}\,0.098$ & 0.0001 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{fig_centerfrac_vs_ratio.pdf}
-\caption[Centre measure $c$ against the O2I ratio]{Centre measure $c$ of (orange,
-squares) occlusion sensitivity with positive drops and grey fill and (blue, circles)
-Gradient-weighted Class Activation Mapping (Grad-CAM) against the object-to-image (O2I)
-ratio. Each point is the mean over the 15 materials, each material the mean of 10
-validation crops; (bars) $\pm$ one standard error (SE), $n = 15$; (dashed, thin) the
-reference value of each method, i.e., $c$ of a map that is uniform on the bounding box
-at the resolution of that method (Tab.~\ref{tab:reference}); (dotted) $c = 0.5$, the
-value of a flat map.}
+\caption[Centre measure $c$ against the O2I ratio]{Centre measure $c$ of occlusion
+sensitivity (orange squares) and Grad-CAM (blue circles) against the O2I ratio, as the
+mean $\pm$ one SE over the 15 materials. The thin dashed lines give the reference value
+of each method from Tab.~\ref{tab:reference}, and the dotted line the value 0.5 of a
+flat map. Source: created by the author at the BTU AI-Lab.}
 \label{fig:centerfrac-ratio}
 \end{figure}
 
@@ -267,41 +262,41 @@ centre measure without a ratio at which the background clearly dominates, and no
 threshold is read into the curve. Whether this decline reflects the models is tested in
 Section~\ref{sec:results-intervention}.
 
-\subsubsection{Reference Values and the Method Difference}
+\subsection{Reference Values and the Method Difference}
 \label{sec:results-reference}
 
 The centre measure of a map that lies uniformly on the bounding box is not the same at
 every ratio (Section~\ref{sec:methodology-reference}). Tab.~\ref{tab:reference} lists these
 reference values for the box itself and at the resolution of each method, together
-with the reference gaps $c - c^{\mathrm{ref}}$ of both methods.
+with the reference gaps $c - c^{\mathrm{ref}}$ of both methods. The row of
+$c^{\mathrm{ref}}_{\mathrm{occ}}$ uses the occlusion grid and that of
+$c^{\mathrm{ref}}_{\mathrm{cam}}$ the $8 \times 8$-pixel cells of Grad-CAM
+(Eq.~\eqref{eq:ref-grids}), the variant averages the box over the $38 \times 38$-pixel
+receptive field of each Grad-CAM cell, and the gaps use $c_{\mathrm{occ}}$ and
+$c_{\mathrm{cam}}$ from Tab.~\ref{tab:centerfrac}.
 
 \begin{table}[htbp]
 \centering
-\caption[Reference values of $c$ per ratio]{Reference values of the centre measure
-$c$ per object-to-image (O2I) ratio, i.e., $c$ of a map that is uniform on the
-bounding box, mean over the 15 per-model values. The box itself is taken at pixel
-resolution; $c^{\mathrm{ref}}_{\mathrm{occ}}$ uses the occlusion grid and
-$c^{\mathrm{ref}}_{\mathrm{cam}}$ the $8 \times 8$-pixel cells of Gradient-weighted
-Class Activation Mapping (Grad-CAM) (Eq.~\eqref{eq:ref-grids}), and the variant averages
-the box over the $38 \times 38$-pixel receptive field of each Grad-CAM cell. The
-reference gaps are $c_{\mathrm{occ}} - c^{\mathrm{ref}}_{\mathrm{occ}}$ and
-$c_{\mathrm{cam}} - c^{\mathrm{ref}}_{\mathrm{cam}}$, with $c_{\mathrm{occ}}$ and
-$c_{\mathrm{cam}}$ from Tab.~\ref{tab:centerfrac}.}
+\caption[Reference values of $c$ per ratio]{Reference values of the centre measure $c$
+per O2I ratio, i.e., $c$ of a map that is uniform on the bounding box, as the mean over
+the 15 per-model values. The rows give the box at pixel resolution, on the grid of each
+method and over the Grad-CAM receptive field, followed by the reference gaps of both
+methods.}
 \label{tab:reference}
 \small
 \begin{tabular}{lccccc}
-\hline
-\textbf{Quantity} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} \\
-\hline
+\toprule
+Quantity & 90\% & 70\% & 50\% & 30\% &
+10\% \\
+\midrule
 Box itself                                   & 0.757 & 0.878 & 0.941 & 0.973 & 0.992 \\
 $c^{\mathrm{ref}}_{\mathrm{occ}}$ (occlusion grid) & 0.569 & 0.692 & 0.820 & 0.900 & 0.956 \\
 $c^{\mathrm{ref}}_{\mathrm{cam}}$ (8-pixel cells)  & 0.721 & 0.859 & 0.931 & 0.966 & 0.988 \\
 Grad-CAM, 38-pixel receptive field           & 0.598 & 0.763 & 0.882 & 0.932 & 0.967 \\
-\hline
+\midrule
 Reference gap, occlusion & $+0.159$ & $+0.088$ & $-0.036$ & $-0.082$ & $-0.072$ \\
 Reference gap, Grad-CAM  & $+0.015$ & $-0.137$ & $-0.258$ & $-0.338$ & $-0.581$ \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -362,7 +357,7 @@ F1 also falls ($-0.093$, $t(14) = -4.76$); the occlusion centre measure rises
 ($+0.155$). From the heatmaps alone it cannot be decided which of the two reflects the
 models. Section~\ref{sec:results-intervention} tests this directly.
 
-\subsubsection{One Photograph at Five Ratios}
+\subsection{One Photograph at Five Ratios}
 \label{sec:results-qualitative}
 
 The model-level values above average over different photographs at each ratio
@@ -374,13 +369,16 @@ during training, although they saw its scene with other workpieces. From one col
 difference between columns cannot be assigned to either alone. The three
 materials were chosen for their place in Tab.~\ref{tab:ovr-full-results}. Black plastic
 has the highest mean test F1, is the most stable across ratios, and was the hardest material of the 2025
-study~\cite{schneidereitYOLOv8}. Aluminium and steel are the two weakest, and they fail
+study \citep{schneidereitYOLOv8}. Aluminium and steel are the two weakest, and they fail
 in different ways. Each figure is an illustration; next to it, the model-level values
 of the same material are given, which rest on 10 crops per model and are indicative
 only. At 90\% the background ring around $B_{90}$ is 7 pixels wide, narrower
 than one Grad-CAM cell and one occlusion step, so a map at 90\% cannot place a measurement
 entirely outside the square, although interpolated values in the 7-pixel ring can still
-lower $c$ (Section~\ref{sec:methodology-resolution}).
+lower $c$ (Section~\ref{sec:methodology-resolution}). In all three
+figures, occlusion uses the positive drops and the grey fill, and both maps are
+interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
+(the maximum of each map).
 \paragraph{Black plastic}
 Fig.~\ref{fig:same-black} shows the photograph that is also the real example of
 Fig.~\ref{fig:bg-methods-real} and of the worked example in
@@ -402,14 +400,12 @@ relates the result to the 2025 study.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{same_13_black_plastic_2024-04-15-095336.pdf}
-\caption[One black-plastic photograph at five ratios]{One validation photograph of
-black plastic (2024-04-15-095336) cropped at the five object-to-image (O2I) ratios,
-each crop explained by the black-plastic model of its ratio. (Top) crop with the
-reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
-fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
-give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
-(the maximum of each map).}
+\caption[One black-plastic photograph at five ratios]{One validation photograph of black
+plastic (2024-04-15-095336) at the five O2I ratios, with the crop and its reference
+square $B_r$ (top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the
+black-plastic model of its ratio. The panel titles give the probability $p_1$ of the
+positive class and the centre measure $c$. Source: created by the author at the BTU
+AI-Lab.}
 \label{fig:same-black}
 \end{figure}
 
@@ -436,13 +432,10 @@ and discussed in Section~\ref{sec:discussion-material}.
 \centering
 \includegraphics[width=0.85\textwidth]{same_4_steel_metal_2024-04-11-103345.pdf}
 \caption[One steel photograph at five ratios]{One validation photograph of steel
-(2024-04-11-103345) cropped at the five object-to-image (O2I) ratios, each crop
-explained by the steel model of its ratio. (Top) crop with the reference square $B_r$
-(dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
-Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
-probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
-(the maximum of each map).}
+(2024-04-11-103345) at the five O2I ratios, with the crop and its reference square $B_r$
+(top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the steel model
+of its ratio. The panel titles give the probability $p_1$ of the positive class and the
+centre measure $c$. Source: created by the author at the BTU AI-Lab.}
 \label{fig:same-steel}
 \end{figure}
 
@@ -450,7 +443,7 @@ interpolated for display and overlaid in red on a fixed scale from 0 (no colour)
 The aluminium photograph of Fig.~\ref{fig:same-alu} is classified with $p_1$ of 0.93,
 0.97, 0.89, 0.60 and 0.63. From 90\% to 50\%, Grad-CAM marks the bright vertical
 highlights and the left edge of the workpiece. At 30\% it spreads into the structure
-above and below the workpiece, and at 10\% the map is flat. Occlusion concentrates on
+above and below the workpiece, and at 10\% the map is flat, i.e., zero everywhere, which the figure marks as ``flat map''. Occlusion concentrates on
 the vertical highlights, and at 30\% it also marks spots outside the square, with $c$
 of 0.57, 0.74, 0.76, 0.55 and 0.84. At the model
 level, grey-patch occlusion lies between 0.48 and 0.54 at every ratio, i.e., it shows
@@ -465,14 +458,11 @@ it.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{same_2_aluminium_metal_2024-04-15-100518.pdf}
-\caption[One aluminium photograph at five ratios]{One validation photograph of
-aluminium (2024-04-15-100518) cropped at the five object-to-image (O2I) ratios, each
-crop explained by the aluminium model of its ratio. (Top) crop with the reference
-square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey fill;
-(bottom) Gradient-weighted Class Activation Mapping (Grad-CAM), where ``flat map''
-marks a map that is zero everywhere. The panel titles give the probability $p_1$ of the
-positive class and the centre measure $c$. Maps are interpolated for display and
-overlaid in red on a fixed scale from 0 (no colour) to 1 (the maximum of each map).}
+\caption[One aluminium photograph at five ratios]{One validation photograph of aluminium
+(2024-04-15-100518) at the five O2I ratios, with the crop and its reference square $B_r$
+(top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the aluminium
+model of its ratio. The panel titles give the probability $p_1$ of the positive class
+and the centre measure $c$. Source: created by the author at the BTU AI-Lab.}
 \label{fig:same-alu}
 \end{figure}
 
@@ -494,7 +484,7 @@ section.
 
 \FloatBarrier
 % ============================================================================
-\subsection{Testing the Heatmaps Directly}
+\section{Testing the Heatmaps Directly}
 \label{sec:results-intervention}
 
 The two methods of Section~\ref{sec:results-divergence} move in opposite directions. This
@@ -503,7 +493,7 @@ decide between them without relying on either heatmap: removing whole regions on
 test split and on the 750 analysed crops, three variants of Grad-CAM, and the untrained
 network.
 
-\subsubsection{Removing the Workpiece or the Background}
+\subsection{Removing the Workpiece or the Background}
 \label{sec:results-removal}
 
 Tab.~\ref{tab:removal} gives the test-split metrics for the crops themselves and for the
@@ -512,36 +502,34 @@ two versions in which the bounding box or the background is filled with grey.
 \begin{table}[htbp]
 \centering
 \caption[Test split with only the background or only the workpiece left]{Test-split
-metrics per object-to-image (O2I) ratio for the crops themselves, for crops with only the
-background left (bounding box filled with grey) and for crops with only the workpiece
-left (background filled with grey), mean $\pm$ standard error (SE) over the 15 per-model
-values. The false-positive rate (FPR) is the share of crops of the other 14 materials
-called positive; ROC-AUC is the area under the receiver operating characteristic curve
-and AP the average precision.}
+metrics per O2I ratio for the crops themselves, for crops with only the background left
+(box filled with grey) and for crops with only the workpiece left (background filled
+with grey). Values are the mean $\pm$ SE over the 15 per-model values, and the FPR is
+the share of crops of the other 14 materials called positive.}
 \label{tab:removal}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{llccccc}
-\hline
-\textbf{Version} & \textbf{Metric} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} &
-\textbf{30\%} & \textbf{10\%} \\
-\hline
+\toprule
+Version & Metric & 90\% & 70\% & 50\% &
+30\% & 10\% \\
+\midrule
 Crop      & F1      & $0.813\,{\pm}\,0.034$ & $0.799\,{\pm}\,0.034$ & $0.796\,{\pm}\,0.035$ & $0.769\,{\pm}\,0.045$ & $0.720\,{\pm}\,0.048$ \\
           & Recall  & $0.867\,{\pm}\,0.029$ & $0.859\,{\pm}\,0.029$ & $0.858\,{\pm}\,0.032$ & $0.858\,{\pm}\,0.030$ & $0.804\,{\pm}\,0.042$ \\
           & FPR     & $0.021\,{\pm}\,0.005$ & $0.022\,{\pm}\,0.005$ & $0.023\,{\pm}\,0.005$ & $0.034\,{\pm}\,0.012$ & $0.035\,{\pm}\,0.008$ \\
           & ROC-AUC & $0.982\,{\pm}\,0.005$ & $0.981\,{\pm}\,0.005$ & $0.982\,{\pm}\,0.004$ & $0.973\,{\pm}\,0.009$ & $0.970\,{\pm}\,0.009$ \\
           & AP      & $0.876\,{\pm}\,0.038$ & $0.865\,{\pm}\,0.034$ & $0.871\,{\pm}\,0.031$ & $0.799\,{\pm}\,0.056$ & $0.792\,{\pm}\,0.055$ \\
-\hline
+\midrule
 Only      & F1      & $0.017\,{\pm}\,0.011$ & $0.015\,{\pm}\,0.010$ & $0.018\,{\pm}\,0.012$ & $0.024\,{\pm}\,0.013$ & $0.025\,{\pm}\,0.011$ \\
 background & Recall & $0.123\,{\pm}\,0.084$ & $0.093\,{\pm}\,0.067$ & $0.117\,{\pm}\,0.080$ & $0.176\,{\pm}\,0.094$ & $0.120\,{\pm}\,0.073$ \\
           & FPR     & $0.123\,{\pm}\,0.084$ & $0.098\,{\pm}\,0.069$ & $0.109\,{\pm}\,0.075$ & $0.180\,{\pm}\,0.096$ & $0.137\,{\pm}\,0.085$ \\
           & ROC-AUC & $0.495\,{\pm}\,0.018$ & $0.479\,{\pm}\,0.011$ & $0.460\,{\pm}\,0.016$ & $0.440\,{\pm}\,0.016$ & $0.444\,{\pm}\,0.019$ \\
-\hline
+\midrule
 Only      & F1      & $0.801\,{\pm}\,0.035$ & $0.791\,{\pm}\,0.039$ & $0.758\,{\pm}\,0.043$ & $0.644\,{\pm}\,0.062$ & $0.663\,{\pm}\,0.045$ \\
 workpiece & Recall  & $0.872\,{\pm}\,0.033$ & $0.856\,{\pm}\,0.044$ & $0.844\,{\pm}\,0.050$ & $0.818\,{\pm}\,0.080$ & $0.852\,{\pm}\,0.062$ \\
           & FPR     & $0.023\,{\pm}\,0.005$ & $0.023\,{\pm}\,0.005$ & $0.027\,{\pm}\,0.005$ & $0.046\,{\pm}\,0.007$ & $0.061\,{\pm}\,0.019$ \\
           & ROC-AUC & $0.983\,{\pm}\,0.005$ & $0.983\,{\pm}\,0.004$ & $0.984\,{\pm}\,0.004$ & $0.977\,{\pm}\,0.008$ & $0.984\,{\pm}\,0.005$ \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -576,7 +564,7 @@ ROC-AUC from 0.982 to 0.970 ($p = 0.035$). The decline of
 Section~\ref{sec:results-primary-table} therefore also appears in measures that do not
 depend on the threshold, although it is smaller there than in the F1.
 
-\subsubsection{The Intervention Centre Measure}
+\subsection{The Intervention Centre Measure}
 \label{sec:results-cint}
 
 On the 750 analysed crops, removing the reference square $B_r$ with the grey fill leaves
@@ -593,35 +581,34 @@ of Eq.~\eqref{eq:cint} for the three fills, next to $c$ of the heatmaps.
 
 \begin{table}[htbp]
 \centering
-\caption[Intervention centre measure and heatmap variants]{Centre measure per
-object-to-image (O2I) ratio on the 750 analysed crops, mean $\pm$ standard error (SE)
-over the 15 per-model values (SE given at 90\% and 10\%), for (top) the intervention
-centre measure $c_{\mathrm{int}}$ of Eq.~\eqref{eq:cint} with three fills, (middle)
-occlusion sensitivity with positive drops and grey fill, Gradient-weighted Class
-Activation Mapping (Grad-CAM) and its variants, and (bottom) the untrained network. The
-last column gives the paired change from 90\% to 10\% with its $p$-value.}
+\caption[Intervention centre measure and heatmap variants]{Centre measure per O2I ratio
+on the 750 analysed crops for the intervention centre measure $c_{\mathrm{int}}$ with
+three fills (top), the heatmap methods and Grad-CAM variants (middle) and the untrained
+network (bottom). Values are the mean over the 15 per-model values, with the SE at 90\%
+and 10\%, and the last column gives the paired change from 90\% to 10\% with its
+$p$-value.}
 \label{tab:intervention-c}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{lcccccc}
-\hline
-\textbf{Measure} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} & \textbf{90\%$\to$10\%; $\boldsymbol{p}$} \\
-\hline
+\toprule
+Measure & 90\% & 70\% & 50\% & 30\% &
+10\% & 90\%$\to$10\%; $\boldsymbol{p}$ \\
+\midrule
 $c_{\mathrm{int}}$, grey  & $0.858\,{\pm}\,0.048$ & 0.902 & 0.908 & 0.873 & $0.918\,{\pm}\,0.050$ & $+0.061$; 0.024 \\
 $c_{\mathrm{int}}$, black & $0.857\,{\pm}\,0.047$ & 0.836 & 0.819 & 0.808 & $0.870\,{\pm}\,0.072$ & $+0.014$; 0.88 \\
 $c_{\mathrm{int}}$, blur  & $0.624\,{\pm}\,0.053$ & 0.689 & 0.668 & 0.681 & $0.718\,{\pm}\,0.069$ & $+0.094$; 0.093 \\
-\hline
+\midrule
 Occlusion, $c_{\mathrm{occ}}$       & $0.728\,{\pm}\,0.039$ & 0.781 & 0.785 & 0.818 & $0.884\,{\pm}\,0.047$ & $+0.155$; 0.0002 \\
 Grad-CAM c4, $z_1$, $c_{\mathrm{cam}}$ & $0.737\,{\pm}\,0.040$ & 0.722 & 0.672 & 0.627 & $0.407\,{\pm}\,0.069$ & $-0.330$; 0.0009 \\
 Grad-CAM c4, $z_1 - z_0$            & $0.739\,{\pm}\,0.037$ & 0.707 & 0.653 & 0.601 & $0.400\,{\pm}\,0.068$ & $-0.340$; 0.0010 \\
 Grad-CAM c3, $z_1$                  & $0.714\,{\pm}\,0.041$ & 0.689 & 0.661 & 0.660 & $0.553\,{\pm}\,0.063$ & $-0.161$; 0.062 \\
 HiResCAM c4, $c_{\mathrm{hr}}$      & $0.822\,{\pm}\,0.035$ & 0.749 & 0.841 & 0.899 & $0.938\,{\pm}\,0.015$ & $+0.116$; 0.009 \\
 HiResCAM c3                         & $0.750\,{\pm}\,0.037$ & 0.746 & 0.841 & 0.897 & $0.943\,{\pm}\,0.017$ & $+0.193$; 0.0002 \\
-\hline
+\midrule
 Untrained, Grad-CAM                 & 0.500 & 0.500 & 0.500 & 0.500 & 0.500 & -- \\
 Untrained, HiResCAM                 & $0.577\,{\pm}\,0.004$ & 0.542 & 0.552 & 0.579 & $0.575\,{\pm}\,0.005$ & $-0.002$; 0.63 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -655,7 +642,7 @@ for dark wood (0.18) with the blur fill, while at least one other fill gives eac
 them a value of 0.95 or more. The averages over the 15 materials agree with each
 other; values of single materials are read with the fill in mind.
 
-\subsubsection{Grad-CAM Variants and the Untrained Network}
+\subsection{Grad-CAM Variants and the Untrained Network}
 \label{sec:results-camvariants}
 
 \paragraph{Target}
@@ -730,7 +717,7 @@ of gradients, which HiResCAM avoids.
 \FloatBarrier
 
 % ============================================================================
-\subsection{Robustness Checks}
+\section{Robustness Checks}
 \label{sec:results-robustness}
 
 Section~\ref{sec:results-divergence} made two observations: the Grad-CAM centre
@@ -740,7 +727,7 @@ that either observation could depend on, namely the normalisation of the occlusi
 the occluding patch, the interpolation, the treatment of flat Grad-CAM maps, and the
 match between the reference square and the bounding box.
 
-\subsubsection{Occlusion Normalisation}
+\subsection{Occlusion Normalisation}
 \label{sec:results-normalisation}
 
 This check compares the main positive-drops rule with min-max
@@ -769,7 +756,7 @@ methods at 90\% holds only with positive drops. That the min-max curve passes fr
 below Grad-CAM to above it between 50\% and 30\% is a consequence of the floor and not
 a property of the occlusion maps themselves.
 
-\subsubsection{Fill Colour}
+\subsection{Fill Colour}
 \label{sec:results-fill}
 
 A uniform patch removes little evidence from a region that already looks like the
@@ -813,7 +800,7 @@ aluminium, the black and the blurred patch give values above 0.5 at every ratio,
 The headline of Section~\ref{sec:results-divergence} does not depend on the fill,
 whereas the occlusion value of a single workpiece has to be read with the fill in mind.
 
-\subsubsection{Interpolation}
+\subsection{Interpolation}
 \label{sec:results-interpolation}
 
 The centre measure is computed on interpolated maps (Eq.~\eqref{eq:upsample}). Without
@@ -824,7 +811,7 @@ absolute change of $c$ per analysis is between 0.014 and 0.020 for occlusion and
 0.001 and 0.006 for Grad-CAM, depending on the ratio. The interpolation does not change
 the picture; Fig.~\ref{fig:resolution-display} shows its effect on one crop.
 
-\subsubsection{Flat Grad-CAM Maps}
+\subsection{Flat Grad-CAM Maps}
 \label{sec:results-degeneracy}
 
 A Grad-CAM map without a positive entry is zero everywhere and receives $c = 0.5$
@@ -851,7 +838,7 @@ no-interpolation check of Section~\ref{sec:results-interpolation}, which is comp
 floating point without that step. That check also gives 0.404 at 10\% against 0.407. No
 occlusion map is flat.
 
-\subsubsection{Crop Centring and the Reference Square}
+\subsection{Crop Centring and the Reference Square}
 \label{sec:results-centering}
 
 The centre measure assumes that the workpiece lies at the centre of the crop. This
@@ -874,35 +861,34 @@ ratio, and its small mismatch is accounted for by the reference values.
 
 \FloatBarrier
 % ============================================================================
-\subsection{Extended Training at 200 Epochs}
+\section{Extended Training at 200 Epochs}
 \label{sec:results-200epoch}
 
 All 75 models were also trained for 200 epochs, and the gain $\Delta_{t,r}$ of
 Eq.~\eqref{eq:delta-f1} compares the best validation F1 of each 200-epoch run with
 that of its own first 100 epochs (Section~\ref{sec:methodology-200epoch}).
-Tab.~\ref{tab:200epoch} summarises the results per ratio.
+Tab.~\ref{tab:200epoch} summarises the results per ratio. For the 27
+retrained models, its first row is the final model, whereas $\Delta$ comes from the
+200-epoch run, so the rows do not subtract exactly.
 
 \begin{table}[htbp]
 \centering
-\caption[200-epoch check per ratio]{Validation F1 after 100 epochs (final
-models) and best validation F1 within 200 epochs per object-to-image (O2I) ratio, mean
-over the 15 materials, with the mean gain $\Delta$. The gain $\Delta$ is taken
-within each 200-epoch run (Eq.~\eqref{eq:delta-f1}); the last row counts the
-materials whose 200-epoch run reached its best epoch within the first 100 epochs. For
-the 27 retrained models the first row is the final model, whereas $\Delta$ comes from
-the 200-epoch run, so the rows do not subtract exactly.}
+\caption[200-epoch check per ratio]{Validation F1 after 100 epochs and best validation
+F1 within 200 epochs per O2I ratio, mean over the 15 materials, with the mean gain
+$\Delta$ of Eq.~\eqref{eq:delta-f1}. The last row counts the materials whose 200-epoch
+run reached its best epoch within the first 100 epochs.}
 \label{tab:200epoch}
 \small
 \begin{tabular}{lccccc}
-\hline
-\textbf{Quantity} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} \\
-\hline
+\toprule
+Quantity & 90\% & 70\% & 50\% & 30\% &
+10\% \\
+\midrule
 Validation F1, 100 epochs & 0.854 & 0.849 & 0.855 & 0.827 & 0.794 \\
 Validation F1, 200 epochs & 0.884 & 0.879 & 0.883 & 0.864 & 0.841 \\
 $\Delta$ (within run) & $+0.027$ & $+0.038$ & $+0.028$ & $+0.037$ & $+0.047$ \\
 Best epoch $\le 100$ & 4 & 4 & 6 & 2 & 3 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -958,17 +944,17 @@ the paragraphs above.
 \begin{table}[htbp]
 \centering
 \caption[200-epoch gain for all 75 cells]{Gain $\Delta_{t,r}$ in validation F1 from 100
-to 200 epochs, taken within each 200-epoch run (Eq.~\eqref{eq:delta-f1}), per material
-and object-to-image (O2I) ratio. A dagger ($\dagger$) marks a cell whose 200-epoch run
-reached its best epoch within the first 100 epochs, so that $\Delta_{t,r} = 0$; the
-last row is the mean over the 15 materials. AG: acrylic glass.}
+to 200 epochs within each 200-epoch run (Eq.~\eqref{eq:delta-f1}), per material and O2I
+ratio. A dagger ($\dagger$) marks a cell whose run reached its best epoch within the
+first 100 epochs, so that $\Delta_{t,r} = 0$, and the last row is the mean over the 15
+materials.}
 \label{tab:200epoch-full}
 \small
 \begin{tabular}{lccccc}
-\hline
-\textbf{Material} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} \\
-\hline
+\toprule
+Material & 90\% & 70\% & 50\% & 30\% &
+10\% \\
+\midrule
 White plastic   & $+0.017$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $+0.041$ & $0.000^{\dagger}$ \\
 Aluminium       & $+0.110$ & $+0.101$ & $+0.125$ & $+0.175$ & $+0.145$ \\
 Brass           & $0.000^{\dagger}$ & $+0.120$ & $0.000^{\dagger}$ & $+0.023$ & $+0.062$ \\
@@ -984,9 +970,9 @@ Grey plastic    & $+0.064$ & $+0.088$ & $+0.022$ & $+0.059$ & $+0.106$ \\
 Black plastic   & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $0.000^{\dagger}$ & $+0.021$ \\
 Light wood      & $+0.069$ & $+0.058$ & $+0.032$ & $+0.073$ & $+0.042$ \\
 Dark wood       & $+0.026$ & $+0.005$ & $+0.048$ & $+0.018$ & $+0.048$ \\
-\hline
+\midrule
 Mean           & $+0.027$ & $+0.038$ & $+0.028$ & $+0.037$ & $+0.047$ \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 

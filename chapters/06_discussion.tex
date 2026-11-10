@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-\section{Discussion and Conclusion}
+\chapter{Discussion and Conclusion}
 \label{sec:discussion}
 
 This chapter answers the research question from the results of
@@ -7,7 +7,7 @@ Chapter~\ref{sec:results}, discusses the materials that depart from the average,
 closes with the limitations of the study, possible future work and a conclusion.
 
 % ============================================================================
-\subsection{Answering the Research Question}
+\section{Answering the Research Question}
 \label{sec:discussion-answer}
 
 The research question has two parts: at which O2I ratio the complex background of the
@@ -99,8 +99,7 @@ rises from 0.10 at 90\% to 0.79 at 10\%, and the share of channels whose weight 
 opposite sign to their gradient on the workpiece from 0.04 to 0.34
 (Section~\ref{sec:results-camvariants}). At 10\%, Grad-CAM counts the activity on the
 workpiece of about a third of the channels with the wrong sign, which lowers the map on
-the workpiece and, after the ReLU, moves its importance towards the background. This is the failure that Draelos and
-Carin~\cite{draelos2021hirescam} describe in general, that the gradient averaging of
+the workpiece and, after the ReLU, moves its importance towards the background. This is the failure that \citet{draelos2021hirescam} describe in general, that the gradient averaging of
 Grad-CAM can mark locations the model did not use, here measured as a function of the
 ratio. The untrained network gives flat Grad-CAM maps throughout, so the pattern of the
 trained models is not built into the architecture; it arises from how the trained
@@ -129,15 +128,14 @@ of the square and the resolution of a method as causes, but, as the Grad-CAM res
 shows, not causes inside the method.
 
 \paragraph{Relation to earlier work}
-The decline of the F1 without a fall to chance fits the results of Pawlowski et
-al.~\cite{pawlowski2019needles} for ratio ranges that cover those studied here
+The decline of the F1 without a fall to chance fits the results of \citet{pawlowski2019needles} for ratio ranges that cover those studied here
 (Section~\ref{sec:related-work-o2i}), whose models need more data the smaller the
-object. Xiao et al.~\cite{xiao2021noise} showed that the background can carry evidence
+object. \citet{xiao2021noise} showed that the background can carry evidence
 for a class. Here every scene was photographed with all 15 materials, so the background
 carries no information about the material by design, and the models do not use it.
 The scene overlap of the split (Section~\ref{sec:methodology-split}) did not create a
 background shortcut either: the background alone gives a ROC-AUC slightly below, not
-above, 0.5. Adebayo et al.~\cite{adebayo2018sanity} showed that heatmaps can look
+above, 0.5. \citet{adebayo2018sanity} showed that heatmaps can look
 plausible without depending on what the model learned. Their randomisation check is
 uninformative for Grad-CAM here, because the untrained network, the common starting point
 of all 75 models, gives no Grad-CAM map at all (its weighted feature maps cancel to a
@@ -147,13 +145,13 @@ still only supports, rather than proves, the reading of the direct tests. A sani
 of this kind is not enough to trust a heatmap trend.
 
 % ============================================================================
-\subsection{Material-Dependent Effects}
+\section{Material-Dependent Effects}
 \label{sec:discussion-material}
 
 \paragraph{Comparison with the 2025 study}
 The mean test F1 of each material over the five ratios (Tab.~\ref{tab:ovr-full-results})
 adds values to the comparison of Section~\ref{sec:related-work-fischertechnik} with the
-2025 study of T. Schneidereit, Gohrenz and Breuß~\cite{schneidereitYOLOv8}. Aluminium
+2025 study of \citet*{schneidereitYOLOv8}. Aluminium
 (0.492, 14th of 15) and steel (0.483, 15th), problematic there, are the two weakest
 materials here at every ratio, and brass (0.864, 6th) was hard in neither study. Red
 plastic (0.688, 12th) and red AG (0.684, 13th), both problematic there, are the weakest
@@ -223,9 +221,8 @@ removal tests were repeated for the 200-epoch models. Its false
 positives come mostly from grey plastic (54), steel (53) and white plastic (46).
 Besides the training length, the resemblance to these materials is therefore the most
 likely cause of its weakness; a reflecting surface whose appearance changes with its
-surroundings, a loose analogue of the texture bias of Geirhos et
-al.~\cite{geirhos2019texture}, whose networks were trained on far more varied data, may
-add to it. Following the caveat of Le et al.~\cite{le2025shortcut} on under-learned
+surroundings, a loose analogue of the texture bias of \citet{geirhos2019texture}, whose networks were trained on far more varied data, may
+add to it. Following the caveat of \citet{le2025shortcut} on under-learned
 models, more training rather than a steered explanation is the more promising remedy
 (Section~\ref{sec:discussion-future}).
 
@@ -240,8 +237,7 @@ rises, and blue AG has the largest Grad-CAM fall (0.827) with almost no loss of 
 the direct tests, this is no longer a puzzle: the Grad-CAM fall of blue AG is not a move
 of its evidence, since its intervention centre measure is 0.98 to 1.00 with the grey
 fill at every ratio. Which materials suffer most at low ratios depends on their
-look-alikes and on how much the background interferes, consistent with Adhikari et
-al.~\cite{adhikari2024lostincontext}, who find that object size alone does not predict
+look-alikes and on how much the background interferes, consistent with \citet{adhikari2024lostincontext}, who find that object size alone does not predict
 how much a model relies on context.
 
 \paragraph{Reliability of Grad-CAM by material}
@@ -252,7 +248,7 @@ For these materials HiResCAM gives non-flat maps that favour the workpiece (yell
 models.
 
 % ============================================================================
-\subsection{Limitations}
+\section{Limitations}
 \label{sec:discussion-limitations}
 
 \paragraph{Data}
@@ -317,14 +313,14 @@ workpiece if the background carried information about the material, as in many
 industrial settings, cannot be tested with this dataset.
 
 % ============================================================================
-\subsection{Future Work}
+\section{Future Work}
 \label{sec:discussion-future}
 
 \paragraph{A third explainability method}
-Layer-wise relevance propagation (LRP)~\cite{bach2015lrp} could be added as a method
+Layer-wise relevance propagation (LRP) \citep{bach2015lrp} could be added as a method
 from the family not covered here (Section~\ref{sec:methodology-explainability}). Its
 propagation rules would have to be fixed for every layer before the comparison, so that
-it does not gain a further set of free choices~\cite{montavon2019lrp}. LRP would also
+it does not gain a further set of free choices \citep{montavon2019lrp}. LRP would also
 bring the explanations closer to the heatmaps of the 2025 study, although those explain
 a detector rather than a binary classifier. Like Grad-CAM, it should be checked against
 the direct tests of Section~\ref{sec:methodology-intervention}.
@@ -339,17 +335,17 @@ measure comes from one patch covering a large part of the workpiece at low ratio
 The ratios studied end at 10\%. Ratios of 5\% and below, and a dataset in which the
 background carries information about the material, e.g., one workpiece type per station,
 would show whether and where a background can take over the decision of such models.
-Background swaps in the spirit of Xiao et al.~\cite{xiao2021noise}, which replace the
+Background swaps in the spirit of \citet{xiao2021noise}, which replace the
 background of a crop by that of another photograph, would complement the fills used
 here. Background suppression during training in the style of
-ISNet~\cite{bassi2024isnet}, which here could only use box-shaped approximations of its
+ISNet \citep{bassi2024isnet}, which here could only use box-shaped approximations of its
 masks (Section~\ref{sec:related-work-mitigation}), is not needed for the present models,
 whose decision already rests on the workpiece; it would become relevant for such a
 dataset.
 
 \paragraph{Separating ratio and scale}
 Feeding the crops at native size, so that the workpiece keeps its pixel size on a
-growing canvas as in the nMNIST data of Pawlowski et al.~\cite{pawlowski2019needles},
+growing canvas as in the nMNIST data of \citet{pawlowski2019needles},
 would separate the share of background from the scale of the workpiece. The adaptive
 average pooling of the network allows this without a change of architecture (Section~\ref{sec:methodology-crops}).
 
@@ -361,7 +357,7 @@ workpieces per material would show whether the results carry over beyond the 15 
 photographed here.
 
 % ============================================================================
-\subsection{Conclusion}
+\section{Conclusion}
 \label{sec:discussion-conclusion}
 
 This thesis asked at which O2I ratio the complex background of the Fischertechnik

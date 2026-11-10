@@ -1,0 +1,114 @@
+% ---------------- NOTATION ----------------
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Notation}
+\markboth{Notation}{Notation}
+\thispagestyle{plain}
+\vspace*{1.5cm}
+{\noindent\Huge\bfseries Notation\par}
+\vspace{.75cm}
+The symbols below are used throughout the thesis. Vectors are set in bold lower case,
+as in $\bm{\theta}$ and $\bm{g}$, and two-dimensional maps in upper case, as in $A^k$,
+$D$ and $G$. Where a letter has two uses, both are listed; the context and the
+subscript tell them apart.
+\vspace{0.4cm}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{longtable}{@{}p{0.22\textwidth}p{0.74\textwidth}@{}}
+\toprule
+Symbol & Description \\
+\midrule
+\endfirsthead
+\toprule
+Symbol & Description \\
+\midrule
+\endhead
+$r$ & Object-to-image (O2I) ratio, in percent \\
+$A_{\mathrm{obj}}, A_{\mathrm{img}}$ & Area of the object and of the image, in pixels \\
+$s_{\mathrm{obj}}, s_{\mathrm{img}}$ & Side of a square object and of a square image, in pixels \\
+$\mathcal{R}$ & Set of the five ratios $\{90, 70, 50, 30, 10\}$ \\
+$\tilde{x}, \tilde{y}, \tilde{w}, \tilde{h}$ & Normalised box centre, width and height from the label file \\
+$x_b, y_b, w_b, h_b$ & Box centre, width and height in the photograph, in pixels \\
+$s_r$ & Side of the crop at ratio $r$ before rounding, in pixels \\
+$x^{\pm}, y^{\pm}$ & Bounds of the crop window, in pixels \\
+$\gamma$ & Aspect ratio $w_b/h_b$ of the box \\
+$\mathcal{M}$ & Set of the 15 materials \\
+$t$ & Target material of a one-vs-rest model, $t \in \mathcal{M}$ \\
+$y$ & Binary label of a crop, 1 for the target material \\
+$I$ & Input crop \\
+$X$ & Input of a convolutional layer, $C \times N \times N$ \\
+$C, K$ & Number of input channels and of kernels of a layer \\
+$N$ & Side of an input or feature map, in cells \\
+$W^k, b^k$ & Kernel $k$ and its bias \\
+$Y^k$ & Output of kernel $k$ \\
+$(u, v)$ & Row and column of a map cell or of a pixel \\
+$A^k$ & Feature map $k$ after the ReLU \\
+$M^k$ & Feature map $k$ after max pooling \\
+$\bm{g} = (g_1, g_2)$ & Global averages of the two channels of the toy network \\
+$z_0, z_1$ & Logits of the negative and the positive class \\
+$z$ & Logit of the target class, explained by the heatmaps \\
+$p_j$ & Softmax probability of class $j \in \{0, 1\}$ \\
+$\hat{y}$ & Predicted label, 1 if $z_1 > z_0$ \\
+$\ell$ & Cross-entropy loss of one crop \\
+$L$ & Loss of a batch, weighted in Eq.~\eqref{eq:weighted-ce} \\
+$\bm{\theta}$ & Vector of all parameters of the network \\
+$\eta$ & Learning rate \\
+$\delta_{uv}$ & 1 for the cell that max pooling passes on, 0 otherwise (toy) \\
+$w_0, w_1$ & Class weights of the loss \\
+$n^+, n^-$ & Numbers of positive and negative crops in a training set \\
+$\mathcal{S}$ & Batch of training crops with their labels \\
+TP, FP, FN & Numbers of true positives, false positives and false negatives \\
+$P, R, F_1$ & Precision, recall and F1 \\
+$I^+, I^-$ & A positive and a negative crop drawn at random \\
+$N^+, N^-$ & Numbers of positive and negative crops in a split \\
+$F_{1,E}^{\mathrm{val}}(t, r)$ & Highest validation F1 within the first $E$ epochs of a 200-epoch run \\
+$\Delta_{t,r}$ & Gain in validation F1 from 100 to 200 epochs \\
+$n$ & Number of occlusion patch positions per axis \\
+$\Omega_{ij}$ & Pixels covered by the occlusion patch at position $(i, j)$ \\
+$I^{(ij)}$ & Crop $I$ with the patch at position $(i, j)$ filled \\
+$D, D_{ij}$ & Occlusion map: drop of the logit $z$ per patch position \\
+$D^+$ & Positive part of $D$ \\
+$U, V$ & Number of rows and columns of a feature map \\
+$\alpha_k$ & Grad-CAM weight of channel $k$, its mean gradient \\
+$G$ & Grad-CAM map \\
+$G^{\mathrm{HR}}$ & HiResCAM map \\
+$\hat{H}^{\mathrm{pos}}, \hat{H}^{\mathrm{cam}}, \hat{H}^{\mathrm{mm}}$ & Normalised occlusion (positive drops), Grad-CAM and min-max occlusion map \\
+$\varepsilon$ & Small constant, $10^{-8}$, that prevents a division by zero \\
+$\mathcal{U}$ & Bilinear resizing to $256 \times 256$ pixels \\
+$H$ & Normalised map after resizing, $256 \times 256$ \\
+$H^{\mathrm{blk}}$ & Occlusion block map without interpolation \\
+$\mathcal{C}_{uv}$ & Patch positions that cover pixel $(u, v)$ \\
+$s^{B}_{r}$ & Side of the reference square before rounding, in pixels \\
+$B_r$ & Reference square at ratio $r$, centred in the input \\
+$a_r, b_r$ & Integer bounds of $B_r$, in pixels \\
+$|B_r|$ & Number of pixels in $B_r$ \\
+$\bar{B}_r$ & Pixels outside $B_r$ \\
+$m_{\mathrm{in}}, m_{\mathrm{out}}$ & Mean importance per pixel inside and outside $B_r$ \\
+$c$ & Centre measure; 0.5 means no preference \\
+$c_{\mathrm{occ}}, c_{\mathrm{cam}}$ & $c$ of positive-drops occlusion and of Grad-CAM \\
+$\lambda, \kappa$ & Positive scale factor and additive constant \\
+$\rho$ & Area fraction $|B_r|/256^2$ of the square \\
+$f$ & Share of the bounding box that lies inside $B_r$ \\
+$c_{\mathrm{box}}$ & $c$ of a map that is uniform on the bounding box \\
+$\chi, \chi_{uv}$ & Indicator of the bounding box in the input \\
+$\bar{\chi}^{\,\mathrm{occ}}, \bar{\chi}^{\,\mathrm{cam}}$ & Share of each occlusion patch or Grad-CAM cell covered by the box \\
+$c^{\mathrm{ref}}_{\mathrm{occ}}, c^{\mathrm{ref}}_{\mathrm{cam}}$ & Reference values of $c$ at the resolution of each method \\
+$I^{[B_r]}, I^{[\bar{B}_r]}$ & Crop with the square or its outside filled \\
+$\Delta_{\mathrm{in}}, \Delta_{\mathrm{out}}$ & Drop of $z_1$ when the square or its outside is removed \\
+$c_{\mathrm{int}}$ & Intervention centre measure \\
+$c_{\mathrm{hr}}$ & Centre measure of the HiResCAM map \\
+$B'_r$ & Cells of the $32 \times 32$ Grad-CAM map whose centre lies in $B_r$ \\
+$\bar{g}^{\,\mathrm{in}}_k, \bar{g}^{\,\mathrm{out}}_k$ & Mean gradient of channel $k$ inside and outside $B'_r$ (not the $g$ of the toy) \\
+$\phi_{t,r}$ & One value per model, for material $t$ and ratio $r$ \\
+$\bar{\phi}_{\cdot r}, \bar{\phi}_{t\cdot}$ & Mean over the materials at ratio $r$; mean of material $t$ over the ratios \\
+$\mathrm{SE}_r, \hat{\sigma}_r$ & Standard error and sample standard deviation over the 15 models \\
+$\psi_t$ & Slope of material $t$ over the ratios, per 10 points \\
+$\mathcal{R}', \bar{r}$ & Set of ratios used for a slope and its mean \\
+$d_t, \bar{d}$ & Paired difference of material $t$ and its mean over the materials \\
+$t$ & Student's $t$ statistic, written $t(14)$ with its 14 degrees of freedom \\
+\bottomrule
+\end{longtable}
+\endgroup

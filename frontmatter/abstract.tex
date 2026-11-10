@@ -1,0 +1,66 @@
+% --------------- ABSTRACT ---------------
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Convolutional neural networks (CNNs) for automated visual inspection in Industry~4.0 can
+base their decisions on the background instead of the workpiece. In the reviewed
+literature, studies that vary the share of background use at most one saliency method,
+and none compares explainability methods against a complex industrial background as that
+share grows. This thesis makes that comparison on 15 cylindrical workpieces of different
+materials and colours, one physical piece each, photographed in the Fischertechnik
+Industry~4.0 learning factory. Crops at five object-to-image (O2I) ratios from 90\% to
+10\% were classified by 75 one-vs-rest CNNs trained from scratch. Occlusion sensitivity
+and Gradient-weighted Class Activation Mapping (Grad-CAM) were compared through a
+per-pixel centre measure and checked against direct tests that remove the workpiece or
+the background. As the ratio falls, the mean test F1 drops from 0.813 to 0.720, mostly
+below 50\%, but the background does not take over the decision at any ratio: without
+the workpiece the models cannot tell the materials apart, without the background they
+rank the crops as well as before, and the centre measure obtained by removal stays well
+above the no-preference level of 0.5. The errors are mostly confusions between
+look-alike workpieces, above all aluminium, steel and grey plastic. The two methods
+disagree. On average over the materials, occlusion sensitivity agrees with the direct
+tests. The Grad-CAM centre
+measure falls from 0.737 to 0.407, a shift that the tests do not confirm; it arises from
+the averaging of gradients in Grad-CAM, and HiResCAM, which avoids it, agrees with
+occlusion. A trend in a heatmap should therefore be checked by intervening on the input
+before it is read as a property of the model.
+
+\vspace{1cm}
+\noindent\textbf{Keywords:} material classification, object-to-image ratio, complex background,
+occlusion sensitivity, Grad-CAM, explainability, learning factory
+
+% --------------- ZUSAMMENFASSUNG (German abstract) ---------------
+\chapter*{Zusammenfassung}
+\addcontentsline{toc}{chapter}{Zusammenfassung}
+
+\begin{otherlanguage}{ngerman}
+Convolutional Neural Networks (CNNs) für die automatisierte Sichtprüfung in der
+Industrie~4.0 können ihre Entscheidungen auf den Hintergrund statt auf das Werkstück
+stützen. In der gesichteten Literatur wird bei variiertem Hintergrundanteil höchstens
+eine Saliency-Methode eingesetzt, und es liegt kein Vergleich von
+Erklärbarkeitsmethoden vor einem komplexen industriellen Hintergrund bei wachsendem
+Anteil vor. Diese Arbeit vergleicht zwei solche Methoden an 15 zylindrischen Werkstücken
+unterschiedlicher Materialien und Farben, je ein physisches Exemplar, die in der
+Fischertechnik-Industrie-4.0-Lernfabrik aufgenommen wurden. Ausschnitte mit fünf
+Objekt-Bild-Verhältnissen (object-to-image, O2I) von 90\,\% bis 10\,\% wurden mit 75 von
+Grund auf trainierten One-vs-Rest-CNNs klassifiziert. Okklusionssensitivität und
+Gradient-weighted Class Activation Mapping (Grad-CAM) wurden über ein pixelbezogenes
+Zentrumsmaß verglichen und mit direkten Tests überprüft, bei denen das Werkstück oder
+der Hintergrund entfernt wird. Mit sinkendem Verhältnis fällt der mittlere
+Test-F1-Wert von 0,813 auf 0,720, größtenteils unterhalb von 50\,\%, doch bei keinem
+Verhältnis übernimmt der Hintergrund die Entscheidung: Ohne das Werkstück können die
+Modelle die Materialien nicht mehr unterscheiden, ohne den Hintergrund ordnen sie die
+Ausschnitte so gut wie zuvor, und das durch Entfernen gewonnene Zentrumsmaß bleibt
+deutlich über dem neutralen Wert 0,5. Die Fehler sind überwiegend Verwechslungen
+ähnlich aussehender Werkstücke, vor allem von Aluminium, Stahl und grauem Kunststoff.
+Die beiden Methoden widersprechen sich. Im Mittel über die Materialien stimmt die
+Okklusionssensitivität mit den direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
+Verschiebung, die die Tests nicht bestätigen; sie entsteht durch die Mittelung der
+Gradienten in Grad-CAM, und HiResCAM, das diese Mittelung vermeidet, stimmt mit der
+Okklusion überein. Ein Trend in einer Heatmap sollte daher durch einen Eingriff in die
+Eingabe geprüft werden, bevor er als Eigenschaft des Modells gelesen wird.
+
+\vspace{1cm}
+\noindent\textbf{Schlagwörter:} Materialklassifikation, Objekt-Bild-Verhältnis, komplexer
+Hintergrund, Okklusionssensitivität, Grad-CAM, Erklärbarkeit, Lernfabrik
+\end{otherlanguage}
