@@ -675,18 +675,18 @@ $r/100 \cdot 256^2$ pixels in the input, except for the boxes that the crop cuts
 the same area. Its side is
 
 \begin{equation}
-\ell_r = \sqrt{\frac{r}{100}} \cdot 256,
+s^{B}_{r} = \sqrt{\frac{r}{100}} \cdot 256,
 \label{eq:box-side}
 \end{equation}
 
-where $\ell_r$ is in pixels and $r$ is the O2I ratio in percent, as in
+where $s^{B}_{r}$ is in pixels and $r$ is the O2I ratio in percent, as in
 Eq.~\eqref{eq:crop-side}. On the pixel grid the square is
 
 \begin{equation}
 \begin{aligned}
 B_r &= \{(u, v) : a_r \le u < b_r,\ a_r \le v < b_r\},\\
-a_r &= \operatorname{round}\!\big(128 - \tfrac{\ell_r}{2}\big), \qquad
-b_r = \operatorname{round}\!\big(128 + \tfrac{\ell_r}{2}\big),
+a_r &= \operatorname{round}\!\big(128 - \tfrac{s^{B}_{r}}{2}\big), \qquad
+b_r = \operatorname{round}\!\big(128 + \tfrac{s^{B}_{r}}{2}\big),
 \end{aligned}
 \label{eq:box-bounds}
 \end{equation}
@@ -704,7 +704,7 @@ between the square and the image border.}
 \label{tab:reference-square}
 \begin{tabular}{lrrrrr}
 \hline
-\textbf{O2I} & $\boldsymbol{\ell_r}$ \textbf{(px)} & \textbf{Side (px)} &
+\textbf{O2I} & $\boldsymbol{s^{B}_{r}}$ \textbf{(px)} & \textbf{Side (px)} &
 $\boldsymbol{|B_r|}$ \textbf{(px\textsuperscript{2})} & \textbf{Area} &
 \textbf{Margin (px)} \\
 \hline
