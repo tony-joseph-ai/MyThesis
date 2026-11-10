@@ -223,7 +223,7 @@ Section~\ref{sec:methodology-intervention} score the test split again with the s
 fixed models; no setting was chosen from them.
 
 % ============================================================================
-\subsection{Experimental Design: One-vs-Rest Binary Classification}
+\subsection{One-vs-Rest Binary Classification}
 \label{sec:methodology-ovr}
 
 \paragraph{Preliminary design}
@@ -476,8 +476,10 @@ evidence for a material that is not shown. For each model, 10 crops were drawn w
 replacement from the at most 25 validation crops of its target material at its ratio
 (Tab.~\ref{tab:crop-counts}). The number 10 is a practical choice, fixed when the
 analysis script was first run: one occlusion map needs 226 forward passes, and using
-all validation crops of the target material would have cost about 2.4 times as much,
-which would also have been feasible.
+all validation crops of the target material would have cost about 2.4 times as much.
+The crops are drawn separately for each model, so the crops of one ratio are not the
+same photographs as those of another. The removal tests on the test split
+(Section~\ref{sec:methodology-removal}) use every test crop instead.
 The analysed crops are therefore a subset, which is one reason why the model rather
 than the crop is the unit of analysis (Section~\ref{sec:methodology-aggregation}). All
 draws come from one random stream with seed 42, shared by the 75 models, which were
@@ -814,7 +816,8 @@ gives $c = 0.874$, and by Eq.~\eqref{eq:odds} a pixel inside the square carries 
 about 6.9 times the importance of a pixel outside it. Under min-max scaling
 (Eq.~\eqref{eq:norm-minmax}), every patch with a zero drop of the same map would receive
 $0.082 / (1.111 + 0.082) = 0.07$, and $c$ falls to 0.756, i.e., about 3.1 times. This is
-the pull towards 0.5 of the paragraph \emph{Normalisation}. The Grad-CAM map of the same
+the pull towards 0.5 of the paragraph \emph{Normalisation} and of
+Eq.~\eqref{eq:c-invariance}. The Grad-CAM map of the same
 crop gives $c = 0.823$, about 4.65 times. For positive-drops occlusion, the share of the
 summed map inside the square would be 0.94, but a flat map would already reach 0.70,
 the area of the square, while its $c$ is 0.5 at every ratio.
@@ -1023,6 +1026,18 @@ computed with each of the three fills and, as a check, with the margin $z_1 - z_
 place of $z_1$. For each version, the share of the target's crops that the model still
 calls positive is also recorded.
 
+For the black-plastic model at 10\% and photograph 2024-04-15-095336 of
+Fig.~\ref{fig:same-black}, $z_1 = 3.930$ for the crop. With $B_{10}$ filled with grey,
+$z_1$ falls to $-4.884$, so $\Delta_{\mathrm{in}} = 8.814$; with its outside filled,
+$z_1$ rises to 4.225, so $\Delta_{\mathrm{out}} = 0$ and $c_{\mathrm{int}} = 1$. For
+photograph 2024-04-29-094549 of the same model, the three values are 5.583, $-4.038$ and
+4.347, so $\Delta_{\mathrm{in}} = 9.621$ and $\Delta_{\mathrm{out}} = 1.236$. With
+$|B_{10}| = 6{,}400$ pixels and 59,136 pixels outside it
+(Tab.~\ref{tab:reference-square}), the effects per pixel are $9.621/6{,}400 = 1.50
+\cdot 10^{-3}$ and $1.236/59{,}136 = 2.09 \cdot 10^{-5}$, and Eq.~\eqref{eq:cint} gives
+$c_{\mathrm{int}} = 0.986$. Per pixel, the square matters about 72 times as much as its
+outside; in total, about 7.8 times.
+
 \paragraph{Variants of Grad-CAM}
 \label{sec:methodology-camvariants}
 Grad-CAM was recomputed on the same 750 crops in three variants. The first uses the
@@ -1046,7 +1061,18 @@ at every cell and $G^{\mathrm{HR}}$ equals the Grad-CAM map $G$, which was confi
 the implementation on a test head. In the network of
 Tab.~\ref{tab:cnn-architecture}, the $4 \times 4$ adaptive pooling and fc1 give each of
 16 regions of the map its own weights, so the gradient varies across the map and the two
-maps differ. Draelos and Carin prove that HiResCAM shows only locations that the model
+maps differ. A small example shows how. Let one feature map have the value 1 at one
+workpiece cell and at one background cell, as the dark detector of the toy fires on the
+workpiece and on the dark factory parts (Section~\ref{sec:background-cnn}), and let the
+layers after it give $z = 2\,A_{\mathrm{wp}} - A_{\mathrm{bg}}$, where $A_{\mathrm{wp}}$
+and $A_{\mathrm{bg}}$ are the values at the two cells: the feature raises the logit on
+the workpiece and lowers it in the background. Grad-CAM weights the map with the mean
+gradient, $(2 - 1)/2 = 0.5$, and gives both cells 0.5, i.e., no preference. HiResCAM
+gives $2$ and $-1$, and after the ReLU 2 and 0, i.e., all importance on the workpiece.
+With three background cells instead of one, the mean gradient becomes
+$(2 - 3)/4 = -0.25$: Grad-CAM now counts the feature on the workpiece with the wrong
+sign, while HiResCAM still gives 2 there. This is the effect that
+Eq.~\eqref{eq:weight-split} measures as the ratio falls. Draelos and Carin prove that HiResCAM shows only locations that the model
 used for networks that end in one fully connected layer~\cite{draelos2021hirescam}.
 This network ends in two (fc1 and fc2, with a ReLU between them), so the guarantee does
 not hold here, and HiResCAM is used as a second gradient method rather than as ground
@@ -1145,7 +1171,9 @@ Each comparison is a two-sided one-sample Student's $t$ test on 15 per-model val
 with 14 degrees of freedom \cite{student1908probable, virtanen2020scipy}: a mean difference
 or slope $\bar{d}$ is tested against 0 with $t = \bar{d}/\mathrm{SE}$
 (Eq.~\eqref{eq:ratio-se}), and a mean $\bar{c}$ against 0.5 with
-$t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests were computed with SciPy 1.18.1
+$t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests treat the 15 materials as units; they
+describe how consistent a result is across these materials, not a population of
+materials from which they were drawn. The tests were computed with SciPy 1.18.1
 under Python 3.13, outside the training environment of Tab.~\ref{tab:training-config}.
 Writing $c_{\mathrm{occ}}$ for $c$ of
 positive-drops occlusion and $c_{\mathrm{cam}}$ for $c$ of Grad-CAM, the comparisons
@@ -1171,7 +1199,7 @@ therefore not read as confirmatory evidence. As a working threshold, a result is
 clear only if $p < 0.01$; a value
 between 0.01 and 0.1 is reported with its numbers but not read as evidence on its own.
 With a threshold of 0.05 instead, neither answer to the research question would change;
-only some of the secondary comparisons and checks would. A Holm correction over the five
+only some of the secondary comparisons and checks would. A Holm correction~\cite{holm1979simple} over the five
 comparisons of Section~\ref{sec:results-divergence} that bear on the research question,
 namely the paired changes from 90\% to 10\% of the test F1, of $c_{\mathrm{cam}}$ and of
 $c_{\mathrm{occ}}$, the method difference at 10\% and $c_{\mathrm{cam}}$ against 0.5
@@ -1184,6 +1212,23 @@ them as independent. The SE also contains no variation between training runs, be
 each cell is a single run with a single seed, unlike, e.g., the six seeds per setting
 of Pawlowski et al.~\cite{pawlowski2019needles}. Small differences between neighbouring
 ratios are therefore not interpreted.
+
+\paragraph{Order of the analysis}
+Several parts of the analysis were added after earlier results had been seen; each is
+stated where it is introduced and collected here. Fixed in the original pipeline, before
+the first results, were the five ratios and the crop rule
+(Section~\ref{sec:methodology-crops}), the split, the architecture, the training
+settings, the seed and the selection by validation F1
+(Sections~\ref{sec:methodology-ovr} and~\ref{sec:methodology-training}), the grey
+$32 \times 32$ occlusion patch with stride 16, Grad-CAM on c4, the 10 crops per model
+and the centre measure $c$ with min-max scaling
+(Sections~\ref{sec:methodology-explainability} and~\ref{sec:methodology-reduction}).
+Added afterwards were the positive-drops normalisation, the reference values, the black
+and blur fills, the comparisons of this section, the 200-epoch runs and the direct
+tests and Grad-CAM variants of Section~\ref{sec:methodology-intervention}. The removal
+tests on the test split, which answer the first part of the research question, involve
+no setting chosen from results: they score the fixed models on every test crop, with the
+bounding box from the labels and the grey fill of the original occlusion.
 
 \paragraph{Link to the research question}
 \label{sec:methodology-rq}

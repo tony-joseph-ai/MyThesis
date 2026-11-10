@@ -76,33 +76,34 @@ degrades as the workpiece takes up less of the crop.
 per material and object-to-image (O2I) ratio, with the checkpoint of the highest
 validation F1 after 100 epochs. The last three rows give the mean over the 15
 materials, its standard error (SE) and the mean test ROC-AUC (receiver operating
-characteristic area under the curve). AG: acrylic glass.}
+characteristic area under the curve). The last column gives the mean of each material
+over the five ratios, formed from unrounded values. AG: acrylic glass.}
 \label{tab:ovr-full-results}
 \small
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \hline
 \textbf{Material} & \textbf{90\%} & \textbf{70\%} & \textbf{50\%} & \textbf{30\%} &
-\textbf{10\%} \\
+\textbf{10\%} & \textbf{Mean} \\
 \hline
-White plastic  & 0.941 & 0.902 & 0.863 & 0.807 & 0.875 \\
-Aluminium      & 0.613 & 0.625 & 0.508 & 0.327 & 0.389 \\
-Brass          & 0.906 & 0.868 & 0.836 & 0.939 & 0.772 \\
-Steel          & 0.516 & 0.523 & 0.557 & 0.531 & 0.286 \\
-Orange AG      & 0.889 & 0.793 & 0.807 & 0.727 & 0.756 \\
-Yellow AG      & 0.857 & 0.885 & 0.852 & 0.780 & 0.692 \\
-Blue AG        & 0.941 & 0.926 & 0.943 & 0.962 & 0.913 \\
-Red AG         & 0.717 & 0.679 & 0.741 & 0.642 & 0.644 \\
-Red plastic    & 0.727 & 0.655 & 0.698 & 0.712 & 0.645 \\
-Blue plastic   & 0.920 & 0.941 & 0.902 & 0.923 & 0.821 \\
-Yellow plastic & 0.902 & 0.913 & 0.936 & 0.909 & 0.889 \\
-Grey plastic   & 0.766 & 0.745 & 0.696 & 0.739 & 0.642 \\
-Black plastic  & 0.962 & 0.962 & 0.960 & 0.960 & 0.936 \\
-Light wood     & 0.741 & 0.756 & 0.833 & 0.741 & 0.727 \\
-Dark wood      & 0.800 & 0.814 & 0.806 & 0.830 & 0.816 \\
+White plastic  & 0.941 & 0.902 & 0.863 & 0.807 & 0.875 & 0.878 \\
+Aluminium      & 0.613 & 0.625 & 0.508 & 0.327 & 0.389 & 0.492 \\
+Brass          & 0.906 & 0.868 & 0.836 & 0.939 & 0.772 & 0.864 \\
+Steel          & 0.516 & 0.523 & 0.557 & 0.531 & 0.286 & 0.483 \\
+Orange AG      & 0.889 & 0.793 & 0.807 & 0.727 & 0.756 & 0.794 \\
+Yellow AG      & 0.857 & 0.885 & 0.852 & 0.780 & 0.692 & 0.813 \\
+Blue AG        & 0.941 & 0.926 & 0.943 & 0.962 & 0.913 & 0.937 \\
+Red AG         & 0.717 & 0.679 & 0.741 & 0.642 & 0.644 & 0.684 \\
+Red plastic    & 0.727 & 0.655 & 0.698 & 0.712 & 0.645 & 0.688 \\
+Blue plastic   & 0.920 & 0.941 & 0.902 & 0.923 & 0.821 & 0.901 \\
+Yellow plastic & 0.902 & 0.913 & 0.936 & 0.909 & 0.889 & 0.910 \\
+Grey plastic   & 0.766 & 0.745 & 0.696 & 0.739 & 0.642 & 0.717 \\
+Black plastic  & 0.962 & 0.962 & 0.960 & 0.960 & 0.936 & 0.956 \\
+Light wood     & 0.741 & 0.756 & 0.833 & 0.741 & 0.727 & 0.760 \\
+Dark wood      & 0.800 & 0.814 & 0.806 & 0.830 & 0.816 & 0.813 \\
 \hline
-Mean          & 0.813 & 0.799 & 0.796 & 0.769 & 0.720 \\
-SE            & 0.034 & 0.034 & 0.035 & 0.045 & 0.048 \\
-Mean ROC-AUC  & 0.982 & 0.981 & 0.982 & 0.973 & 0.970 \\
+Mean          & 0.813 & 0.799 & 0.796 & 0.769 & 0.720 & 0.779 \\
+SE            & 0.034 & 0.034 & 0.035 & 0.045 & 0.048 & -- \\
+Mean ROC-AUC  & 0.982 & 0.981 & 0.982 & 0.973 & 0.970 & -- \\
 \hline
 \end{tabular}
 \end{table}
@@ -409,7 +410,8 @@ each crop explained by the black-plastic model of its ratio. (Top) crop with the
 reference square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey
 fill; (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles
 give the probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
+interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
+(the maximum of each map).}
 \label{fig:same-black}
 \end{figure}
 
@@ -441,7 +443,8 @@ explained by the steel model of its ratio. (Top) crop with the reference square 
 (dashed); (middle) occlusion sensitivity, positive drops, grey fill; (bottom)
 Gradient-weighted Class Activation Mapping (Grad-CAM). The panel titles give the
 probability $p_1$ of the positive class and the centre measure $c$. Maps are
-interpolated for display.}
+interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
+(the maximum of each map).}
 \label{fig:same-steel}
 \end{figure}
 
@@ -470,7 +473,8 @@ crop explained by the aluminium model of its ratio. (Top) crop with the referenc
 square $B_r$ (dashed); (middle) occlusion sensitivity, positive drops, grey fill;
 (bottom) Gradient-weighted Class Activation Mapping (Grad-CAM), where ``flat map''
 marks a map that is zero everywhere. The panel titles give the probability $p_1$ of the
-positive class and the centre measure $c$. Maps are interpolated for display.}
+positive class and the centre measure $c$. Maps are interpolated for display and
+overlaid in red on a fixed scale from 0 (no colour) to 1 (the maximum of each map).}
 \label{fig:same-alu}
 \end{figure}
 
@@ -525,6 +529,8 @@ and AP the average precision.}
 \textbf{30\%} & \textbf{10\%} \\
 \hline
 Crop      & F1      & $0.813\,{\pm}\,0.034$ & $0.799\,{\pm}\,0.034$ & $0.796\,{\pm}\,0.035$ & $0.769\,{\pm}\,0.045$ & $0.720\,{\pm}\,0.048$ \\
+          & Recall  & $0.867\,{\pm}\,0.029$ & $0.859\,{\pm}\,0.029$ & $0.858\,{\pm}\,0.032$ & $0.858\,{\pm}\,0.030$ & $0.804\,{\pm}\,0.042$ \\
+          & FPR     & $0.021\,{\pm}\,0.005$ & $0.022\,{\pm}\,0.005$ & $0.023\,{\pm}\,0.005$ & $0.034\,{\pm}\,0.012$ & $0.035\,{\pm}\,0.008$ \\
           & ROC-AUC & $0.982\,{\pm}\,0.005$ & $0.981\,{\pm}\,0.005$ & $0.982\,{\pm}\,0.004$ & $0.973\,{\pm}\,0.009$ & $0.970\,{\pm}\,0.009$ \\
           & AP      & $0.876\,{\pm}\,0.038$ & $0.865\,{\pm}\,0.034$ & $0.871\,{\pm}\,0.031$ & $0.799\,{\pm}\,0.056$ & $0.792\,{\pm}\,0.055$ \\
 \hline
@@ -552,13 +558,15 @@ carries no information about the material at any ratio. Its ROC-AUC is even clea
 below 0.5 at 30\% and 10\% ($t(14) = -3.85$ and $-2.98$, $p = 0.002$ and $0.010$). One
 possible reason, not tested, is the scene overlap of Section~\ref{sec:methodology-split}:
 the scenes of a material's test crops were seen in training with other materials, as
-negatives.
+negatives. Since the bounding box covers about $r$ percent of the crop, a crop with only
+the background left is mostly grey at 90\% and holds little background there; the values
+at 30\% and 10\%, where most of the crop is background, are the informative ones.
 
 \paragraph{Only the workpiece}
 With the background filled in, the models rank the crops as well as with the background
 present. The ROC-AUC is 0.983, 0.983, 0.984, 0.977 and 0.984 from 90\% to 10\%, with no
 change from 90\% to 10\% ($+0.000 \pm 0.004$, $p = 0.92$), and on average it is at least
-as high as that of the crop itself at every ratio (by 0.002 to 0.014). The recall is 0.872 at 90\% and 0.852 at 10\%, against 0.867 and 0.804
+as high as that of the crop itself at every ratio (by up to 0.014). The recall is 0.872 at 90\% and 0.852 at 10\%, against 0.867 and 0.804
 for the crop itself. Only the F1 falls, to 0.644 at 30\% and 0.663 at 10\%, because the
 false-positive rate rises from 0.023 to 0.061: the large grey area moves the scores of
 some negative crops above the threshold, while their ranking is kept.
@@ -624,7 +632,12 @@ With the grey and the black fill, $c_{\mathrm{int}}$ lies clearly above 0.5 at e
 ratio, between 0.808 and 0.918 ($t(14)$ between 4.04 and 8.34), and below 0.5 in at most
 2 of 15 materials. At the mean value of 0.918 at 10\%, Eq.~\eqref{eq:odds} gives a ratio of about 11:
 per pixel, removing the square lowers $z_1$ about eleven times as much as removing the
-background. With the blur fill, which removes less, the values are lower, 0.624 to
+background. Taken as a whole rather than per pixel, the difference is larger still. At
+10\%, the mean $z_1$ (grey fill, model level) is 1.98 for the crops, $-6.98$ with the
+square removed and 2.29 with its outside removed. At every ratio, removing the square
+lowers the mean $z_1$ by 8.6 to 11.6 logit units, while removing the whole outside
+raises it slightly, by 0.02 to 0.31. Per crop, removing the outside lowers $z_1$ in 35
+to 49\% of the crops, depending on the ratio, and raises it in the others. With the blur fill, which removes less, the values are lower, 0.624 to
 0.718, above 0.5 at every ratio but clearly only at 10\% ($t(14) = 3.17$, $p = 0.007$).
 At no ratio and with no fill does $c_{\mathrm{int}}$ lie below 0.5 on average.
 
@@ -702,7 +715,7 @@ Removing the workpiece removes the models' ability to recognise their material a
 ratio; removing the background does not change how well they rank the crops. The
 intervention centre measure stays above 0.5 at every ratio and with every fill and does
 not fall as the workpiece shrinks. HiResCAM, which uses the same gradients as Grad-CAM
-without averaging them, rises like occlusion. The fall of the Grad-CAM centre measure is
+without averaging them, rises from 90\% to 10\%, like occlusion. The fall of the Grad-CAM centre measure is
 not found in any direct test; it arises from the averaging of gradients that differ
 between the workpiece and the background positions of the map.
 

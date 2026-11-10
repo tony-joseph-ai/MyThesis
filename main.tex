@@ -6,6 +6,7 @@
 %%%%%%%%%%
 %Spracheinstellung / language setting / replace "english" if needed
 \usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
+\babelhyphenation[ngerman]{Hin-ter-grund-an-teil} % the German patterns split this compound wrongly
 \usepackage[absolute,overlay]{textpos}
 \usepackage[giveninits=true,sorting=none,sortcites=true,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
 % Line breaks in URLs and DOIs: allowed after letters (penalty 100), but
@@ -127,7 +128,8 @@ the workpiece the models cannot tell the materials apart, without the background
 rank the crops as well as before, and the centre measure obtained by removal stays well
 above the no-preference level of 0.5. The errors are mostly confusions between
 look-alike workpieces, above all aluminium, steel and grey plastic. The two methods
-disagree. Occlusion sensitivity agrees with the direct tests. The Grad-CAM centre
+disagree. On average over the materials, occlusion sensitivity agrees with the direct
+tests. The Grad-CAM centre
 measure falls from 0.737 to 0.407, a shift that the tests do not confirm; it arises from
 the averaging of gradients in Grad-CAM, and HiResCAM, which avoids it, agrees with
 occlusion. A trend in a heatmap should therefore be checked by intervening on the input
@@ -160,8 +162,8 @@ Modelle die Materialien nicht mehr unterscheiden, ohne den Hintergrund ordnen si
 Ausschnitte so gut wie zuvor, und das durch Entfernen gewonnene Zentrumsmaß bleibt
 deutlich über dem neutralen Wert 0,5. Die Fehler sind überwiegend Verwechslungen
 ähnlich aussehender Werkstücke, vor allem von Aluminium, Stahl und grauem Kunststoff.
-Die beiden Methoden widersprechen sich. Die Okklusionssensitivität stimmt mit den
-direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
+Die beiden Methoden widersprechen sich. Im Mittel über die Materialien stimmt die
+Okklusionssensitivität mit den direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
 Verschiebung, die die Tests nicht bestätigen; sie entsteht durch die Mittelung der
 Gradienten in Grad-CAM, und HiResCAM, das diese Mittelung vermeidet, stimmt mit der
 Okklusion überein. Ein Trend in einer Heatmap sollte daher durch einen Eingriff in die
@@ -304,17 +306,23 @@ AG & Acrylic glass \\
 AP & Average precision \\
 CAM & Class activation mapping \\
 CNN & Convolutional neural network \\
+COCO & Common Objects in Context (dataset) \\
 CPU & Central processing unit \\
 CRP & Concept relevance propagation \\
+CUDA & Compute Unified Device Architecture \\
+cuDNN & CUDA Deep Neural Network library \\
 F1 & Harmonic mean of precision and recall \\
 FPR & False-positive rate \\
 GPU & Graphics processing unit \\
 Grad-CAM & Gradient-weighted class activation mapping \\
 HiResCAM & High-resolution class activation mapping \\
 IoU & Intersection over union \\
+JPEG & Joint Photographic Experts Group (image format) \\
+L-CRP & Concept relevance propagation for localisation models \\
 LRP & Layer-wise relevance propagation \\
 mAP & Mean average precision \\
 O2I & Object-to-image (ratio) \\
+PETG & Polyethylene terephthalate glycol \\
 ReLU & Rectified linear unit \\
 RGB & Red, green, blue \\
 ROC-AUC & Area under the receiver operating characteristic curve \\

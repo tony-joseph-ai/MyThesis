@@ -408,9 +408,11 @@ cross-entropy~\cite[Sec.~6.2.1.1]{goodfellow2016deep},
 \label{eq:bg-ce}
 \end{equation}
 
-where $y \in \{0, 1\}$ is the true label of the crop and $\ell \ge 0$. The loss is zero
-for probability 1 on the true class and grows without bound as that probability
-approaches zero. The batch loss $L$ is the mean of $\ell$ of
+where $y \in \{0, 1\}$ is the true label of the crop, $\log$ is the natural logarithm and
+$\ell \ge 0$. The loss is zero for probability 1 on the true class and grows without
+bound as that probability approaches zero. Both toy crops show the workpiece, so
+$y = 1$: the tight crop with $p_1 = 0.80$ has $\ell = -\log 0.80 = 0.22$, and the loose
+crop with $p_1 = 0.44$ has $\ell = -\log 0.44 = 0.82$. The batch loss $L$ is the mean of $\ell$ of
 Eq.~\eqref{eq:bg-ce} over the crops of a batch. Under a strong imbalance, the many
 negative crops would dominate this mean, so each crop's loss is multiplied by a weight
 that depends on its class and is larger for the rare positive class. The weights used
@@ -568,7 +570,7 @@ evidence lies.
 
 A heatmap, or attribution map, assigns to each region of the input a value for how much
 it contributed to a chosen output of the network, here the logit of the positive
-class. Among the main families of methods to compute such maps are three. Perturbation methods
+class. There are three main families of methods to compute such maps. Perturbation methods
 change the input and observe the output. Gradient-based methods read derivatives of the
 output inside the network. Relevance propagation passes the output backwards through the
 layers and distributes it over the input pixels, as layer-wise relevance propagation
