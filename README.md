@@ -8,7 +8,14 @@ Master Thesis, Tony Joseph, Brandenburg University of Technology Cottbus-Senften
 ## Repository layout
 
 ```
-main.tex                 Preamble, title page details, declaration, abstract, chapter list
+main.tex                 Preamble and document order
+frontmatter/
+  titlepage.tex          Title page (name, examiners, submission date)
+  declaration.tex        Declaration of authorship and use of AI tools
+  taskdescription.tex    Task description by the adviser
+  abstract.tex           Abstract and Zusammenfassung
+  abbreviations.tex      List of abbreviations
+  notation.tex           Notation (symbols)
 chapters/
   01_introduction.tex
   02_related_work.tex
@@ -18,13 +25,13 @@ chapters/
   06_discussion.tex
 figures/                 All images (\graphicspath points here)
   ch3_figures/           Figures for the Background chapter
-Sources.bib              Bibliography (biblatex + biber)
-.latexmkrc               Build settings (pdfLaTeX + biber)
+references.bib           Bibliography (natbib, plainnat, author-year)
+.latexmkrc               Build settings (pdfLaTeX + BibTeX)
 .github/workflows/       GitHub Action that builds the PDF
 ```
 
-Title-page details (name, reviewers, submission date), the abstracts and the
-generative-AI declaration are set near the top of `main.tex`.
+Title-page details, the declaration, the abstracts and the lists before Chapter 1 are
+separate files in `frontmatter/`.
 
 ## Writing workflow
 
@@ -39,7 +46,7 @@ generative-AI declaration are set near the top of `main.tex`.
 
 ## Building locally (optional)
 
-Requires a TeX distribution (TeX Live / MiKTeX) with `latexmk` and `biber`:
+Requires a TeX distribution (TeX Live / MiKTeX) with `latexmk` and `bibtex`:
 
 ```bash
 latexmk          # builds main.pdf
@@ -49,5 +56,5 @@ latexmk -c       # removes auxiliary files
 ## Tips
 
 - Add a new figure: put the file in `figures/` and use `\includegraphics{filename.png}`.
-- Add a reference: paste the BibTeX entry into `Sources.bib`, cite with `\cite{key}`.
+- Add a reference: paste the BibTeX entry into `references.bib`, cite with `\citet{key}` (in the sentence) or `\citep{key}` (in brackets).
 - Every commit is a saved version; use the file's *History* view to compare or restore drafts.
