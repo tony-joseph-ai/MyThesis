@@ -1,450 +1,106 @@
-\documentclass[12pt]{article}
-\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+% ======================================================================
+%  Master Thesis - Tony Joseph
+%  Object to Image Ratio and Occlusion Sensitivity for Material
+%  Classification in a Learning Factory
+%  BTU Cottbus-Senftenberg  |  M.Sc. Artificial Intelligence
+% ======================================================================
+\documentclass[12pt,a4paper,oneside]{report}
 
-%%%%%%%%%%
-%packages%
-%%%%%%%%%%
-%Spracheinstellung / language setting / replace "english" if needed
+% ---------- Encoding & language ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[ngerman,english]{babel} % ngerman only for the Zusammenfassung
 \babelhyphenation[ngerman]{Hin-ter-grund-an-teil} % the German patterns split this compound wrongly
-\usepackage[absolute,overlay]{textpos}
-\usepackage[giveninits=true,sorting=none,sortcites=true,style=numeric,maxbibnames=5,urldate=iso,seconds=true]{biblatex}
-% Line breaks in URLs and DOIs: allowed after letters (penalty 100), but
-% inside a number only as a last resort (9000), so a DOI is not split
-% mid-number. The bibliography is set ragged right with little stretch at
-% slashes and dots, so a loose line is not spread across a DOI's characters.
-\setcounter{biburlnumpenalty}{9000}
-\setcounter{biburlucpenalty}{100}
-\setcounter{biburllcpenalty}{100}
-\AtBeginBibliography{\raggedright\biburlbigskip=0mu plus 0.5mu\relax}
-\usepackage{csquotes}
-\addbibresource{Sources.bib}
-\usepackage{amsmath}
+
+% ---------- Page layout ----------
+\usepackage[a4paper,left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------- Math ----------
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+
+% ---------- Graphics & tables ----------
 \usepackage{graphicx}
 \graphicspath{{figures/}}
-\usepackage{hyperref}
-\hypersetup{hidelinks}
-\usepackage{setspace}
-\usepackage{amssymb}
+\usepackage{booktabs}
 \usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{placeins} % \FloatBarrier keeps floats inside their section
+
+% ---------- Colors ----------
+\usepackage[table]{xcolor}
+
+% ---------- Pseudocode ----------
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{longtable}
-\usepackage{placeins} % \FloatBarrier keeps floats inside their section
+\numberwithin{algorithm}{chapter}
+
+% ---------- Captions ----------
+\usepackage[font=small,labelfont=bf]{caption}
+
+% ---------- Lists and bibliography in the contents ----------
+\usepackage[nottoc]{tocbibind}
+
+% ---------- Links ----------
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Object to Image Ratio and Occlusion Sensitivity for Material Classification in a Learning Factory},
+  pdfauthor={Tony Joseph}}
+
+% ---------- Citations ----------
+\usepackage{natbib}
+
+% ---------- Header/footer ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14.5pt}
+
+% ---------- Float placement ----------
+% keep floatpagefraction below topfraction
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.60}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.80}
+
 \setlength{\emergencystretch}{2em}
 
-%------------Layout: floats and spacing------------%
-% Let figures and tables share pages with text instead of sitting alone on
-% half-empty pages: a page may be up to 90% floats at the top, and a page
-% holding only floats must be at least 80% full.
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.8}
-\renewcommand{\textfraction}{0.07}
-\renewcommand{\floatpagefraction}{0.8}
-\setcounter{topnumber}{3}
-\setcounter{bottomnumber}{2}
-\setcounter{totalnumber}{4}
-% Space between a float and the text above/below it, and between two stacked
-% floats: one fixed value (no stretch or shrink) so the gap above and below
-% every table and figure is the same.
-\setlength{\intextsep}{1.8\baselineskip}
-\setlength{\textfloatsep}{1.8\baselineskip}
-% A page holding only floats starts at the top instead of centring them.
-\makeatletter
-\setlength{\@fptop}{0pt}
-\setlength{\@fpbot}{0pt plus 1fil}
-\setlength{\@fpsep}{1.8\baselineskip}% same gap between floats on such pages
-\makeatother
-\setlength{\floatsep}{1.8\baselineskip}
-% Equal space above and below in-text tables/figures. By default, when a
-% table is followed by a heading, LaTeX adds the heading's space on top of the
-% table's own space, so the gap under the table was larger than above it.
-% Here, a heading that comes straight after an in-text table/figure adds no
-% extra space; the next normal paragraph resets this.
-\usepackage{etoolbox}
-\makeatletter
-\newif\if@afterintextfloat
-\patchcmd{\@addtocurcol}{\@inserttrue}{\@inserttrue\global\@afterintextfloattrue}{}
-  {\PackageWarning{main}{float spacing patch 1 failed}}
-\patchcmd{\@startsection}{\addvspace\@tempskipa}{\if@afterintextfloat\else\addvspace\@tempskipa\fi}{}
-  {\PackageWarning{main}{float spacing patch 2 failed}}
-\AddToHook{para/begin}{\global\@afterintextfloatfalse}
-\makeatother
-% Table captions are above the table: put the gap between caption and table.
-\usepackage{caption}
-\captionsetup[table]{position=top,skip=8pt}
-\captionsetup[figure]{skip=8pt}
-% Table of contents: slightly less space before each chapter so it fits on one page.
-\usepackage[titles]{tocloft}
-\setlength{\cftbeforesecskip}{0.4em}
-
-%--------------------------------------------%
-%--------EDIT CONTENTS OF THIS BLOCK---------%
-%------------Title Page Content--------------%
-%--------------------------------------------%
-
-
-%%% ENTER THE THESIS TITLE HERE%%%
-\newcommand{\TITLE}{
-Object to Image Ratio and Occlusion Sensitivity\\
-for Material Classification in a Learning Factory
-}
-%%% ENTER THE TYPE OF THESIS HERE %%%
-%%% Bachelor Thesis or Master Thesis
-\newcommand{\THESIS}{Master's Thesis}
-%%% ENTER THE THESIS TITLE IN GERMAN HERE %%%
-\newcommand{\TITLEGERMAN}{
-Objekt-Bild-Verhältnis und Okklusionssensitivität\\
-für die Materialklassifikation in einer Lernfabrik
-}
-%%% ENTER YOUR STUDY PROGRAMME HERE%%%
-\newcommand{\STUDYPROGRAMME}{M.Sc.\ Artificial Intelligence}
-%%% ENTER YOUR NAME HERE %%%
-\newcommand{\NAME}{Tony Joseph}
-%%% HIER DIE EIGENE MATRIKELNUMMER EINTRAGEN %%%
-\newcommand{\MATRICULATIONNUMBER}{5003817}
-%%% ENTER FIRST REVIEWER HERE %%%
-\newcommand{\FIRSTREVIEWER}{Dr.\ Toni Schneidereit}
-%%% ENTER SECOND REVIEWER HERE %%%
-\newcommand{\SECONDREVIEWER}{Prof.\ Dr.\ Michael Breu{\ss}}
-%%% ENTER (real) SUBMISSION DATE HERE%%%
-%%% Also printed on the declaration page ("Cottbus, <date>").
-\newcommand{\SUBMISSIONDATE}{
-% TODO(Tony): replace with the exact submission date, e.g. 25 November 2026.
-November 2026
-}
-%%% ENTER THE ABSTRACT IN ENGLISH HERE %%%
-%%% Should not exceed half a page %%%
-\newcommand{\ABSTRACT}{
-Convolutional neural networks (CNNs) for automated visual inspection in Industry~4.0 can
-base their decisions on the background instead of the workpiece. In the reviewed
-literature, studies that vary the share of background use at most one saliency method,
-and none compares explainability methods against a complex industrial background as that
-share grows. This thesis makes that comparison on 15 cylindrical workpieces of different
-materials and colours, one physical piece each, photographed in the Fischertechnik
-Industry~4.0 learning factory. Crops at five object-to-image (O2I) ratios from 90\% to
-10\% were classified by 75 one-vs-rest CNNs trained from scratch. Occlusion sensitivity
-and Gradient-weighted Class Activation Mapping (Grad-CAM) were compared through a
-per-pixel centre measure and checked against direct tests that remove the workpiece or
-the background. As the ratio falls, the mean test F1 drops from 0.813 to 0.720, mostly
-below 50\%, but the background does not take over the decision at any ratio: without
-the workpiece the models cannot tell the materials apart, without the background they
-rank the crops as well as before, and the centre measure obtained by removal stays well
-above the no-preference level of 0.5. The errors are mostly confusions between
-look-alike workpieces, above all aluminium, steel and grey plastic. The two methods
-disagree. On average over the materials, occlusion sensitivity agrees with the direct
-tests. The Grad-CAM centre
-measure falls from 0.737 to 0.407, a shift that the tests do not confirm; it arises from
-the averaging of gradients in Grad-CAM, and HiResCAM, which avoids it, agrees with
-occlusion. A trend in a heatmap should therefore be checked by intervening on the input
-before it is read as a property of the model.
-
-\medskip\noindent
-\textbf{Keywords:} material classification, object-to-image ratio, complex background,
-occlusion sensitivity, Grad-CAM, explainability, learning factory
-}
-%%% ENTER THE ABSTRACT IN GERMAN HERE %%%
-%%% Should not exceed half a page %%%
-\newcommand{\ZUSAMMENFASSUNG}{
-\begin{otherlanguage}{ngerman}
-Convolutional Neural Networks (CNNs) für die automatisierte Sichtprüfung in der
-Industrie~4.0 können ihre Entscheidungen auf den Hintergrund statt auf das Werkstück
-stützen. In der gesichteten Literatur wird bei variiertem Hintergrundanteil höchstens
-eine Saliency-Methode eingesetzt, und es liegt kein Vergleich von
-Erklärbarkeitsmethoden vor einem komplexen industriellen Hintergrund bei wachsendem
-Anteil vor. Diese Arbeit vergleicht zwei solche Methoden an 15 zylindrischen Werkstücken
-unterschiedlicher Materialien und Farben, je ein physisches Exemplar, die in der
-Fischertechnik-Industrie-4.0-Lernfabrik aufgenommen wurden. Ausschnitte mit fünf
-Objekt-Bild-Verhältnissen (object-to-image, O2I) von 90\,\% bis 10\,\% wurden mit 75 von
-Grund auf trainierten One-vs-Rest-CNNs klassifiziert. Okklusionssensitivität und
-Gradient-weighted Class Activation Mapping (Grad-CAM) wurden über ein pixelbezogenes
-Zentrumsmaß verglichen und mit direkten Tests überprüft, bei denen das Werkstück oder
-der Hintergrund entfernt wird. Mit sinkendem Verhältnis fällt der mittlere
-Test-F1-Wert von 0,813 auf 0,720, größtenteils unterhalb von 50\,\%, doch bei keinem
-Verhältnis übernimmt der Hintergrund die Entscheidung: Ohne das Werkstück können die
-Modelle die Materialien nicht mehr unterscheiden, ohne den Hintergrund ordnen sie die
-Ausschnitte so gut wie zuvor, und das durch Entfernen gewonnene Zentrumsmaß bleibt
-deutlich über dem neutralen Wert 0,5. Die Fehler sind überwiegend Verwechslungen
-ähnlich aussehender Werkstücke, vor allem von Aluminium, Stahl und grauem Kunststoff.
-Die beiden Methoden widersprechen sich. Im Mittel über die Materialien stimmt die
-Okklusionssensitivität mit den direkten Tests überein. Das Grad-CAM-Zentrumsmaß fällt von 0,737 auf 0,407, eine
-Verschiebung, die die Tests nicht bestätigen; sie entsteht durch die Mittelung der
-Gradienten in Grad-CAM, und HiResCAM, das diese Mittelung vermeidet, stimmt mit der
-Okklusion überein. Ein Trend in einer Heatmap sollte daher durch einen Eingriff in die
-Eingabe geprüft werden, bevor er als Eigenschaft des Modells gelesen wird.
-
-\medskip\noindent
-\textbf{Schlagwörter:} Materialklassifikation, Objekt-Bild-Verhältnis, komplexer
-Hintergrund, Okklusionssensitivität, Grad-CAM, Erklärbarkeit, Lernfabrik
-\end{otherlanguage}
-}
-%%% ENTER THE GENERATIVE MODELS HERE %%%
-%%% Document the use of generative AI for  %%%
-%%% assistance in writing and idea finding %%%
-%%% here, be very careful with this part   %%%
+% ======================================================================
 \begin{document}
 
+% -------------------- FRONT MATTER --------------------
+\pagenumbering{roman}
 
-%--------------------------------------------%
-%--------FOLGENDEN BLOCK NICHT ÄNDERN--------%
-%--------------------------------------------%
+\input{frontmatter/titlepage}
+\input{frontmatter/declaration}
+\input{frontmatter/taskdescription}
+\input{frontmatter/abstract}
 
-
-\pagenumbering{gobble}
-\newgeometry{top=1.6cm,bottom=2cm,left=3cm,right=3cm}
-\begin{titlepage}
-\centering
-{\Large Brandenburg University of Technology Cottbus--Senftenberg}\\[0.9em]
-{\small Faculty 1 -- Mathematics, Computer Science, Physics,\\[0.3em]
-Electrical Engineering and Information Technology}\\[0.9em]
-{\small Chair of Applied Mathematics}
-
-\vspace{3.2cm}
-{\large\textsc{\THESIS}}
-
-\vspace{1.2cm}
-\rule{\textwidth}{0.4pt}
-
-\vspace{0.8cm}
-{\LARGE\linespread{1.45}\selectfont \TITLE\par}
-
-\vspace{0.7cm}
-\rule{\textwidth}{0.4pt}
-
-\vspace{0.9cm}
-{\large\itshape\linespread{1.3}\selectfont \TITLEGERMAN\par}
-
-\vspace{2.6cm}
-{\normalsize
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{}r@{\hspace{1.2em}}l@{}}
-\textbf{Submitted by:}          & \NAME \\
-\textbf{Matriculation number:}  & \MATRICULATIONNUMBER \\
-\textbf{Study programme:}       & \STUDYPROGRAMME \\[1.1em]
-\textbf{First reviewer:}        & \FIRSTREVIEWER \\
-\textbf{Second reviewer:}       & \SECONDREVIEWER \\[1.1em]
-\textbf{Submission date:}       & \SUBMISSIONDATE
-\end{tabular}\par}
-\end{titlepage}
-\restoregeometry
-
-
-\section*{\underline{Declaration of Authorship}}
-I hereby declare that I have written this thesis independently, without unauthorised help and exclusively using the sources indicated. The ideas taken directly or indirectly from external sources (including electronic sources) are labelled as such without exception. The sources used verbatim and in terms of content have been cited in accordance with the recognised rules of scientific work. This thesis has not been submitted in the same or a similar form to any other examination authority and has not been published.\\[0.5cm]
-\noindent
-I have only used Anthropic Claude during preparation of this thesis. At the start of the work,I used Claude to find research papers on this field. During the implementation, claude was used for code assistance and debugging. While writing, Claude was used to revise text passages, and to correct spelling and grammar. Claude also assisted in drafting certain figures, and each of these figures is marked as such in its caption. I have checked everything produced with AI assistance and take full responsibility for the content of this thesis. I agree that this thesis may be checked for plagiarism using a plagiarism detection service.\\[0.5cm]
-\noindent
-~\\[2cm]
-\noindent
-{Cottbus, \SUBMISSIONDATE}{\hspace*{2.725cm}\underline{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~}} \\
-{\hspace*{7.75cm} Signature of the author}
-
-%------------Task description------------%
-% Wording copied exactly from the official task description
-% (final_TaskDescription_ObjectToImageRatio_LearningFactory_1.pdf);
-% the Student and Adviser lines are left out.
-\newpage
-\section*{\underline{Task description}}
-\vspace{0.5cm}
-\noindent\textbf{Title:} Object to image ratio and occlusion sensitivity for Material
-Classification in a Learning Factory\\[0.4cm]
-\noindent\textbf{Motivation:} Learning factory environments offer opportunities to simulate
-a real-world factory in a smaller and ideal way for teaching and research purposes. The
-Fischertechnik learning factory simulates a throughput of cylindrical-shaped work pieces. To
-that extend, an image dataset with bounding box labels for object detection has previously
-been created. The purpose of this dataset was to investigate the impact of background
-elements on the object detection accuracy. That is, the dataset consists of 15 individual
-sets of images with the exact same parameters, only varying colour/material. In image
-classification, small objects are usually a challenge as a lot of possible complex
-background is present in the entire image.\\[0.4cm]
-\noindent\textbf{Problem statement:} This Thesis aims to systematically investigate the
-differences in object to image ratios for the classification of different materials with
-the complex background of the Fischertechnik learning factory. Prior to this, image
-classification datasets have to be extracted from the learning factory dataset, which is
-labelled for object detection. Afterwards, the research starts with implementing a CNN and
-occlusion sensitivity approaches, finding baseline results and to conduct a systematic
-study on the object to image ratio.
-
-\newpage
-\section*{\underline{Abstract}}
-\vspace{0.5cm}
-\ABSTRACT
-\newpage % Zusammenfassung on the back of the Abstract page (both exceed half a page)
-\section*{\underline{Zusammenfassung}}
-\vspace{0.5cm}
-\ZUSAMMENFASSUNG
-
-
-\newpage
-\enlargethispage{2\baselineskip} % lets the last ToC line (References) stay on this page
 \tableofcontents
-
-\newpage
 \listoffigures
-
 \listoftables
+\input{frontmatter/abbreviations}
+\input{frontmatter/notation}
 
-\section*{List of Abbreviations}
-\begin{tabular}{@{}ll@{}}
-AG & Acrylic glass \\
-AP & Average precision \\
-CAM & Class activation mapping \\
-CNN & Convolutional neural network \\
-COCO & Common Objects in Context (dataset) \\
-CPU & Central processing unit \\
-CRP & Concept relevance propagation \\
-CUDA & Compute Unified Device Architecture \\
-cuDNN & CUDA Deep Neural Network library \\
-F1 & Harmonic mean of precision and recall \\
-FPR & False-positive rate \\
-GPU & Graphics processing unit \\
-Grad-CAM & Gradient-weighted class activation mapping \\
-HiResCAM & High-resolution class activation mapping \\
-IoU & Intersection over union \\
-JPEG & Joint Photographic Experts Group (image format) \\
-L-CRP & Concept relevance propagation for localisation models \\
-LRP & Layer-wise relevance propagation \\
-mAP & Mean average precision \\
-O2I & Object-to-image (ratio) \\
-PETG & Polyethylene terephthalate glycol \\
-ReLU & Rectified linear unit \\
-RGB & Red, green, blue \\
-ROC-AUC & Area under the receiver operating characteristic curve \\
-SE & Standard error \\
-YOLO & You Only Look Once (object detector) \\
-\end{tabular}
-
-\newpage
-\section*{List of Symbols}
-Symbols are grouped by topic; the last column gives the equation or section where each
-is defined. Where a letter has two uses, both are listed, and the context and the
-subscript tell them apart.
-
-{\small
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}>{\raggedright\arraybackslash}p{0.53\textwidth}>{\raggedright\arraybackslash}p{0.16\textwidth}@{}}
-\textbf{Symbol} & \textbf{Meaning} & \textbf{Defined in} \\[2pt]
-\endhead
-\multicolumn{3}{@{}l}{\textbf{Data, crops and labels}} \\*[2pt]
-$r$ & object-to-image (O2I) ratio, in percent & Eq.~\eqref{eq:bg-o2i} \\
-$A_{\mathrm{obj}}, A_{\mathrm{img}}$ & area of the object and of the image, in pixels & Eq.~\eqref{eq:bg-o2i} \\
-$s_{\mathrm{obj}}, s_{\mathrm{img}}$ & side of a square object and of a square image, in pixels & Eq.~\eqref{eq:bg-side-fraction} \\
-$\mathcal{R}$ & set of the five ratios $\{90, 70, 50, 30, 10\}$ & Eq.~\eqref{eq:crop-side} \\
-$\tilde{x}, \tilde{y}, \tilde{w}, \tilde{h}$ & normalised box centre, width and height from the label file & Eq.~\eqref{eq:yolo-pixels} \\
-$x_b, y_b, w_b, h_b$ & box centre, width and height in the photograph, in pixels & Eq.~\eqref{eq:yolo-pixels} \\
-$s_r$ & side of the crop at ratio $r$ before rounding, in pixels & Eq.~\eqref{eq:crop-side} \\
-$x^{\pm}, y^{\pm}$ & bounds of the crop window, in pixels & Eq.~\eqref{eq:crop-window} \\
-$\gamma$ & aspect ratio $w_b/h_b$ of the box & Eq.~\eqref{eq:box-contained} \\
-$\mathcal{M}$ & set of the 15 materials & Eq.~\eqref{eq:ovr-label} \\
-$t$ & target material of a one-vs-rest model, $t \in \mathcal{M}$ & Eq.~\eqref{eq:ovr-label} \\
-$y$ & binary label of a crop, 1 for the target material & Eq.~\eqref{eq:ovr-label} \\
-$I$ & input crop & Eq.~\eqref{eq:bg-softmax} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Network and training}} \\*[2pt]
-$X$ & input of a convolutional layer, $C \times N \times N$ & Eq.~\eqref{eq:bg-conv} \\
-$C, K$ & number of input channels and of kernels of a layer & Eq.~\eqref{eq:bg-conv} \\
-$N$ & side of an input or feature map, in cells & Eq.~\eqref{eq:bg-conv} \\
-$W^k, b^k$ & kernel $k$ and its bias & Eq.~\eqref{eq:bg-conv} \\
-$Y^k$ & output of kernel $k$ & Eq.~\eqref{eq:bg-conv} \\
-$(u, v)$ & row and column of a map cell or of a pixel & Eq.~\eqref{eq:bg-conv} \\
-$A^k$ & feature map $k$ after the ReLU & Eq.~\eqref{eq:bg-maxpool} \\
-$M^k$ & feature map $k$ after max pooling & Eq.~\eqref{eq:bg-maxpool} \\
-$g = (g_1, g_2)$ & global averages of the two channels of the toy network & Sec.~\ref{sec:background-cnn} \\
-$z_0, z_1$ & logits of the negative and the positive class & Eq.~\eqref{eq:bg-softmax} \\
-$z$ & logit of the target class, explained by the heatmaps & Eq.~\eqref{eq:bg-occlusion} \\
-$p_j$ & softmax probability of class $j \in \{0, 1\}$ & Eq.~\eqref{eq:bg-softmax} \\
-$\hat{y}$ & predicted label, 1 if $z_1 > z_0$ & Sec.~\ref{sec:methodology-training} \\
-$\ell$ & cross-entropy loss of one crop & Eq.~\eqref{eq:bg-ce} \\
-$L$ & loss of a batch, weighted in Eq.~\eqref{eq:weighted-ce} & Eq.~\eqref{eq:bg-gd} \\
-$\theta$ & parameters of the network & Eq.~\eqref{eq:bg-gd} \\
-$\eta$ & learning rate & Eq.~\eqref{eq:bg-gd} \\
-$\delta_{uv}$ & 1 for the cell that max pooling passes on, 0 otherwise (toy) & Eq.~\eqref{eq:bg-chain} \\
-$w_0, w_1$ & class weights of the loss & Eq.~\eqref{eq:class-weight} \\
-$n^+, n^-$ & numbers of positive and negative crops in a training set & Eq.~\eqref{eq:class-weight} \\
-$\mathcal{S}$ & batch of training crops with their labels & Eq.~\eqref{eq:weighted-ce} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Metrics}} \\*[2pt]
-TP, FP, FN & numbers of true positives, false positives and false negatives & Eq.~\eqref{eq:bg-prf} \\
-$P, R, F_1$ & precision, recall and F1 & Eq.~\eqref{eq:bg-prf} \\
-$I^+, I^-$ & a positive and a negative crop drawn at random & Eq.~\eqref{eq:bg-auc} \\
-$N^+, N^-$ & numbers of positive and negative crops in a split & Sec.~\ref{sec:methodology-metrics} \\
-$F_{1,E}^{\mathrm{val}}(t, r)$ & highest validation F1 within the first $E$ epochs of a 200-epoch run & Eq.~\eqref{eq:delta-f1} \\
-$\Delta_{t,r}$ & gain in validation F1 from 100 to 200 epochs & Eq.~\eqref{eq:delta-f1} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Heatmaps}} \\*[2pt]
-$n$ & number of occlusion patch positions per axis & Eq.~\eqref{eq:bg-occlusion} \\
-$\Omega_{ij}$ & pixels covered by the occlusion patch at position $(i, j)$ & Eq.~\eqref{eq:bg-occlusion} \\
-$I^{(ij)}$ & crop $I$ with the patch at position $(i, j)$ filled & Eq.~\eqref{eq:bg-occlusion} \\
-$D, D_{ij}$ & occlusion map: drop of the logit $z$ per patch position & Eq.~\eqref{eq:bg-occlusion} \\
-$D^+$ & positive part of $D$ & Eq.~\eqref{eq:norm-positive} \\
-$U, V$ & number of rows and columns of a feature map & Eq.~\eqref{eq:bg-gradcam-weights} \\
-$\alpha_k$ & Grad-CAM weight of channel $k$, its mean gradient & Eq.~\eqref{eq:bg-gradcam-weights} \\
-$G$ & Grad-CAM map & Eq.~\eqref{eq:bg-gradcam-map} \\
-$G^{\mathrm{HR}}$ & HiResCAM map & Eq.~\eqref{eq:hirescam} \\
-$\hat{H}^{\mathrm{pos}}, \hat{H}^{\mathrm{cam}}, \hat{H}^{\mathrm{mm}}$ & normalised occlusion (positive drops), Grad-CAM and min-max occlusion map & Eqs.~\eqref{eq:norm-positive}--\eqref{eq:norm-minmax} \\
-$\varepsilon$ & small constant, $10^{-8}$, that prevents a division by zero & Eq.~\eqref{eq:norm-minmax} \\
-$\mathcal{U}$ & bilinear resizing to $256 \times 256$ pixels & Eq.~\eqref{eq:upsample} \\
-$H$ & normalised map after resizing, $256 \times 256$ & Eq.~\eqref{eq:upsample} \\
-$H^{\mathrm{blk}}$ & occlusion block map without interpolation & Eq.~\eqref{eq:block-map} \\
-$\mathcal{C}_{uv}$ & patch positions that cover pixel $(u, v)$ & Eq.~\eqref{eq:block-map} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Centre measure and reference values}} \\*[2pt]
-$s^{B}_{r}$ & side of the reference square before rounding, in pixels & Eq.~\eqref{eq:box-side} \\
-$B_r$ & reference square at ratio $r$, centred in the input & Eq.~\eqref{eq:box-bounds} \\
-$a_r, b_r$ & integer bounds of $B_r$, in pixels & Eq.~\eqref{eq:box-bounds} \\
-$|B_r|$ & number of pixels in $B_r$ & Eq.~\eqref{eq:box-bounds} \\
-$\bar{B}_r$ & pixels outside $B_r$ & Eq.~\eqref{eq:cint-drops} \\
-$m_{\mathrm{in}}, m_{\mathrm{out}}$ & mean importance per pixel inside and outside $B_r$ & Eq.~\eqref{eq:region-means} \\
-$c$ & centre measure; 0.5 means no preference & Eq.~\eqref{eq:center-frac} \\
-$c_{\mathrm{occ}}, c_{\mathrm{cam}}$ & $c$ of positive-drops occlusion and of Grad-CAM & Sec.~\ref{sec:methodology-tests} \\
-$\lambda, \kappa$ & positive scale factor and additive constant & Eq.~\eqref{eq:c-invariance} \\
-$\rho$ & area fraction $|B_r|/256^2$ of the square & Eq.~\eqref{eq:c-ref-approx} \\
-$f$ & share of the bounding box that lies inside $B_r$ & Eq.~\eqref{eq:c-ref-approx} \\
-$c_{\mathrm{box}}$ & $c$ of a map that is uniform on the bounding box & Eq.~\eqref{eq:c-ref-approx} \\
-$\chi, \chi_{uv}$ & indicator of the bounding box in the input & Eq.~\eqref{eq:ref-grids} \\
-$\bar{\chi}^{\,\mathrm{occ}}, \bar{\chi}^{\,\mathrm{cam}}$ & share of each occlusion patch or Grad-CAM cell covered by the box & Eq.~\eqref{eq:ref-grids} \\
-$c^{\mathrm{ref}}_{\mathrm{occ}}, c^{\mathrm{ref}}_{\mathrm{cam}}$ & reference values of $c$ at the resolution of each method & Sec.~\ref{sec:methodology-reference} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Direct tests and Grad-CAM variants}} \\*[2pt]
-$I^{[B_r]}, I^{[\bar{B}_r]}$ & crop with the square or its outside filled & Eq.~\eqref{eq:cint-drops} \\
-$\Delta_{\mathrm{in}}, \Delta_{\mathrm{out}}$ & drop of $z_1$ when the square or its outside is removed & Eq.~\eqref{eq:cint-drops} \\
-$c_{\mathrm{int}}$ & intervention centre measure & Eq.~\eqref{eq:cint} \\
-$c_{\mathrm{hr}}$ & centre measure of the HiResCAM map & Eq.~\eqref{eq:hirescam} \\
-$B'_r$ & cells of the $32 \times 32$ Grad-CAM map whose centre lies in $B_r$ & Eq.~\eqref{eq:weight-split} \\
-$\bar{g}^{\,\mathrm{in}}_k, \bar{g}^{\,\mathrm{out}}_k$ & mean gradient of channel $k$ inside and outside $B'_r$ (not the $g$ of the toy) & Eq.~\eqref{eq:weight-split} \\[4pt]
-\multicolumn{3}{@{}l}{\textbf{Statistics}} \\*[2pt]
-$\phi_{t,r}$ & one value per model, for material $t$ and ratio $r$ & Eq.~\eqref{eq:ratio-mean} \\
-$\bar{\phi}_{\cdot r}, \bar{\phi}_{t\cdot}$ & mean over the materials at ratio $r$; mean of material $t$ over the ratios & Eqs.~\eqref{eq:ratio-mean}, \eqref{eq:slope} \\
-$\mathrm{SE}_r, \hat{\sigma}_r$ & standard error and sample standard deviation over the 15 models & Eq.~\eqref{eq:ratio-se} \\
-$\psi_t$ & slope of material $t$ over the ratios, per 10 points & Eq.~\eqref{eq:slope} \\
-$\mathcal{R}', \bar{r}$ & set of ratios used for a slope and its mean & Eq.~\eqref{eq:slope} \\
-$d_t, \bar{d}$ & paired difference of material $t$ and its mean over the materials & Sec.~\ref{sec:methodology-tests} \\
-$t$ & Student's $t$ statistic, written $t(14)$ with its 14 degrees of freedom & Sec.~\ref{sec:methodology-tests} \\[4pt]
-\end{longtable}}
-
-\newpage
+% -------------------- MAIN MATTER --------------------
+\cleardoublepage
 \pagenumbering{arabic}
 
-
-
-%---------------------------------------%
-%--------START EDITING FROM HERE--------%
-%---------------------------------------%
-
-% Chapters follow the BTU AI-Lab structure (Thesis_Writing_Guidelines.md).
-
-\clearpage
 \input{chapters/01_introduction}
-\clearpage
 \input{chapters/02_related_work}
-\clearpage
 \input{chapters/03_background}
-\clearpage
 \input{chapters/04_methodology}
-\clearpage
 \input{chapters/05_results}
-\clearpage
 \input{chapters/06_discussion}
 
-\clearpage
-
-%Bibliography: Sources are stored in the bibtex file "Sources.bib" and referenced in the text via the reference \cite{Abbreviation}.
-%Important note: Google Scholar offers the "Cite" feature - the information there must always be checked! They are often not completely correct!
-
-\printbibliography[heading=bibnumbered, title={References}]
+% -------------------- BIBLIOGRAPHY --------------------
+\bibliographystyle{plainnat}
+\bibliography{references}
 
 \end{document}

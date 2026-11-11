@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-\section{Related Work}
+\chapter{Related Work}
 \label{sec:related-work}
 
 This chapter reviews prior work on the Fischertechnik Industry~4.0 learning factory
@@ -13,11 +13,11 @@ industrial material classification and small objects
 states the gap that remains.
 
 % ============================================================================
-\subsection{Prior Work on the Fischertechnik Learning Factory}
+\section{Prior Work on the Fischertechnik Learning Factory}
 \label{sec:related-work-fischertechnik}
 
-S.~Schneidereit et al.~\cite{schneidereitFischertechnik2023} applied YOLO (You Only Look
-Once) object detection~\cite{redmon2016yolo} to the learning factory to monitor a
+\citet{schneidereitFischertechnik2023} applied YOLO (You Only Look
+Once) object detection \citep{redmon2016yolo} to the learning factory to monitor a
 simulated manufacturing process. The learning factory is a model production line with
 five modules, namely a sorting machine, an oven, a milling machine, a high-bay warehouse
 and a vacuum gripper. Their dataset is not the one used in this thesis. It consists of
@@ -34,7 +34,7 @@ of the two studies thus already links detection errors in the learning factory t
 workpiece sharing its colour with the background, which is the theme the later study and
 this thesis take up.
 
-T.~Schneidereit, Gohrenz and Breu{\ss}~\cite{schneidereitYOLOv8} created the dataset
+\citet*{schneidereitYOLOv8} created the dataset
 used in this thesis and studied how the complex background of the learning factory
 affects the detection of 15 workpieces of different materials and colours. Each
 workpiece was photographed at the same 33 positions in each of the five learning factory
@@ -51,7 +51,7 @@ and two multi-class models were added, 92 in total. Detection accuracy was measu
 mainly with mAP@[.5:.95], the mean average precision averaged over IoU thresholds from
 0.5 to 0.95 in steps of 0.05, which the authors describe as informative about how well an object is
 localised, and heatmaps were computed with
-layer-wise relevance propagation (LRP)~\cite{bach2015lrp, montavon2019lrp}.
+layer-wise relevance propagation (LRP) \citep{bach2015lrp, montavon2019lrp}.
 
 The authors found that workpieces with similar characteristics can behave quite
 differently, and that some background components influenced the detection while others
@@ -77,10 +77,10 @@ which is not compared here, so the explanations of the two studies are not direc
 comparable. Section~\ref{sec:discussion-material} compares the materials in detail.
 
 % ============================================================================
-\subsection{The Object-to-Image Ratio and Background Reliance in the Wider Literature}
+\section{The Object-to-Image Ratio and Background Reliance in the Wider Literature}
 \label{sec:related-work-o2i}
 
-Pawlowski et al.~\cite{pawlowski2019needles}, available as an arXiv preprint, study the
+\citet{pawlowski2019needles}, available as an arXiv preprint, study the
 classification of tiny objects in large images, e.g., small lesions in medical images, and treat the O2I ratio as an
 experimental variable. They define it by area, as the area of the object divided by the
 area of the image, which is also the definition used in this thesis. Their testbed
@@ -122,9 +122,9 @@ reasonable accuracy, so a fall to chance is not expected at these ratios. With f
 training data here, at most 116 positive crops of one physical workpiece per model, the
 comparison is only indicative.
 
-Xiao et al.~\cite{xiao2021noise} approach background reliance from the other direction.
+\citet{xiao2021noise} approach background reliance from the other direction.
 Instead of shrinking the object, they keep the foreground and manipulate the background
-of ImageNet~\cite{deng2009imagenet} images, separating the two with the ImageNet
+of ImageNet \citep{deng2009imagenet} images, separating the two with the ImageNet
 bounding-box annotations and, where the shape of the foreground is needed, with GrabCut
 segmentation. Models reach non-trivial accuracy from the background alone, and adversarially chosen
 backgrounds make them predict the class of the background for up to 87.5\% of the
@@ -136,7 +136,7 @@ total, background reliance can be compared between materials and between ratios.
 Section~\ref{sec:discussion-material} makes this comparison for steel, aluminium and
 black plastic.
 
-Geirhos et al.~\cite{geirhos2019texture} report a bias of a different kind. CNNs trained
+\citet{geirhos2019texture} report a bias of a different kind. CNNs trained
 on ImageNet classify images mainly by local texture rather than by global shape, whereas
 human perception relies predominantly on shape. Training on Stylized-ImageNet, a
 style-transferred variant that removes texture cues while preserving shape, shifts the
@@ -150,10 +150,10 @@ is loose, since the networks of Geirhos et al.\ learned from about 1.3~million I
 images, whereas each model here learns from about 1,700 crops.
 
 % ============================================================================
-\subsection{Explainability Methods and Context Attribution}
+\section{Explainability Methods and Context Attribution}
 \label{sec:related-work-explainability}
 
-Adhikari et al.~\cite{adhikari2024lostincontext} ask how the context of an object
+\citet{adhikari2024lostincontext} ask how the context of an object
 affects feature attribution methods, not only accuracy. Using segmentation masks to
 split attribution maps into object and context regions, they measure which share of the
 total attribution falls on each. They report that replacing the context of
@@ -167,14 +167,14 @@ how much a model relies on context. This is not in conflict with an observation 
 thesis, where the materials that suffer most at low ratios are not those whose heatmaps
 change most (Section~\ref{sec:discussion-material}).
 
-Dreyer et al.~\cite{dreyer2023revealing} introduce L-CRP, an extension of Concept
-Relevance Propagation (CRP)~\cite{achtibat2023crp} to localisation models, which computes a context score for
+\citet{dreyer2023revealing} introduce L-CRP, an extension of Concept
+Relevance Propagation (CRP) \citep{achtibat2023crp} to localisation models, which computes a context score for
 each prediction of a segmentation or detection model. The score quantifies how much of
 the decision is attributable to background concepts rather than object concepts. With
 it, they reveal specific biases, e.g., a segmentation model that uses a hurdle as
 context for segmenting a horse (their Fig.~1). Since CRP extends LRP and L-CRP is also applied to YOLO
 detectors, the method is related to the LRP heatmaps of the 2025
-study~\cite{schneidereitYOLOv8}. The centre
+study \citep{schneidereitYOLOv8}. The centre
 measure $c$ of this thesis (Eq.~\eqref{eq:center-frac},
 Section~\ref{sec:methodology-centerfrac}) is a simpler relative. It also reduces a
 heatmap to one number about object versus background, but it compares the mean heatmap
@@ -183,7 +183,7 @@ input, whereas L-CRP works with concepts learned inside the network. Extending t
 analysis towards concepts, i.e., asking what the network uses in the background and not
 only where its evidence lies, is a possible refinement that is not pursued here.
 
-Ennab and Mcheick~\cite{ennab2025interpretability} compare their own pixel-level
+\citet{ennab2025interpretability} compare their own pixel-level
 interpretability method with Grad-CAM for the detection of COVID-19 in chest
 images.\footnote{The paper describes its data both as chest radiographs and as chest
 computed tomography (CT) scans.} They report that the two methods differ in granularity.
@@ -196,14 +196,14 @@ classification. Their comparison does not involve occlusion sensitivity, and the
 of background in their images is not varied.
 
 % ============================================================================
-\subsection{Mitigating Background and Shortcut Reliance}
+\section{Mitigating Background and Shortcut Reliance}
 \label{sec:related-work-mitigation}
 
 Three papers address how background or contextual reliance can be reduced. This thesis
 remains diagnostic and does not attempt such an intervention, but the papers indicate
-what could follow it. Singh et al.~\cite{singh2020dontjudge} propose two training-time
+what could follow it. \citet{singh2020dontjudge} propose two training-time
 interventions against contextual bias. The first minimises the spatial overlap between
-the class activation maps~\cite{zhou2016cam} of categories that frequently occur
+the class activation maps \citep{zhou2016cam} of categories that frequently occur
 together. The second splits the learned features into separate subspaces for the
 category and for its context. On images in which their most
 context-biased categories appear without their usual context, the feature-split method
@@ -214,26 +214,26 @@ belongs, although its objective assumes a global average pooling, unlike the net
 this thesis, so a diagnosis with such maps could in principle feed into such a training
 objective, provided the maps reflect the model (Section~\ref{sec:discussion-answer}).
 
-Bassi et al.~\cite{bassi2024isnet} propose ISNet, which optimises LRP heatmaps during
+\citet{bassi2024isnet} propose ISNet, which optimises LRP heatmaps during
 training. Ground-truth segmentation masks are used to penalise relevance that falls
 outside the object region. They report that this substantially improves
 out-of-distribution generalisation on several medical imaging benchmarks, without added
 cost at inference time. ISNet uses LRP, the method behind the heatmaps of the 2025
-study~\cite{schneidereitYOLOv8}, and turns an explainability-based diagnosis into a
+study \citep{schneidereitYOLOv8}, and turns an explainability-based diagnosis into a
 training objective. For the learning factory dataset, the bounding boxes give only a
 box-shaped approximation of the masks that ISNet requires, because a box also contains
 some background around the cylindrical workpiece. A background-suppression experiment
 along these lines could therefore only be approximated, and
 Section~\ref{sec:discussion-future} returns to it.
 
-Le et al.~\cite{le2025shortcut} add a caveat to such efforts. They introduce a neuron
+\citet{le2025shortcut} add a caveat to such efforts. They introduce a neuron
 spurious score. For each neuron of the penultimate layer, a Grad-CAM heatmap is
 binarised with a threshold, and the share of the highlighted region that overlaps a
 mask of the spurious feature is averaged over samples. The score is thus a mask-based
 overlap share, a relative of the centre measure $c$, which instead compares mean
 importance per pixel. In experiments on the Waterbirds and ISIC datasets with ResNet and
 Vision Transformer models pre-trained on ImageNet, Deep Feature
-Re-weighting~\cite{kirichenko2023dfr} raises the worst-group accuracy. This is the
+Re-weighting \citep{kirichenko2023dfr} raises the worst-group accuracy. This is the
 accuracy on the group of images for which it is lowest, typically one in which the
 spurious feature does not match the class. The distribution of the scores, however,
 stays the same. The authors read this as a change in how the
@@ -244,10 +244,10 @@ from longer training, although too few epochs and under-learned features are not
 same thing (Section~\ref{sec:discussion-material}).
 
 % ============================================================================
-\subsection{Industrial Material Classification and Small-Object Recognition}
+\section{Industrial Material Classification and Small-Object Recognition}
 \label{sec:related-work-industrial}
 
-Penumuru et al.~\cite{penumuru2020material} classify materials in an Industry~4.0
+\citet{penumuru2020material} classify materials in an Industry~4.0
 setting. Their machine-vision pipeline distinguishes aluminium, copper, medium-density
 fibreboard and mild steel from surface images, using RGB colour features and classical
 machine learning, namely support vector machines, compared with decision trees, random
@@ -259,17 +259,17 @@ include a complex background like that of the learning factory, which may explai
 of the contrast. The data of this thesis, however, cannot separate the possible causes
 of the metals' difficulty, namely their reflecting surfaces, the complex background and,
 for aluminium, the training length. The role of reflections, named in the 2025
-study~\cite{schneidereitYOLOv8}, therefore remains a hypothesis, which
+study \citep{schneidereitYOLOv8}, therefore remains a hypothesis, which
 Section~\ref{sec:results-qualitative} illustrates on single crops.
 
-Nikouei et al.~\cite{nikouei2025smallobject} survey recent work on small object
+\citet{nikouei2025smallobject} survey recent work on small object
 detection and name low resolution, occlusion, background interference and class
 imbalance as core challenges of the field. Some of the definitions they collect are
 relative: an object that covers less than 1\% of the image area counts as small. By this
 criterion, even the 10\% crops of this thesis are far from small objects. In the
 original $960 \times 720$-pixel photographs, however, a box of median size,
 $50 \times 46$ pixels, covers about 0.33\% of the image. For a typical workpiece, the
-whole-scene detection task of the 2025 study~\cite{schneidereitYOLOv8} is therefore a
+whole-scene detection task of the 2025 study \citep{schneidereitYOLOv8} is therefore a
 small-object task by this criterion, although the largest boxes exceed 1\%.
 That study itself names small objects in front of a complicated background as a known
 difficulty in its review of related work. The thesis
@@ -289,25 +289,22 @@ examined here through attribution and through the removal of the background
 a related but not identical notion.
 
 % ============================================================================
-\subsection{The Gap This Thesis Fills}
+\section{The Gap This Thesis Fills}
 \label{sec:related-work-gap}
 
-The reviewed papers cover the elements of this thesis separately. Pawlowski et
-al.~\cite{pawlowski2019needles} vary the O2I ratio systematically, on synthetic digit
+The reviewed papers cover the elements of this thesis separately. \citet{pawlowski2019needles} vary the O2I ratio systematically, on synthetic digit
 canvases and on real tissue, and use one gradient-based saliency method as a
 localisation check that degrades with the ratio, but they compare no explainability
 methods and do not measure how the evidence is distributed beyond the saliency peak. The two studies on the
-learning factory~\cite{schneidereitFischertechnik2023, schneidereitYOLOv8} work with
+learning factory \citep{schneidereitFischertechnik2023, schneidereitYOLOv8} work with
 its complex industrial background, but for detection and, in the 2025 study, with LRP
-as the only heatmap method. Xiao et al.~\cite{xiao2021noise} and Geirhos et
-al.~\cite{geirhos2019texture} demonstrate background and texture biases through
+as the only heatmap method. \citet{xiao2021noise} and \citet{geirhos2019texture} demonstrate background and texture biases through
 manipulations of the images, namely background swaps and stylisation, which are
-experiments rather than explainability methods. Adhikari et
-al.~\cite{adhikari2024lostincontext} measure how attribution is divided between object
+experiments rather than explainability methods. \citet{adhikari2024lostincontext} measure how attribution is divided between object
 and context, but they change the context of an image rather than the share of the image
-that the object covers. Ennab and Mcheick~\cite{ennab2025interpretability} compare two
+that the object covers. \citet{ennab2025interpretability} compare two
 explainability methods directly, but in images where the share of background is not
-varied. Draelos and Carin~\cite{draelos2021hirescam} show that the averaging of
+varied. \citet{draelos2021hirescam} show that the averaging of
 gradients in Grad-CAM can mark locations the model did not use, unless the network ends
 in a global average pooling and one linear layer, and propose HiResCAM, which weights
 every location with its own gradient; they do not vary the share of background either.

@@ -1,0 +1,37 @@
+% ---------------- TASK DESCRIPTION ----------------
+% Wording copied exactly from the official task description
+% (final_TaskDescription_ObjectToImageRatio_LearningFactory_1.pdf);
+% the Student and Adviser lines are left out.
+\chapter*{Task Description}
+\addcontentsline{toc}{chapter}{Task Description}
+\vspace*{-1.5\baselineskip}
+
+\begin{singlespace}
+\small
+\setlength{\parindent}{0pt}\setlength{\parskip}{2pt}
+{\centering\large\bfseries Object to image ratio and occlusion sensitivity for Material
+Classification in a Learning Factory\par}
+\bigskip
+\noindent{\large\bfseries Motivation}\par\smallskip
+
+Learning factory environments offer opportunities to simulate a real-world factory in a
+smaller and ideal way for teaching and research purposes. The Fischertechnik learning
+factory simulates a throughput of cylindrical-shaped work pieces. To that extend, an
+image dataset with bounding box labels for object detection has previously been
+created. The purpose of this dataset was to investigate the impact of background
+elements on the object detection accuracy. That is, the dataset consists of 15
+individual sets of images with the exact same parameters, only varying colour/material.
+In image classification, small objects are usually a challenge as a lot of possible
+complex background is present in the entire image.
+
+\medskip
+\noindent{\large\bfseries Problem Statement}\par\smallskip
+
+This Thesis aims to systematically investigate the differences in object to image ratios
+for the classification of different materials with the complex background of the
+Fischertechnik learning factory. Prior to this, image classification datasets have to be
+extracted from the learning factory dataset, which is labelled for object detection.
+Afterwards, the research starts with implementing a CNN and occlusion sensitivity
+approaches, finding baseline results and to conduct a systematic study on the object to
+image ratio.
+\end{singlespace}

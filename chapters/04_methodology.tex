@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-\section{Methodology}
+\chapter{Methodology}
 \label{sec:methodology}
 
 Chapter~\ref{sec:background} introduced the concepts of this thesis and their general
@@ -12,12 +12,11 @@ a bounding box that itself encloses some background. Each setting is stated belo
 with the reason for it.
 
 % ============================================================================
-\subsection{Dataset Preparation and Crop Extraction}
+\section{Dataset Preparation and Crop Extraction}
 \label{sec:methodology-crops}
 
 \paragraph{Source images}
-All crops were cut from the dataset of T.~Schneidereit, Gohrenz and
-Breu{\ss}~\cite{schneidereitYOLOv8} described in Section~\ref{sec:background-dataset},
+All crops were cut from the dataset of \citet*{schneidereitYOLOv8} described in Section~\ref{sec:background-dataset},
 using its arrangement by material. The copy used here holds 2,490 photographs of
 $960 \times 720$ pixels, 166 for each of the 15 materials, of which 33 were taken at
 each of the stations one to four and 34 at station five. Every material was
@@ -41,7 +40,7 @@ folder, not from the class index in the label file.
 \paragraph{Crop geometry}
 The O2I ratio is defined by area (Eq.~\eqref{eq:bg-o2i}), with a square crop centred
 on the box as the image and the area of the bounding box as the object area
-(Section~\ref{sec:background-o2i}). Pawlowski et al.~\cite{pawlowski2019needles}
+(Section~\ref{sec:background-o2i}). \citet{pawlowski2019needles}
 measure the object area of their histopathology data in segmented object pixels, while
 the ratios of their digit data correspond to the area of the square $28 \times 28$
 digit patch, i.e., to a bounding square. Only bounding boxes are available here, so the
@@ -83,7 +82,7 @@ beyond the crop, and at 90\% (bound 1.11), 991 (39.8\%) do. For these boxes, par
 90\%, this is 4.7\% of the long side for the median cut box, 11.5\% for a box at the
 95th percentile of the aspect ratio and 23\% for the most elongated box. Such a box covers less than $r$ percent of the crop. The crops were stored as
 JPEG (Joint Photographic Experts Group) files with quality 75, the default of
-Pillow~\cite{pillow2025docs}; the quantisation tables of the stored crops match the
+Pillow \citep{pillow2025docs}; the quantisation tables of the stored crops match the
 standard tables for that quality.
 
 \paragraph{Choice of ratios}
@@ -118,8 +117,7 @@ $256 \times 256$ input at 90\%, and at most 1.4 pixels at 10\%.
 
 \paragraph{Resizing}
 Every crop was resized to $256 \times 256$ pixels with the bilinear interpolation of
-the Python Imaging Library (Pillow), which smooths the image when a crop is reduced
-\cite{pillow2025docs}, and converted to a tensor
+the Python Imaging Library (Pillow), which smooths the image when a crop is reduced \citep{pillow2025docs}, and converted to a tensor
 $I \in [0,1]^{3 \times 256 \times 256}$ with three colour channels, red, green and
 blue (RGB). The crops are small. The crop side has a median of 51 pixels at 90\%
 (5th to 95th percentile: 33 to 103 pixels) and of 152 pixels at 10\% (100 to 308
@@ -154,8 +152,7 @@ models at 90\% and 70\% were trained after a software maintenance of the lab mac
 (paragraph \emph{Optimisation and determinism}). The fixed input size of $256 \times 256$ pixels was set with the
 adviser. Since the network ends in adaptive average pooling
 (Section~\ref{sec:background-cnn}), crops at native size would also have been possible,
-i.e., a workpiece of fixed size on a growing canvas, as Pawlowski et
-al.~\cite{pawlowski2019needles} did for their digit data; this alternative was not used. The results therefore describe
+i.e., a workpiece of fixed size on a growing canvas, as \citet{pawlowski2019needles} did for their digit data; this alternative was not used. The results therefore describe
 the combined effect of tightening or loosening the crop as defined here, and they cannot
 separate the share of background from the scale of the workpiece and the interpolation.
 
@@ -163,8 +160,7 @@ separate the share of background from the scale of the workpiece and the interpo
 \label{sec:methodology-split}
 The photographs, not the crops, were divided into training, validation and test sets
 in the proportions 70/15/15, separately for each material, i.e., stratified by
-material \cite{kohavi1995study} and grouped by photograph
-\cite{roberts2017cross}. For each material, the file names of its 166 photographs
+material \citep{kohavi1995study} and grouped by photograph \citep{roberts2017cross}. For each material, the file names of its 166 photographs
 were sorted and shuffled with Python's \texttt{random.Random}, seeded with 42 plus the
 position of the material in the list of folder names compared as character strings.
 The first $\operatorname{round}(0.70 \cdot 166) = 116$ photographs went to training,
@@ -182,23 +178,23 @@ resulting crop counts.
 
 \begin{table}[htbp]
 \centering
-\caption[Crop counts per ratio and split]{Number of crops per object-to-image (O2I) ratio and split, and number of
-photographs whose crop window violates Eq.~\eqref{eq:crop-inside} at that ratio
-(skipped).}
+\caption[Crop counts per ratio and split]{Number of crops per O2I ratio and split. The
+last column gives the number of photographs whose crop window violates
+Eq.~\eqref{eq:crop-inside} at that ratio and which are therefore skipped.}
 \label{tab:crop-counts}
 \begin{tabular}{lrrrrr}
-\hline
-\textbf{O2I ratio} & \textbf{Training} & \textbf{Validation} & \textbf{Test} &
-\textbf{Total} & \textbf{Skipped} \\
-\hline
+\toprule
+O2I ratio & Training & Validation & Test &
+Total & Skipped \\
+\midrule
 90\% & 1,740 & 375 & 375 & 2,490 & 0 \\
 70\% & 1,740 & 375 & 375 & 2,490 & 0 \\
 50\% & 1,738 & 372 & 373 & 2,483 & 7 \\
 30\% & 1,696 & 363 & 365 & 2,424 & 66 \\
 10\% & 1,609 & 336 & 338 & 2,283 & 207 \\
-\hline
+\midrule
 Total & 8,523 & 1,821 & 1,826 & 12,170 & 280 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -208,17 +204,14 @@ fixed per photograph before cropping, so a skipped crop is simply missing from i
 photograph's split, and the proportions at the lower ratios deviate slightly from
 70/15/15. The validation split was used for model selection (Section~\ref{sec:methodology-metrics}) and for all
 explainability analyses (Section~\ref{sec:methodology-sampling}). The 2025 study calls its held-out images the
-evaluation set~\cite{schneidereitYOLOv8}. The test split was evaluated once per model,
+evaluation set \citep{schneidereitYOLOv8}. The test split was evaluated once per model,
 with the checkpoint selected in its 100-epoch run, after all training and model selection had
-finished, and no test result was used for any decision. For the 27 models that were
-retrained (Section~\ref{sec:methodology-training}), this evaluation took place after the
-retraining. Their earlier test results are not reported; the retraining was decided
-because of the batch size, not because of a test result. The direct tests of
+finished, and no test result was used for any decision. The direct tests of
 Section~\ref{sec:methodology-intervention} score the test split again with the same
 fixed models; no setting was chosen from them.
 
 % ============================================================================
-\subsection{One-vs-Rest Binary Classification}
+\section{One-vs-Rest Binary Classification}
 \label{sec:methodology-ovr}
 
 \paragraph{Preliminary design}
@@ -260,7 +253,7 @@ positive crop (Tab.~\ref{tab:bg-toy-metrics}). The loss was therefore weighted b
 were selected and evaluated by F1 and ROC-AUC instead of accuracy (Section~\ref{sec:methodology-metrics}).
 
 % ============================================================================
-\subsection{Training and Evaluation}
+\section{Training and Evaluation}
 \label{sec:methodology-training}
 
 All 75 models use the network \texttt{MaterialCNNBinary}
@@ -269,14 +262,13 @@ Tab.~\ref{tab:training-config}.
 
 \begin{table}[htbp]
 \centering
-\caption[Training configuration]{Training configuration of the 75 one-vs-rest models, where F1 is the harmonic
-mean of precision and recall on the positive class (Eq.~\eqref{eq:bg-prf}), GPU stands
-for graphics processing unit and cuDNN for the NVIDIA CUDA Deep Neural Network library.}
+\caption[Training configuration]{Training configuration of the 75 one-vs-rest models. F1
+is computed on the positive class (Eq.~\eqref{eq:bg-prf}).}
 \label{tab:training-config}
 \begin{tabular}{lp{9cm}}
-\hline
-\textbf{Parameter} & \textbf{Value} \\
-\hline
+\toprule
+Parameter & Value \\
+\midrule
 Network & \texttt{MaterialCNNBinary} (Tab.~\ref{tab:cnn-architecture}), trained from
 scratch, default PyTorch initialisation \\
 Input & $256 \times 256$ RGB crop, values in $[0,1]$ \\
@@ -292,17 +284,17 @@ Epochs & 100; 200 in the supplementary check \\
 Model selection & Epoch with the highest validation F1 \\
 Seed & 42, reset before every model; deterministic cuDNN, benchmark mode off \\
 Hardware & NVIDIA RTX A6000 GPU (48\,GB) at the AI-Lab \\
-Software & Python 3.9.25, PyTorch 2.8.0~\cite{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
-cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2~\cite{harris2020numpy}, scikit-learn 1.6.1~\cite{pedregosa2011scikit}; NVIDIA driver 580.178.04
-at the time of the retraining \\
-\hline
+Software & Python 3.9.25, PyTorch 2.8.0 \citep{paszke2019pytorch} and torchvision 0.23.0 (CUDA 12.8 builds),
+cuDNN 9.27, Pillow 11.3.0, NumPy 2.0.2 \citep{harris2020numpy}, scikit-learn 1.6.1 \citep{pedregosa2011scikit}; NVIDIA driver 580.178.04
+for the October runs \\
+\bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Design choices}
 \label{sec:methodology-design}
 No data augmentation was used, unlike in the 2025 study, which applied 13
-augmentation operations~\cite{schneidereitYOLOv8}. Random crops, shifts or rescaling
+augmentation operations \citep{schneidereitYOLOv8}. Random crops, shifts or rescaling
 would change the O2I ratio and the centring of a crop, and changes of colour would
 alter a property that separates several of the materials. Flips and rotations by
 90\textdegree, which would change neither, were not used either. Without normalisation of the
@@ -318,7 +310,7 @@ softmax of Eq.~\eqref{eq:bg-softmax} gives the probability $p_1(I)$ of the posit
 class. The predicted label $\hat{y}(I)$ is 1 if $z_1(I) > z_0(I)$ and 0 otherwise, so a
 tie counts as negative, and the prediction is positive exactly when $p_1(I) > 0.5$. The
 loss is the cross-entropy of Eq.~\eqref{eq:bg-ce}, in which each class is weighted to
-offset the imbalance of Section~\ref{sec:methodology-ovr} \cite{johnson2019survey}.
+offset the imbalance of Section~\ref{sec:methodology-ovr} \citep{johnson2019survey}.
 The class weights are
 
 \begin{equation}
@@ -342,15 +334,14 @@ Eq.~\eqref{eq:ovr-label}, $p_0(I) = 1 - p_1(I)$, and $L \ge 0$ is a scalar. Each
 term $-\log p_{y}(I)$ is the per-crop loss $\ell(I, y)$ of
 Eq.~\eqref{eq:bg-ce}. The denominator normalises by the total weight of the batch
 rather than by the number of crops, which is how the weighted cross-entropy of PyTorch
-is defined \cite{pytorch2025crossentropy}.
+is defined \citep{pytorch2025crossentropy}.
 
 \paragraph{Optimisation and determinism}
-The weights and biases were initialised with the default of PyTorch
-\cite{pytorch2025init}, i.e., drawn uniformly from
+The weights and biases were initialised with the default of PyTorch \citep{pytorch2025init}, i.e., drawn uniformly from
 $[-1/\sqrt{k_{\mathrm{in}}},\, 1/\sqrt{k_{\mathrm{in}}}]$, where $k_{\mathrm{in}}$ is
 the number of inputs of one unit: $9\,C_{\mathrm{in}}$ for a $3 \times 3$ convolution
 with $C_{\mathrm{in}}$ input channels, and the number of input features for a linear
-layer. They were optimised with Adam \cite{kingma2015adam} at a constant learning
+layer. They were optimised with Adam \citep{kingma2015adam} at a constant learning
 rate of $3 \times 10^{-4}$. Before each of the 75 models was built, the random number
 generators of Python, NumPy and PyTorch, on the central processing unit (CPU) and the
 graphics processing unit (GPU), were reset to the seed 42, and
@@ -358,42 +349,29 @@ cuDNN was set to deterministic mode with benchmark mode switched off. Because th
 is reset before the network is created, all 75 models start from the same initial
 weights. The training crops were shuffled in every epoch by the seeded generator and
 loaded by two worker processes. Bit-exact repetition of GPU training can in general be
-expected only on the same hardware and software \cite{pytorch2025reproducibility}. Within one
+expected only on the same hardware and software \citep{pytorch2025reproducibility}. Within one
 software environment, training was deterministic: repeated runs gave the same losses to
 six decimal places, and the 48 models trained in August reproduce the first 100 epochs
-of their September 200-epoch runs exactly. The 27 models retrained in October, after a
+of their September 200-epoch runs exactly. The 27 models trained in October, after a
 maintenance of the lab machine, differ from the September runs from the first epoch on,
 most likely because the GPU software environment changed, but only by up to 0.003 in
-first-epoch training loss, about a tenth of the change that a different batch size
-causes (footnote~\ref{fn:batchsize}). Each of the 75 cells is a single run with a single
+first-epoch training loss. Each of the 75 cells is a single run with a single
 seed, so the variation between seeds is not estimated.
 
 \paragraph{Training platforms}
 \label{sec:methodology-platforms}
 All 75 models were trained at the AI-Lab on one NVIDIA RTX A6000 GPU with batch size
 32, 48 of them in August and 27 in October. Training took about 3 minutes per model at
-100 epochs and about 6 minutes at 200 epochs. The 27 models trained in October had
-first been trained on Google Colab, namely those at an O2I ratio of 90\% for all
-materials except white plastic and aluminium (13 models) and at 70\% for all materials
-except dark wood (14 models). Those runs used the default batch size of the training
-script, 16.\footnote{\label{fn:batchsize}The batch size of the Colab runs was not
-logged. Re-running the first epoch of two of them on a CPU
-comes much closer to the recorded training loss at batch size 16 than at 32: 0.6101 against
-the recorded 0.6106 for brass at 90\% and 0.4614 against 0.4688 for red plastic at 70\%,
-while batch size 32 gives 0.6569 and 0.5026.} Batch size and hardware would then have
-differed between the ratios, since most models at 90\% and 70\% but none at the lower
-ratios came from Colab. These 27 models were therefore retrained at the AI-Lab with the
-settings of Tab.~\ref{tab:training-config}, and only the retrained models are used in
-this thesis, for the test results as well as for the explainability analyses. The
-earlier models are archived and not reported.
+100 epochs and about 6 minutes at 200 epochs. The 27 models trained in October are
+those at an O2I ratio of 90\% for all materials except white plastic and aluminium (13
+models) and at 70\% for all materials except dark wood (14 models).
 
 \paragraph{Model selection and metrics}
 \label{sec:methodology-metrics}
 After every epoch the model was evaluated on the validation split, and the checkpoint
 of the epoch with the highest validation F1 was kept. A later epoch replaces it only
 if its F1 is strictly higher, so on ties the earlier epoch is kept. The reported test
-result is that of the best-validation checkpoint, as in Pawlowski
-et al.~\cite{pawlowski2019needles}. Precision, recall and F1 follow Eq.~\eqref{eq:bg-prf} for
+result is that of the best-validation checkpoint, as in \citet{pawlowski2019needles}. Precision, recall and F1 follow Eq.~\eqref{eq:bg-prf} for
 the positive class, with the prediction $\hat{y}$ of the paragraph \emph{Output and
 loss}, and a value whose denominator is zero is set to 0. The ROC-AUC follows
 Eq.~\eqref{eq:bg-auc} and is computed from $p_1$, so it does not depend on a decision
@@ -431,16 +409,16 @@ the F1 by less, so values of
 $\Delta_{t,r}$ in Eq.~\eqref{eq:delta-f1} up to about this size are not read as an improvement. For the 48 models trained in August,
 the first 100 epochs of the 200-epoch run are identical to the 100-epoch model
 (paragraph \emph{Optimisation and determinism}), so $\Delta_{t,r}$ equals the difference
-to the model used in the main comparison. For the 27 models retrained in October, the
+to the model used in the main comparison. For the 27 models trained in October, the
 two runs come from different software environments; taking both values from the same
 run keeps this difference out of $\Delta_{t,r}$.
 The results are reported in Section~\ref{sec:results-200epoch}.
 
 % ============================================================================
-\subsection{Explainability Pipeline}
+\section{Explainability Pipeline}
 \label{sec:methodology-explainability}
 
-Occlusion sensitivity~\cite{zeilerFergus2014} and Grad-CAM~\cite{selvaraju2017gradcam}
+Occlusion sensitivity \citep{zeilerFergus2014} and Grad-CAM \citep{selvaraju2017gradcam}
 were applied to every one of the 75 models, with the general form of
 Sections~\ref{sec:background-occlusion} and~\ref{sec:background-gradcam}. Both explain
 the same quantity, the positive-class logit $z_1$, so the target logit $z$ of
@@ -450,7 +428,7 @@ second method from another of the families of Section~\ref{sec:background-occlus
 so that a method that changes the input and a method that reads gradients inside the
 network are compared on the same crops. LRP, the method of the 2025 study, belongs to
 the third family and was not used. It passes relevance backwards through a rule for
-each layer, and its heatmaps depend on which rules are chosen~\cite{montavon2019lrp},
+each layer, and its heatmaps depend on which rules are chosen \citep{montavon2019lrp},
 so LRP would have required a further set of choices, and given the scope of the
 thesis, the comparison was limited to two methods. A direct comparison
 with the LRP heatmaps of the 2025 study would also not be possible, since that study
@@ -476,9 +454,7 @@ draws come from one random stream with seed 42, shared by the 75 models, which w
 processed in the order of their output-folder names compared as character strings.
 These names begin with the material number, so that, e.g., material 10, blue plastic,
 precedes material 1, white plastic. A different order
-would give different samples. For the 27 retrained models, the analyses were repeated
-on the same crops as before; for the other 48, this recomputation reproduced the
-earlier values of $c$ to within 0.0003. Each model draws its own sample, so the
+would give different samples. Each model draws its own sample, so the
 photographs of one material at 90\% are in general not the same as those at 10\%. The
 comparison across ratios is therefore made on averages over different photographs; a
 paired comparison on the same photograph at all five ratios is shown in
@@ -496,7 +472,7 @@ $\Omega_{ij} = \{(u, v) : 16i \le u < 16i + 32,\ 16j \le v < 16j + 32\}$, where
 $u, v \in \{0, \dots, 255\}$ are the row and column of a pixel. The occluded crop
 $I^{(ij)}$ holds the value 0.5 in all three colour channels of these pixels, which is
 mid-grey because the inputs lie in $[0,1]$ and are not normalised, and the grey fill
-follows Zeiler and Fergus~\cite{zeilerFergus2014}. The result is a map $D \in \mathbb{R}^{15 \times 15}$
+follows \citet{zeilerFergus2014}. The result is a map $D \in \mathbb{R}^{15 \times 15}$
 of drops of $z_1$, in logit units. One map costs 225 occluded forward passes and one
 pass on the clean crop. Two further fills were used as a check (paragraph \emph{Fill
 colour}).
@@ -509,7 +485,7 @@ logit map of the same crop ranged from $-2.405$ to $3.145$. The logit does not
 saturate in this way. With two classes, $p_1$ depends only on the margin
 $z_1 - z_0$ (Section~\ref{sec:background-training}). The map nevertheless uses $z_1$
 alone, so that occlusion and Grad-CAM explain the same scalar, the pre-softmax score
-of the target class~\cite{selvaraju2017gradcam}. A drop in $z_1$ therefore measures
+of the target class \citep{selvaraju2017gradcam}. A drop in $z_1$ therefore measures
 lost evidence for the positive class, not necessarily a change of the decision.
 
 \paragraph{Choice of patch size and stride}
@@ -520,7 +496,7 @@ $(256 - 32 + 1)^2 = 50{,}625$, i.e., about 38 million instead of 168,750 occlude
 passes for the 750 analyses. The second is the scale of the network's own features. Starting
 from one pixel, each $3 \times 3$ convolution widens the receptive field by two pixel
 spacings, and each $2 \times 2$ pooling widens it by one spacing and doubles the
-spacing \cite{araujo2019computing}. Through the four convolutional layers and the
+spacing \citep{araujo2019computing}. Through the four convolutional layers and the
 three poolings between them, the field grows as
 $1 \to 3 \to 4 \to 8 \to 10 \to 18 \to 22 \to 38$. A unit of the fourth convolutional
 layer therefore sees $38 \times 38$ input pixels, and neighbouring units are 8 pixels
@@ -541,7 +517,7 @@ steel, aluminium and grey plastic, whose surfaces are grey or reflect grey
 surroundings. Occlusion was therefore repeated with two further fills. The black fill
 writes 0.0 into all three channels of $\Omega_{ij}$. The blur fill replaces the pixels
 of $\Omega_{ij}$ by those of a copy of the crop filtered with a Gaussian kernel of
-$31 \times 31$ pixels and standard deviation 8 pixels \cite{torchvision2025gaussianblur}, which
+$31 \times 31$ pixels and standard deviation 8 pixels \citep{torchvision2025gaussianblur}, which
 removes texture and edges and keeps the local colour. Neither is neutral for every
 workpiece either: a black patch resembles black plastic, and a blurred patch changes
 little on a workpiece with a uniform surface. All three fills were applied to the same
@@ -569,7 +545,7 @@ Section~\ref{sec:methodology-reduction}, and how often they occur is reported in
 Section~\ref{sec:results-degeneracy}.
 
 % ============================================================================
-\subsection{From Heatmap to a Single Number}
+\section{From Heatmap to a Single Number}
 \label{sec:methodology-reduction}
 
 The occlusion map $D$ and the Grad-CAM map $G$ have different ranges and resolutions.
@@ -655,7 +631,7 @@ H = \frac{1}{255}\, \mathcal{U}\big( \lfloor 255\, \hat{H} \rfloor \big),
 where $\lfloor \cdot \rfloor$ rounds down element by element, which is how the
 conversion to an 8-bit image truncates; $\mathcal{U}$ is the bilinear resizing of
 Pillow applied to that 8-bit image, with output size $256 \times 256$ pixels and
-integer output values in $\{0, \dots, 255\}$ \cite{pillow2025docs}; and
+integer output values in $\{0, \dots, 255\}$ \citep{pillow2025docs}; and
 $H \in \{0, \tfrac{1}{255}, \dots, 1\}^{256 \times 256}$. The 8-bit step is inherited
 from the function that draws the displayed heatmaps, and $c$ is computed on the same
 maps. It lowers every value by less than $1/255$ before the interpolation and sets
@@ -697,23 +673,23 @@ Tab.~\ref{tab:reference-square} lists the resulting squares.
 
 \begin{table}[htbp]
 \centering
-\caption[Reference square per ratio]{Reference square $B_r$ for each object-to-image (O2I) ratio $r$ in the
-$256 \times 256$ input (Eqs.~\eqref{eq:box-side} and~\eqref{eq:box-bounds}). Area is
-the fraction of the input covered by the square, and the margin is the distance
-between the square and the image border.}
+\caption[Reference square per ratio]{Reference square $B_r$ for each O2I ratio $r$ in
+the $256 \times 256$ input (Eqs.~\eqref{eq:box-side} and~\eqref{eq:box-bounds}). Area is
+the fraction of the input covered by the square, and the margin is the distance between
+the square and the image border.}
 \label{tab:reference-square}
 \begin{tabular}{lrrrrr}
-\hline
-\textbf{O2I} & $\boldsymbol{s^{B}_{r}}$ \textbf{(px)} & \textbf{Side (px)} &
-$\boldsymbol{|B_r|}$ \textbf{(px\textsuperscript{2})} & \textbf{Area} &
-\textbf{Margin (px)} \\
-\hline
+\toprule
+O2I & $\boldsymbol{s^{B}_{r}}$ (px) & Side (px) &
+$\boldsymbol{|B_r|}$ (px\textsuperscript{2}) & Area &
+Margin (px) \\
+\midrule
 90\% & 242.86 & 242 & 58,564 & 0.894 & 7 \\
 70\% & 214.18 & 214 & 45,796 & 0.699 & 21 \\
 50\% & 181.02 & 182 & 33,124 & 0.505 & 37 \\
 30\% & 140.22 & 140 & 19,600 & 0.299 & 58 \\
 10\% & 80.95 & 80 & 6,400 & 0.098 & 88 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
@@ -787,10 +763,9 @@ Eq.~\eqref{eq:center-frac} can be rewritten as
 
 so that by Eq.~\eqref{eq:odds}, e.g., $c = 0.75$ means that a pixel inside the square
 is on average three times as important as a pixel outside it. Measures of how much an
-explanation falls on the object or on its context are also used by Dreyer et
-al.~\cite{dreyer2023revealing} and Le et al.~\cite{le2025shortcut}. A sum-based relative of $c$ is
+explanation falls on the object or on its context are also used by \citet{dreyer2023revealing} and \citet{le2025shortcut}. A sum-based relative of $c$ is
 the share of saliency inside the bounding box, the energy-based pointing game used with
-Score-CAM \cite{wang2020scorecam}; unlike $c$, it depends on the area of the box.
+Score-CAM \citep{wang2020scorecam}; unlike $c$, it depends on the area of the box.
 
 \paragraph{Worked example}
 \label{sec:methodology-example}
@@ -919,7 +894,13 @@ this rule only. For Grad-CAM, $\hat{H}^{\mathrm{cam}}$ is enlarged by
 nearest-neighbour repetition into blocks of $8 \times 8$ pixels, also without the
 8-bit step. Fig.~\ref{fig:resolution-display} places the measured grids, the block
 maps of Eq.~\eqref{eq:block-map} and the interpolated maps of both methods side by
-side for one crop, the photograph of Fig.~\ref{fig:bg-methods-real} at 90\%. The smooth
+side for one crop, the photograph of Fig.~\ref{fig:bg-methods-real} at 90\%. From left to right, its top row gives the measured
+$15 \times 15$ occlusion map $D$ in logit units, with negative drops in blue and positive
+drops in red, the positive drops as $16 \times 16$-pixel blocks, the same drops with the
+bilinear interpolation used in all other figures, and min-max scaling with bilinear
+interpolation. Its bottom row gives the measured $32 \times 32$ Grad-CAM map $G$, its
+$8 \times 8$-pixel blocks, the interpolated map and the crop itself, and all normalised
+maps run from blue (low) to red (high). The smooth
 transitions of the interpolated maps are not present in the measurements. For this
 crop, the interpolation raises $c$ for positive-drops occlusion from 0.709 to 0.743,
 and for Grad-CAM only from 0.995 to 0.996. The effect of the interpolation on $c$ over
@@ -928,16 +909,11 @@ all 750 analyses is reported in Section~\ref{sec:results-interpolation}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{resolution_black_plastic_r90.pdf}
-\caption[Measured, block and interpolated heatmaps of one crop]{Heatmaps of the
-black-plastic photograph 2024-04-15-095336 at an object-to-image (O2I) ratio of 90\%,
-explained by the black-plastic model of that ratio, with the reference square $B_{90}$
-dashed. (Top, occlusion, left to right) measured $15 \times 15$ map $D$ in logit units,
-blue for negative and red for positive drops; positive drops without interpolation
-($16 \times 16$-pixel blocks); positive drops with bilinear interpolation, as in all
-other figures; min-max scaling with bilinear interpolation. (Bottom, Grad-CAM, left to
-right) measured $32 \times 32$ map $G$; without interpolation ($8 \times 8$-pixel
-blocks); with bilinear interpolation; the crop itself. Normalised maps run from blue
-(low) to red (high), and the value in each panel title is the centre measure $c$.}
+\caption[Measured, block and interpolated heatmaps of one crop]{Measured, block and
+interpolated heatmaps of photograph 2024-04-15-095336 at an O2I ratio of 90\%, explained
+by the black-plastic model of that ratio, with the reference square $B_{90}$ dashed. The
+top row shows occlusion and the bottom row Grad-CAM, and the value in each panel title
+is the centre measure $c$. Source: created by the author at the BTU AI-Lab.}
 \label{fig:resolution-display}
 \end{figure}
 
@@ -956,11 +932,11 @@ importance entirely outside the square, so agreement between the methods there i
 partly built in, and these values are read with this limitation in mind.
 % keep this paragraph directly after "Computed versus displayed resolution": Ch. 3 cites that label for the 21-px margin
 
-\subsection{Testing the Heatmaps Directly}
+\section{Testing the Heatmaps Directly}
 \label{sec:methodology-intervention}
 
 A heatmap is not ground truth: it can miss evidence that a model uses and show
-importance where the model uses none~\cite{adebayo2018sanity}. The reference values of
+importance where the model uses none \citep{adebayo2018sanity}. The reference values of
 Section~\ref{sec:methodology-reference} rule out the geometry of the square and the
 resolution of a method as the cause of a trend in $c$, but not a cause inside the
 method itself. The checks of this section were added after the analysis of
@@ -981,9 +957,9 @@ models of that ratio in three versions: the crop itself, the crop with only the
 background left, $I^{[\chi = 1]}$, and the crop with only the workpiece left,
 $I^{[\chi = 0]}$, both with the grey fill. For each model and version, the F1, the
 recall, the false-positive rate, i.e., the share of crops of the other 14 materials
-called positive, and the ROC-AUC~\cite{fawcett2006roc} are computed; for the crop
+called positive, and the ROC-AUC \citep{fawcett2006roc} are computed; for the crop
 itself also the average precision, the precision averaged over the recall levels at
-which positive crops are found~\cite{pedregosa2011scikit}, which, like the ROC-AUC, does
+which positive crops are found \citep{pedregosa2011scikit}, which, like the ROC-AUC, does
 not depend on the threshold $p_1 = 0.5$. The test split is only scored here with fixed
 models, and no setting is chosen from it. The F1 of the unchanged crops reproduces
 Tab.~\ref{tab:ovr-full-results} exactly.
@@ -1035,10 +1011,8 @@ centre measures and to $c_{\mathrm{int}}$, in the order in which the scripts com
 
 \begin{algorithm}[tbp]
 \caption[Centre measures of one crop]{Centre measures of one analysed crop $I$ at ratio
-$r$: positive-drops occlusion and Grad-CAM (Sections~\ref{sec:methodology-explainability}
-and~\ref{sec:methodology-reduction}) and the intervention centre measure
-(Section~\ref{sec:methodology-cint}). $z_1(\cdot)$ is the positive-class logit of the
-trained model in evaluation mode.}
+$r$ for positive-drops occlusion, Grad-CAM and the intervention centre measure.
+$z_1(\cdot)$ is the positive-class logit of the trained model in evaluation mode.}
 \label{alg:centre-measures}
 \begin{algorithmic}[1]
 \State $z \gets z_1(I)$ \Comment{logit of the unchanged crop}
@@ -1066,7 +1040,7 @@ margin $z_1 - z_0$, on which the decision depends, as the target instead of $z_1
 second attaches Grad-CAM to the third convolutional layer, c3, whose 128 maps of
 $64 \times 64$ cells are taken after its ReLU and before the third pooling. The third
 replaces the averaged weights of Eq.~\eqref{eq:bg-gradcam-weights} by HiResCAM of
-Draelos and Carin~\cite{draelos2021hirescam},
+\citet{draelos2021hirescam},
 
 \begin{equation}
 G^{\mathrm{HR}} = \mathrm{ReLU}\Big( \sum_{k=1}^{K}
@@ -1077,7 +1051,7 @@ G^{\mathrm{HR}} = \mathrm{ReLU}\Big( \sum_{k=1}^{K}
 where $\odot$ is the element-wise product and $G^{\mathrm{HR}} \in
 \mathbb{R}_{\ge 0}^{U \times V}$; every cell is weighted with its own gradient instead
 of the mean over the map. If the layers after the feature maps are a global average
-pooling and one linear layer, as for CAM~\cite{zhou2016cam}, the gradient is the same
+pooling and one linear layer, as for CAM \citep{zhou2016cam}, the gradient is the same
 at every cell and $G^{\mathrm{HR}}$ equals the Grad-CAM map $G$, which was confirmed for
 the implementation on a test head. In the network of
 Tab.~\ref{tab:cnn-architecture}, the $4 \times 4$ adaptive pooling and fc1 give each of
@@ -1094,7 +1068,7 @@ With three background cells instead of one, the mean gradient becomes
 $(2 - 3)/4 = -0.25$: Grad-CAM now counts the feature on the workpiece with the wrong
 sign, while HiResCAM still gives 2 there. This is the effect that
 Eq.~\eqref{eq:weight-split} measures as the ratio falls. Draelos and Carin prove that HiResCAM shows only locations that the model
-used for networks that end in one fully connected layer~\cite{draelos2021hirescam}.
+used for networks that end in one fully connected layer \citep{draelos2021hirescam}.
 This network ends in two (fc1 and fc2, with a ReLU between them), so the guarantee does
 not hold here, and HiResCAM is used as a second gradient method rather than as ground
 truth. All variants use the normalisation by the maximum, the upsampling of
@@ -1125,8 +1099,7 @@ to its effect there.
 \paragraph{Untrained network}
 \label{sec:methodology-untrained}
 All 75 models start from the same weights, drawn with seed 42 before the first epoch
-(Section~\ref{sec:methodology-training}). As a sanity check in the sense of Adebayo et
-al.~\cite{adebayo2018sanity}, Grad-CAM and HiResCAM were also computed for this
+(Section~\ref{sec:methodology-training}). As a sanity check in the sense of \citet{adebayo2018sanity}, Grad-CAM and HiResCAM were also computed for this
 untrained network on the 750 crops. A heatmap that looks the same for the untrained
 and the trained network would reflect the architecture or the input rather than what
 the model has learned. On the 150 crops at 10\%, two further quantities were recorded:
@@ -1145,7 +1118,7 @@ models by the Pearson correlation coefficient between its per-model mean of $c$ 
 that of $c_{\mathrm{int}}$, and by their mean absolute difference.
 
 % ============================================================================
-\subsection{Aggregation and Link to the Research Question}
+\section{Aggregation and Link to the Research Question}
 \label{sec:methodology-aggregation}
 
 \paragraph{Aggregation over models}
@@ -1193,7 +1166,7 @@ $\phi$ falls as the ratio falls.
 \paragraph{Comparisons and how they are read}
 \label{sec:methodology-tests}
 Each comparison is a two-sided one-sample Student's $t$ test on 15 per-model values,
-with 14 degrees of freedom \cite{student1908probable, virtanen2020scipy}: a mean difference
+with 14 degrees of freedom \citep{student1908probable, virtanen2020scipy}: a mean difference
 or slope $\bar{d}$ is tested against 0 with $t = \bar{d}/\mathrm{SE}$
 (Eq.~\eqref{eq:ratio-se}), and a mean $\bar{c}$ against 0.5 with
 $t = (\bar{c} - 0.5)/\mathrm{SE}$. The tests treat the 15 materials as units; they
@@ -1224,7 +1197,7 @@ therefore not read as confirmatory evidence. As a working threshold, a result is
 clear only if $p < 0.01$; a value
 between 0.01 and 0.1 is reported with its numbers but not read as evidence on its own.
 With a threshold of 0.05 instead, neither answer to the research question would change;
-only some of the secondary comparisons and checks would. A Holm correction~\cite{holm1979simple} over the five
+only some of the secondary comparisons and checks would. A Holm correction \citep{holm1979simple} over the five
 comparisons of Section~\ref{sec:results-divergence} that bear on the research question,
 namely the paired changes from 90\% to 10\% of the test F1, of $c_{\mathrm{cam}}$ and of
 $c_{\mathrm{occ}}$, the method difference at 10\% and $c_{\mathrm{cam}}$ against 0.5
@@ -1235,7 +1208,7 @@ Even the 15 models of one ratio are not fully independent, since they are traine
 the same crops with different labels and start from the same weights; the test treats
 them as independent. The SE also contains no variation between training runs, because
 each cell is a single run with a single seed, unlike, e.g., the six seeds per setting
-of Pawlowski et al.~\cite{pawlowski2019needles}. Small differences between neighbouring
+of \citet{pawlowski2019needles}. Small differences between neighbouring
 ratios are therefore not interpreted.
 
 \paragraph{Order of the analysis}
