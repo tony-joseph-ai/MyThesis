@@ -51,14 +51,13 @@ limited by the training length is checked in Section~\ref{sec:results-200epoch}.
 \caption[Loss curves at an O2I ratio of 90\%]{Training (blue) and validation (orange)
 loss of the 15 one-vs-rest models at an O2I ratio of 90\% over 100 epochs, both with the
 class weights of Eq.~\eqref{eq:class-weight}. The dotted line marks the epoch with the
-highest validation F1, whose number is given in the panel title. Source: created by the
-author at the BTU AI-Lab.}
+highest validation F1, whose number is given in the panel title. Source: created by the author.}
 \label{fig:loss-curves}
 \end{figure}
 \subsection{Test F1 by Material and Ratio}
 \label{sec:results-primary-table}
 
-Tab.~\ref{tab:ovr-full-results} lists the test F1 of all 75 models. The mean over the
+Tab.~\ref{tab:ovr-full-results} lists the test F1 of all 75 models, with the highest F1 at each ratio and the highest mean in bold. The mean over the
 15 materials falls from $0.813 \pm 0.034$ at 90\%, where the box fills most of
 the crop and which serves as the baseline, to $0.720 \pm 0.048$ at 10\%. Paired
 by material, the change from 90\% to 10\% is $-0.093 \pm 0.020$ ($t(14) = -4.76$,
@@ -88,13 +87,13 @@ Brass          & 0.906 & 0.868 & 0.836 & 0.939 & 0.772 & 0.864 \\
 Steel          & 0.516 & 0.523 & 0.557 & 0.531 & 0.286 & 0.483 \\
 Orange AG      & 0.889 & 0.793 & 0.807 & 0.727 & 0.756 & 0.794 \\
 Yellow AG      & 0.857 & 0.885 & 0.852 & 0.780 & 0.692 & 0.813 \\
-Blue AG        & 0.941 & 0.926 & 0.943 & 0.962 & 0.913 & 0.937 \\
+Blue AG        & 0.941 & 0.926 & 0.943 & \textbf{0.962} & 0.913 & 0.937 \\
 Red AG         & 0.717 & 0.679 & 0.741 & 0.642 & 0.644 & 0.684 \\
 Red plastic    & 0.727 & 0.655 & 0.698 & 0.712 & 0.645 & 0.688 \\
 Blue plastic   & 0.920 & 0.941 & 0.902 & 0.923 & 0.821 & 0.901 \\
 Yellow plastic & 0.902 & 0.913 & 0.936 & 0.909 & 0.889 & 0.910 \\
 Grey plastic   & 0.766 & 0.745 & 0.696 & 0.739 & 0.642 & 0.717 \\
-Black plastic  & 0.962 & 0.962 & 0.960 & 0.960 & 0.936 & 0.956 \\
+Black plastic  & \textbf{0.962} & \textbf{0.962} & \textbf{0.960} & 0.960 & \textbf{0.936} & \textbf{0.956} \\
 Light wood     & 0.741 & 0.756 & 0.833 & 0.741 & 0.727 & 0.760 \\
 Dark wood      & 0.800 & 0.814 & 0.806 & 0.830 & 0.816 & 0.813 \\
 \midrule
@@ -209,7 +208,7 @@ Method diff. & $\boldsymbol{t}$; $\boldsymbol{p}$; $\boldsymbol{n_>}$ &
 sensitivity (orange squares) and Grad-CAM (blue circles) against the O2I ratio, as the
 mean $\pm$ one SE over the 15 materials. The thin dashed lines give the reference value
 of each method from Tab.~\ref{tab:reference}, and the dotted line the value 0.5 of a
-flat map. Source: created by the author at the BTU AI-Lab.}
+flat map. Source: created by the author.}
 \label{fig:centerfrac-ratio}
 \end{figure}
 
@@ -377,8 +376,9 @@ than one Grad-CAM cell and one occlusion step, so a map at 90\% cannot place a m
 entirely outside the square, although interpolated values in the 7-pixel ring can still
 lower $c$ (Section~\ref{sec:methodology-resolution}). In all three
 figures, occlusion uses the positive drops and the grey fill, and both maps are
-interpolated for display and overlaid in red on a fixed scale from 0 (no colour) to 1
-(the maximum of each map).
+interpolated for display. They are overlaid on the crop in grey, so that the red parts
+of the learning factory do not hide them, on a fixed colour scale from blue (low) to red
+(the maximum of each map), and a pixel without importance shows only the grey crop.
 \paragraph{Black plastic}
 Fig.~\ref{fig:same-black} shows the photograph that is also the real example of
 Fig.~\ref{fig:bg-methods-real} and of the worked example in
@@ -404,8 +404,7 @@ relates the result to the 2025 study.
 plastic (2024-04-15-095336) at the five O2I ratios, with the crop and its reference
 square $B_r$ (top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the
 black-plastic model of its ratio. The panel titles give the probability $p_1$ of the
-positive class and the centre measure $c$. Source: created by the author at the BTU
-AI-Lab.}
+positive class and the centre measure $c$. Source: created by the author.}
 \label{fig:same-black}
 \end{figure}
 
@@ -435,7 +434,7 @@ and discussed in Section~\ref{sec:discussion-material}.
 (2024-04-11-103345) at the five O2I ratios, with the crop and its reference square $B_r$
 (top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the steel model
 of its ratio. The panel titles give the probability $p_1$ of the positive class and the
-centre measure $c$. Source: created by the author at the BTU AI-Lab.}
+centre measure $c$. Source: created by the author.}
 \label{fig:same-steel}
 \end{figure}
 
@@ -462,7 +461,7 @@ it.
 (2024-04-15-100518) at the five O2I ratios, with the crop and its reference square $B_r$
 (top), occlusion sensitivity (middle) and Grad-CAM (bottom), each from the aluminium
 model of its ratio. The panel titles give the probability $p_1$ of the positive class
-and the centre measure $c$. Source: created by the author at the BTU AI-Lab.}
+and the centre measure $c$. Source: created by the author.}
 \label{fig:same-alu}
 \end{figure}
 
