@@ -27,8 +27,9 @@ r = 100 \cdot \frac{A_{\mathrm{obj}}}{A_{\mathrm{img}}},
 
 where $A_{\mathrm{obj}}$ is the area of the object and $A_{\mathrm{img}}$ the area of
 the image, both in pixels, and $r$ is the ratio in percent. This thesis uses the same
-definition, with a square crop centred on the box as the image and the area of the
-bounding box as the object area. The box also encloses some background around the
+definition, with a square crop centred on the bounding box of the workpiece as the image and the
+area of that box as the object area. Each photograph of the dataset carries one such box
+in its label (Section~\ref{sec:methodology-dataset}). The box also encloses some background around the
 cylindrical workpiece, so the workpiece itself covers less of the crop than $r$ states,
 roughly between $0.79\,r$ when it is seen from above, a circle in its box, and $r$ when
 it is seen from the side. The crop equations and the rule for crops that would extend beyond the
