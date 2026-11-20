@@ -47,10 +47,10 @@ their colour with the background.
 The dataset of this thesis was created in the later study by \citet*{schneidereitYOLOv8}, referred to below as the 2025 study. It
 contains 15 cylindrical workpieces of different materials and colours, one physical piece
 each, namely six plastics, four workpieces of acrylic glass (AG), three metals and two
-woods; the wooden ones are simple dowels (Section~\ref{sec:background-dataset}). Each
+woods; the wooden ones are simple dowels (Section~\ref{sec:methodology-dataset}). Each
 workpiece was photographed at the same 33 positions in each of the five stations of the
 learning factory (34 at station five in the copy used here,
-Section~\ref{sec:background-dataset}). Lighting and camera position changed between positions, but at a given
+Section~\ref{sec:methodology-dataset}). Lighting and camera position changed between positions, but at a given
 position they are the same for all 15 workpieces, so that at one position only the
 workpiece changes. Several workpieces were chosen on purpose because they resemble
 parts of the learning factory, e.g., the black workpiece because it matches the many
@@ -58,7 +58,7 @@ black factory parts. With YOLOv8 detectors and heatmaps computed by
 layer-wise relevance propagation (LRP) \citep{bach2015lrp, montavon2019lrp}, the 2025
 study found that some background parts influenced the detection, and black plastic was the
 workpiece that its YOLOv8n models detected least accurately. Section~\ref{sec:related-work-fischertechnik} reviews both
-studies, and Section~\ref{sec:background-dataset} describes the copy of the dataset used
+studies, and Section~\ref{sec:methodology-dataset} describes the copy of the dataset used
 here.
 
 \paragraph{Why the object-to-image ratio matters}
@@ -210,10 +210,10 @@ highest mean test F1 here (0.956); the two studies differ in task, metric and tr
 \paragraph{Structure of the thesis}
 Chapter~\ref{sec:related-work} reviews the earlier work on the learning factory and the
 literature on the O2I ratio, background reliance, explainability and small objects, and
-states the gap this thesis fills. Chapter~\ref{sec:background} introduces the dataset, the O2I ratio,
+states the gap this thesis fills. Chapter~\ref{sec:background} introduces the O2I ratio,
 the CNN and its training, the two explainability methods and the comparison of object
 and background in a heatmap, on a toy example and on one real crop.
-Chapter~\ref{sec:methodology} describes the crops and their split, the one-vs-rest
+Chapter~\ref{sec:methodology} describes the dataset, the crops and their split, the one-vs-rest
 design, the training, the explainability pipeline, the reduction of a heatmap to the
 centre measure and how the results are aggregated and read.
 Chapter~\ref{sec:methodology} also defines the direct tests of the heatmaps.
@@ -221,4 +221,4 @@ Chapter~\ref{sec:results} reports the classification results, the centre measure
 both methods with their reference values, the direct tests, the robustness checks and
 the 200-epoch extension. Finally, Chapter~\ref{sec:discussion} answers the research question,
 discusses the materials that depart from the average and closes with the limitations,
-future work and a conclusion.
+a conclusion and future work.

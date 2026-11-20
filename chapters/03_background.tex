@@ -6,107 +6,13 @@ Section~\ref{sec:related-work-gap} ended with a gap: none of the reviewed studie
 compares two explainability methods on the same crops as a function of the
 object-to-image (O2I) ratio, against a complex industrial background, with a per-pixel
 measure of whether the evidence lies on the object or on the background. The concepts
-needed to close it follow the order of the experiment, namely the data
-(Section~\ref{sec:background-dataset}), the controlled variable
+needed to close it follow the order of the experiment, namely the controlled variable
 (Section~\ref{sec:background-o2i}), the classifier and its training
 (Sections~\ref{sec:background-cnn} and~\ref{sec:background-training}), the two
 explainability methods (Sections~\ref{sec:background-occlusion}
 and~\ref{sec:background-gradcam}) and the measure that compares them
-(Section~\ref{sec:background-comparison}).
-
-% ============================================================================
-\section{The Learning Factory Dataset}
-\label{sec:background-dataset}
-
-\paragraph{The learning factory}
-All images in this thesis show the Fischertechnik Industry~4.0 learning factory, a
-model production line with five modules, namely a sorting machine, an oven, a milling
-machine, a high-bay warehouse and a vacuum gripper \citep{schneidereitFischertechnik2023,
-schneidereitYOLOv8}. Fig.~\ref{fig:bg-dataset}\,(a) shows one photograph of it. Around a
-workpiece, the photographs contain red and blue building blocks, many black parts,
-cables and the grey base plate. This is the complex background that both earlier
-studies on the learning factory examined.
-
-\paragraph{Workpieces and capture protocol}
-The dataset was created by \citet*{schneidereitYOLOv8}. It contains 15 cylindrical workpieces that differ in
-material and colour and fall into four families: six plastics (white, red, blue,
-yellow, grey and black), four workpieces of acrylic glass (AG; orange, yellow, blue and
-red), three metals (aluminium, brass and steel) and two woods (light and dark). The plastic
-workpieces are 3D printed from PETG, the acrylic glass is fluorescent, and the plastic,
-AG and metal workpieces match the dimensions of the default workpieces of the learning
-factory, while the wooden ones are knothole dowels. Each
-workpiece was photographed at the same 33 positions in each of the five modules, or
-stations, which gives 165 photographs per workpiece and 2,475 in
-total.\footnote{The copy of the dataset used in this thesis holds 166 photographs per
-material, 2,490 in total, with 33 at each of the stations one to four and 34 at station
-five. All 166 are used.} Between recordings, the lighting was varied and the camera
-position was changed, so the workpieces were photographed from different angles and
-distances. At a given position, viewpoint and lighting are the same for all 15
-workpieces. Within one material, the background and the viewpoint therefore change from
-photograph to photograph, while across materials at one position, by design, only the
-workpiece changes.
-
-\paragraph{Labels}
-Each photograph has $960 \times 720$ pixels and was labelled with labelImg in the format
-of the YOLO (You Only Look Once) detector \citep{redmon2016yolo}. A label file holds one
-line per object, and every photograph of this dataset contains exactly one workpiece.
-The line consists of a class index and four numbers, the box centre $(x_c, y_c)$, the
-width $w$ and the height $h$, each divided by the width or height of the photograph so
-that they lie in $[0,1]$. Fig.~\ref{fig:bg-dataset}\,(b) marks these quantities for
-photograph 2024-04-15-095336, a photograph of black plastic from the validation split
-that serves as the real example throughout this chapter. Its box measures
-$36 \times 33$ pixels, i.e., about 0.17\% of the photograph, and is smaller than the
-median box over all 2,490 labels, $50 \times 46$ pixels or 0.33\%. On the whole
-photograph, the workpiece is thus a small object by the 1\% criterion collected by
-\citet{nikouei2025smallobject} (Section~\ref{sec:related-work-industrial}).
-The box, however, tells where the workpiece is, and that makes it possible to cut crops
-in which it covers a prescribed part of the image.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{ch3_figures/fig_ch3_dataset.pdf}
-\caption[Learning factory and the 15 workpieces]{The Fischertechnik Industry~4.0
-learning factory and the 15 workpieces of the dataset. Panel (a) shows photograph
-2024-04-15-095336 with the bounding box of the black-plastic workpiece in yellow, panel
-(b) the enlarged region with the quantities of its YOLO label, and panel (c) the 15
-workpieces at the same position, cropped at an O2I ratio of 90\%. Source: created by the
-author at the BTU AI-Lab from photographs of the dataset of \citet{schneidereitYOLOv8}.}
-\label{fig:bg-dataset}
-\end{figure}
-
-\paragraph{Why this dataset}
-Four properties make the dataset suitable for the research question. The background
-shares colours with several workpieces. Both earlier studies traced detection errors to
-such an overlap, the 2023 study for the red workpieces and the 2025 study, with a hedge,
-for black plastic among the many black parts of the learning factory
-(Section~\ref{sec:related-work-fischertechnik}). Fig.~\ref{fig:bg-dataset}\,(c) shows
-the overlap at a single position. Red plastic and red AG almost disappear against the
-red plate on which they lie there, and aluminium, steel and grey plastic look much
-alike, a similarity that the 2025 study also points out. Aluminium also occurs in the
-learning factory itself, which uses it for the supports of the suction
-pads \citep{schneidereitYOLOv8}. These similarities are intended: the 2025 study chose
-several workpieces for them, e.g., the black workpiece because it matches the many black
-parts of the learning factory. For black plastic, the
-workpiece of the real example, the overlap is with the dark parts of the learning
-factory rather than with the plate. Since every material was photographed at the same
-positions, all models are trained on the same set of scenes, and a difference between
-them cannot come from a different set of backgrounds; because the split is drawn per
-material (Section~\ref{sec:methodology-split}), the test and analysed crops of different
-materials come from different positions. By design, the background carries no
-information about which material is present. The single box per
-photograph allows a crop with a prescribed share of workpiece, which is the variable of
-the experiment. Finally, the per-material results of the 2025 study give a reference
-point for the material ranking found here, although task and metric differ
-(Sections~\ref{sec:related-work-fischertechnik} and~\ref{sec:discussion-material}).
-
-\paragraph{Limitation}
-Each material is represented by one physical workpiece that was photographed 166 times.
-A model can therefore learn properties of that particular piece, e.g., a scratch or the
-grain pattern of one piece of wood, together with properties of its material, and the
-data cannot separate the two. The task is therefore closer to recognising one object
-per material than to material classification in general, and the results of this thesis
-describe these 15 workpieces.
-Whether they carry over to other workpieces of the same materials is not tested.
+(Section~\ref{sec:background-comparison}). The learning factory dataset on which they are
+applied is described with the methodology in Section~\ref{sec:methodology-dataset}.
 
 % ============================================================================
 \section{The Object-to-Image Ratio}
@@ -121,8 +27,9 @@ r = 100 \cdot \frac{A_{\mathrm{obj}}}{A_{\mathrm{img}}},
 
 where $A_{\mathrm{obj}}$ is the area of the object and $A_{\mathrm{img}}$ the area of
 the image, both in pixels, and $r$ is the ratio in percent. This thesis uses the same
-definition, with a square crop centred on the box as the image and the area of the
-bounding box as the object area. The box also encloses some background around the
+definition, with a square crop centred on the bounding box of the workpiece as the image and the
+area of that box as the object area. Each photograph of the dataset carries one such box
+in its label (Section~\ref{sec:methodology-dataset}). The box also encloses some background around the
 cylindrical workpiece, so the workpiece itself covers less of the crop than $r$ states,
 roughly between $0.79\,r$ when it is seen from above, a circle in its box, and $r$ when
 it is seen from the side. The crop equations and the rule for crops that would extend beyond the
@@ -161,7 +68,9 @@ ratio unchanged, but the workpiece has lost half of its width in pixels.
 
 \paragraph{The real crops}
 Fig.~\ref{fig:bg-o2i}\,(d) shows the same construction on photograph
-2024-04-15-095336. The native crop sides are 36, 42, 48, 62 and 108 pixels at the five
+2024-04-15-095336, a photograph of black plastic from the learning factory dataset
+(Section~\ref{sec:methodology-dataset}) that serves as the real example of this
+chapter. The native crop sides are 36, 42, 48, 62 and 108 pixels at the five
 ratios, and every crop is resized to $256 \times 256$ pixels. Below each crop, the figure gives this side together with the side fraction $\sqrt{r/100}$ of the dashed square, which has the area of the bounding box. This photograph is
 therefore enlarged about 7 times at 90\% and about 2.4 times at 10\%. At 90\% and 70\%, the crop shows almost only the
 workpiece, with a thin strip of red plate and a dark band along the top edge. At 10\%,
@@ -739,7 +648,7 @@ maps at once in one forward and one backward pass.
 of 70\%, explained by the 70\% black-plastic model. Panels (b) and (e) are the measured
 maps, while (c) and (f) are normalised and bilinearly interpolated as for the centre
 measure $c$, so their smooth appearance comes from the interpolation, not from the
-measurement. Source: created by the author at the BTU AI-Lab.}
+measurement. Source: created by the author.}
 \label{fig:bg-methods-real}
 \end{figure}
 

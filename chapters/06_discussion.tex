@@ -4,7 +4,7 @@
 
 This chapter answers the research question from the results of
 Chapter~\ref{sec:results}, discusses the materials that depart from the average, and
-closes with the limitations of the study, possible future work and a conclusion.
+closes with the limitations of the study, a conclusion and possible future work.
 
 % ============================================================================
 \section{Answering the Research Question}
@@ -253,7 +253,7 @@ models.
 
 \paragraph{Data}
 Each material is represented by one physical workpiece photographed 166 times
-(Section~\ref{sec:background-dataset}), so the results describe these 15 workpieces,
+(Section~\ref{sec:methodology-dataset}), so the results describe these 15 workpieces,
 and whether they carry over to other workpieces of the same materials is not tested.
 The 2025 study names the limited number of original images as a limitation of its own.
 The share of background also changes together with the scale of the workpiece, the
@@ -313,6 +313,38 @@ workpiece if the background carried information about the material, as in many
 industrial settings, cannot be tested with this dataset.
 
 % ============================================================================
+\section{Conclusion}
+\label{sec:discussion-conclusion}
+
+This thesis asked at which O2I ratio the complex background of the Fischertechnik
+learning factory begins to dominate the material classification of a CNN, and whether
+explainability methods can detect this shift. For 15 workpieces, 75 one-vs-rest models
+were trained from scratch on crops at five ratios, occlusion sensitivity and Grad-CAM
+were compared through the centre measure $c$, and both were checked against direct tests
+that remove the workpiece or the background.
+
+Classification degrades as the workpiece takes up less of the crop: the mean test F1
+falls from 0.813 at 90\% to 0.720 at 10\%, mostly below 50\%, so crops in which the
+bounding box covers at least half of the area lose little F1 on average. The background,
+however, does not take over the decision at any of these ratios. Without the workpiece,
+the models cannot tell the materials apart; without the background, they rank the crops
+as well as with it; and the intervention centre measure stays well above 0.5 at every
+ratio without falling. The errors are mostly confusions between look-alike workpieces,
+above all among aluminium, steel and grey plastic.
+
+The two explainability methods disagree, and the direct tests show which of them to
+trust. Occlusion sensitivity, the method specified for this thesis, keeps its evidence
+on the workpiece on average over the materials, as the tests do. Grad-CAM shows evidence moving into the background as
+the ratio falls, a shift that the tests do not find. It arises from the averaging of
+gradients over a map whose positions the network weights differently, and HiResCAM,
+which avoids the averaging, agrees with occlusion.
+
+For work with the learning factory, this argues for checking a heatmap result against a
+test that intervenes on the input before reading it as evidence about the model. A
+second explainability method alone is not enough, and neither is the geometry of the
+measure: it can rule out geometry and resolution as causes, but not the method itself.
+
+% ============================================================================
 \section{Future Work}
 \label{sec:discussion-future}
 
@@ -355,35 +387,3 @@ lack. Explainability on the test split and on more crops per model, and heatmaps
 200-epoch models, would make the per-material values more than indicative, and more
 workpieces per material would show whether the results carry over beyond the 15 pieces
 photographed here.
-
-% ============================================================================
-\section{Conclusion}
-\label{sec:discussion-conclusion}
-
-This thesis asked at which O2I ratio the complex background of the Fischertechnik
-learning factory begins to dominate the material classification of a CNN, and whether
-explainability methods can detect this shift. For 15 workpieces, 75 one-vs-rest models
-were trained from scratch on crops at five ratios, occlusion sensitivity and Grad-CAM
-were compared through the centre measure $c$, and both were checked against direct tests
-that remove the workpiece or the background.
-
-Classification degrades as the workpiece takes up less of the crop: the mean test F1
-falls from 0.813 at 90\% to 0.720 at 10\%, mostly below 50\%, so crops in which the
-bounding box covers at least half of the area lose little F1 on average. The background,
-however, does not take over the decision at any of these ratios. Without the workpiece,
-the models cannot tell the materials apart; without the background, they rank the crops
-as well as with it; and the intervention centre measure stays well above 0.5 at every
-ratio without falling. The errors are mostly confusions between look-alike workpieces,
-above all among aluminium, steel and grey plastic.
-
-The two explainability methods disagree, and the direct tests show which of them to
-trust. Occlusion sensitivity, the method specified for this thesis, keeps its evidence
-on the workpiece on average over the materials, as the tests do. Grad-CAM shows evidence moving into the background as
-the ratio falls, a shift that the tests do not find. It arises from the averaging of
-gradients over a map whose positions the network weights differently, and HiResCAM,
-which avoids the averaging, agrees with occlusion.
-
-For work with the learning factory, this argues for checking a heatmap result against a
-test that intervenes on the input before reading it as evidence about the model. A
-second explainability method alone is not enough, and neither is the geometry of the
-measure: it can rule out geometry and resolution as causes, but not the method itself.
