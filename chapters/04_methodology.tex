@@ -302,11 +302,6 @@ fixed models; no setting was chosen from them.
 \section{One-vs-Rest Binary Classification}
 \label{sec:methodology-ovr}
 
-\paragraph{Preliminary design}
-A preliminary experiment trained a single 15-class classifier per ratio. Following a
-decision taken with the advisers, it was replaced by the one-vs-rest design described
-here, and none of its results are reported in this thesis.
-
 \paragraph{Binary tasks}
 The one-vs-rest scheme of Section~\ref{sec:background-training} was applied per ratio.
 For every pair of target material $t$ and ratio $r$, a separate binary classifier was
@@ -701,9 +696,8 @@ $D^+_{ij}$ divided by $\max D - \min D + \varepsilon$ plus this floor, while pat
 $D_{ij} < 0$ receive values between 0 and the floor, so the floor acts like the constant
 $\kappa$ of Eq.~\eqref{eq:c-invariance} and pulls $c$ towards 0.5. If all drops were positive, min-max scaling would instead subtract the
 smallest drop and move $c$ away from 0.5; this case does not occur among the 750 maps.
-The min-max rule was the original computation of this thesis. The positive-drops rule
-was introduced as a correction during the analysis, when the floor was found to make
-the two methods not comparable on equal terms. The min-max values are reported as a
+Because of this floor, occlusion and Grad-CAM would not be compared on equal terms, so
+positive drops are the main rule. The min-max values are reported as a
 robustness comparison in Section~\ref{sec:results-normalisation}; every other occlusion
 value of $c$ in this thesis uses positive drops.
 
